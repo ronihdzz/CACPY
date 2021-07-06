@@ -1,0 +1,16 @@
+<RCC>
+  <qresource prefix="main">
+    <file>IMAGENES/info_off.png</file>
+    <file>IMAGENES/info_on.png</file>
+    <file>IMAGENES/regresar_off.png</file>
+    <file>IMAGENES/paloma_off.png</file>
+    <file>IMAGENES/paloma_on.png</file>
+    <file>IMAGENES/tache_off.png</file>
+    <file>IMAGENES/tache_on.png</file>
+    <file>IMAGENES/regresar_on.png</file>
+    <file>IMAGENES/cargar_off.png</file>
+    <file>IMAGENES/cargar_on.png</file>
+    <file>IMAGENES/plus_off.png</file>
+    <file>IMAGENES/plus_on.png</file>
+  </qresource>
+</RCC>
