@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
 
 
-from CUERPO.DISENO.MostradorDetallesTareas_d import  Ui_Form
+from CUERPO.DISENO.TAREA.MostradorDetallesTareas_d import  Ui_Form
 
 
 

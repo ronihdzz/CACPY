@@ -16,7 +16,7 @@ from PyQt5.QtGui import QDoubleValidator,QRegExpValidator
 ###############################################################
 #  IMPORTACION DEL DISEÑO...
 ##############################################################
-from CUERPO.DISENO.CreadorTarea_d import Ui_Dialog
+from CUERPO.DISENO.TAREA.CreadorTarea_d import Ui_Dialog
 
 ###############################################################
 #  IMPORTACIONES DE LAS DEMAS VENTANAS LOGICAS...

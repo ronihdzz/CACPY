@@ -1,5 +1,11 @@
 <RCC>
   <qresource prefix="main">
+    <file>IMAGENES/configuraciones.png</file>
+    <file>IMAGENES/cuenta.png</file>
+    <file>IMAGENES/estudiantes.png</file>
+    <file>IMAGENES/tareas.png</file>
+    <file>IMAGENES/edit_off.png</file>
+    <file>IMAGENES/edit_on.png</file>
     <file>IMAGENES/info_off.png</file>
     <file>IMAGENES/info_on.png</file>
     <file>IMAGENES/regresar_off.png</file>

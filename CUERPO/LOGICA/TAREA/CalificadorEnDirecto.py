@@ -11,7 +11,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
 
 
-from CUERPO.DISENO.CalificadorEnDirecto_d  import  Ui_Dialog
+from CUERPO.DISENO.TAREA.CalificadorEnDirecto_d  import  Ui_Dialog
 
 
 

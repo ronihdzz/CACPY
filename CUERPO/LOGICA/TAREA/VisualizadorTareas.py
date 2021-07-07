@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
 
 
-from CUERPO.DISENO.VisualizadorTareas_d import  Ui_Form
+from CUERPO.DISENO.TAREA.VisualizadorTareas_d import  Ui_Form
 
 
 
@@ -20,6 +20,7 @@ class VisualizadorTareas(QWidget,Ui_Form):
 
     senal_verDetallesTarea = pyqtSignal(int)  # id de tarea
     senal_crearTarea=pyqtSignal(bool)
+    senal_cambiarDeClase=pyqtSignal(bool)
 
     def __init__(self,datosTareas):
         Ui_Form.__init__(self)
@@ -38,6 +39,27 @@ class VisualizadorTareas(QWidget,Ui_Form):
         # self.btn_verCuestionarios.clicked.connect(self.verCuestionariosCreador)
         self.tableWidget.itemDoubleClicked.connect(self.verDetallesTarea)
         self.btn_agregarTarea.clicked.connect(lambda : self.senal_crearTarea.emit(True) )
+        self.btn_editarClase.clicked.connect(self.preguntarAcercaCambioClase)
+
+
+    def preguntarAcercaCambioClase(self):
+
+        ventanaDialogo = QMessageBox()
+        #ventanaDialogo.setIcon(QMessageBox.Question)
+        #ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
+        #ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        ventanaDialogo.setText("¿Seguro que quieres cambiar de clase?")
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            self.senal_cambiarDeClase.emit(True)
+
+
 
     def verDetallesTarea(self,index):
         index = index.row()
