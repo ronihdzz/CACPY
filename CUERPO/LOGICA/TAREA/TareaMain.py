@@ -22,21 +22,42 @@ from CUERPO.DISENO.TAREA.TareaMain_d import  Ui_MainWindow
 
 
 class TareaMain(QtWidgets.QMainWindow,Ui_MainWindow):
-    def __init__(self):
+    def __init__(self,administradorProgramasClassRoom=None):
+        '''
+
+
+
+        :param administradorProgramasClassRoom: Si no se define
+        dicho parametro, etonces se considerara que el profesor
+        aun no elege un curso y tampoco un topic, por ende el
+        apartado de tareas no debera ser motrado.
+        '''
+
         Ui_MainWindow.__init__(self)
         QtWidgets.QMainWindow.__init__(self)
         self.setupUi(self)
 
+        self.administradorProgramasClassRoom=administradorProgramasClassRoom
+
+        #A=self.administradorProgramasClassRoom.get_dictTareasDejadas()
+        #print(A)
+
 
 
         # Nombre,Calificadas,Por calificar,Fecha emision,Promedio
-        datos_prueba=(
-            ('Tararea_1',10,50,'20/08/30 5:40 pm',9.5),
-            ('Tararea_1', 10, 50, '20/08/30 5:40 pm', 9.5),
-            ('Tararea_1', 10, 50, '20/08/30 5:40 pm', 9.5),
-            ('Tararea_1', 10, 50, '20/08/30 5:40 pm', 9.5),
-            ('Tararea_1', 10, 50, '20/08/30 5:40 pm', 9.5),
-        )
+
+        if administradorProgramasClassRoom:
+            # Se hace la primera consulta consulta...
+            datos_prueba=(
+                ('Tararea_1',10,50,'20/08/30 5:40 pm',9.5),
+                ('Tararea_1', 10, 50, '20/08/30 5:40 pm', 9.5),
+                ('Tararea_1', 10, 50, '20/08/30 5:40 pm', 9.5),
+                ('Tararea_1', 10, 50, '20/08/30 5:40 pm', 9.5),
+                ('Tararea_1', 10, 50, '20/08/30 5:40 pm', 9.5),
+            )
+
+        else:
+            datos_prueba=()
 
         # Creacion de las ventanas
         self.ventana_visualizadorTareas=VisualizadorTareas(datosTareas=datos_prueba)

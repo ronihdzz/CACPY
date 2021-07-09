@@ -609,6 +609,7 @@ QPushButton:pressed{
  </widget>
  <resources>
   <include location="../../img.qrc"/>
+  <include location="../../../img.qrc"/>
  </resources>
  <connections/>
 </ui>

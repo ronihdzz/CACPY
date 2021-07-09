@@ -1,5 +1,16 @@
 <RCC>
   <qresource prefix="main">
+    <file>IMAGENES/github.png</file>
+    <file>IMAGENES/likedin.png</file>
+    <file>IMAGENES/ICONO/programador.jpg</file>
+    <file>IMAGENES/gmail.png</file>
+    <file>IMAGENES/profesor.png</file>
+    <file>IMAGENES/guardar_off.png</file>
+    <file>IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_64.png</file>
+    <file>IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_128.png</file>
+    <file>IMAGENES/guardar_on.png</file>
+    <file>IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_256.png</file>
+    <file>IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_512.png</file>
     <file>IMAGENES/configuraciones.png</file>
     <file>IMAGENES/cuenta.png</file>
     <file>IMAGENES/estudiantes.png</file>

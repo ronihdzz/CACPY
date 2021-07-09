@@ -1,3 +1,11 @@
 # Ignorando la carpeta pyqt5
+#  *.pyc                    ignora todos los archivo .pyc
+#  token.json               ignora el archivo 'token.json'
+#  credentials.json         ignora el archivo 'credentials.json'
+# *.db                      ignora todos los archivos con terminacion *.db
 pyqt5/
 *.pyc
+token.json
+credentials.json
+*.db
+
