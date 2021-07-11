@@ -12,6 +12,19 @@ class App_Principal():
     FOTO_PERFIL_PROFESOR="CUERPO/RECURSOS/PROFESOR_EN_CURSO/fotoProfesor.png"
 
 
+    LEYENDA_SIN_CURSO_SELECCIONADO='Curso no seleccionado'
+    VALOR_TOPCIS_RETRAOLIMENTACION='AAA'
+    COLOR_TOPIC_SELECCIONADO="#0DDEFF"
+    COLOR_TOPIC_NO_SELECCIONADO="#EEF2F3"
+    COLOR_TABLA_TOPICS="#F1DAF9"
+
+    #self.COLOR_TABLA = "#EEF2F3"
+    #self.COLOR_RESPUESTA = "#9AE5E0"
+    #self.COLOR_MALO = "#E22E1C"
+    #self.COLOR_REGULAR = "#DCE21C"
+    #self.COLOR_BUENO = "#1CE285"
+    #self.COLOR_EXCELENTE = "#0DDEFF"
+
     ICONO_APLICACION =":/main/IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_64.png"
     NOMBRE_APLICACION ="RoniHernandez99/CalificadorAutomatico"
     IMAGEN_SPLASH_SCREEN =":/main/IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_512.png"

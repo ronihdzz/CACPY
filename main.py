@@ -31,6 +31,7 @@ from CUERPO.LOGICA.CONFIGURACION.ConfiguracionMain import ConfiguracionMain
 from CUERPO.LOGICA.ALUMNO.AlumnoMain import AlumnoMain
 from CUERPO.LOGICA.API.ClassRoomControl import ClassRoomControl,AdministradorProgramasClassRoom
 from CUERPO.LOGICA.API.BaseDatosLocal import BaseDatos_ClassRoomProgramas
+from CUERPO.LOGICA.API.ClassRoomControl import CalificadorConfiguracion
 from CUERPO.LOGICA.MAIN.DatosCreador import Dialog_datosCreador
 
 ###############################################################
@@ -67,7 +68,7 @@ class Main(QtWidgets.QMainWindow,Ui_MainWindow,recursos.HuellaAplicacion):
 
         self.profesor_correo = correo_profesor
         self.profesor_nombre=nombre_profesor
-        if not(correo_profesor and nombre_profesor) :
+        if not(correo_profesor and nombre_profesor):
             self.profesor_correo, self.profesor_nombre=self.elClassRoom_control.get_datosProfesor(recursos.App_Principal.FOTO_PERFIL_PROFESOR)
         self.curso_id=curso_id
         self.topic_id=topic_id
@@ -79,6 +80,13 @@ class Main(QtWidgets.QMainWindow,Ui_MainWindow,recursos.HuellaAplicacion):
             tareasProgramas_topic_id=topic_id,
             retroProgramas_topic_id=None
         )
+
+        self.configuracionCalificador=CalificadorConfiguracion(
+            curso_api_id=curso_id,
+            programTopic_id=topic_id
+        )
+
+
 
 
 
@@ -171,14 +179,20 @@ class Main(QtWidgets.QMainWindow,Ui_MainWindow,recursos.HuellaAplicacion):
         self.ventana_aplicacionPerfil.cargarPerfilProfesor()
 
         # Si los datos del curso y topic no estan definidos...
-        if not(self.curso_id and self.topic_id) :
-            self.ventana_aplicacionTareas = TareaMain(administradorProgramasClassRoom=None)
-            self.ventana_aplicacionConfiguracion=ConfiguracionMain()
-            self.ventana_aplicacionAlumnos=AlumnoMain()
+        #if not(self.curso_id and self.topic_id) :
+
+        self.ventana_aplicacionConfiguracion=ConfiguracionMain(
+            baseDatosLocalClassRoom=self.baseDatosLocalClassRoomProgramas,
+            classRoomControl=self.elClassRoom_control,
+            configuracionCalificador=self.configuracionCalificador
+        )
+
+        self.ventana_aplicacionTareas = TareaMain(administradorProgramasClassRoom=self.administradorProgramasClassRoom)
+        self.ventana_aplicacionAlumnos=AlumnoMain()
 
         # Si los datos del curso y topic si estan definidos...
-        else:
-            pass
+        #else:
+        #    pass
 
         self.listWidget.addWidget(self.ventana_aplicacionPerfil)
         self.listWidget.addWidget(self.ventana_aplicacionTareas)
@@ -203,11 +217,10 @@ class Main(QtWidgets.QMainWindow,Ui_MainWindow,recursos.HuellaAplicacion):
 
 
     def mostrar_apartadoTareas(self):
-        if self.curso_id and self.topic_id:
+        if self.configuracionCalificador.datosListosApartadoTareas():
             self.bel_nombreApartado.setText("Mis tareas")
             self.listWidget.setCurrentIndex(1)
         else:
-
             self.msg_elegirCurso_y_topic()
             self.accion_verApartadoConfiguracion.trigger()
 
@@ -238,9 +251,12 @@ class Main(QtWidgets.QMainWindow,Ui_MainWindow,recursos.HuellaAplicacion):
 
         if respuesta:
             if self.profesor_correo and self.profesor_nombre:
-             with open(recursos.App_Principal.ARCHIVO_DATOS_PROFESOR,'w') as archivo:
+                with open(recursos.App_Principal.ARCHIVO_DATOS_PROFESOR,'w') as archivo:
                  archivo.write(  '\n'.join((self.profesor_correo, self.profesor_nombre)))
-             event.accept()
+
+            # respaldando los datos del  curso_id y topic_id de ser necesarios
+            self.configuracionCalificador.respaldarDatos(recursos.App_Principal.ARCHIVO_TRABAJO_PROFESOR)
+            event.accept()
         else:
             event.ignore()  # No saldremos del evento
 

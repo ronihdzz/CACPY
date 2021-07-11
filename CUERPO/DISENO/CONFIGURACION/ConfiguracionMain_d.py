@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(420, 406)
+        Form.resize(618, 498)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -113,15 +113,51 @@ class Ui_Form(object):
         self.label_6.setAlignment(QtCore.Qt.AlignCenter)
         self.label_6.setObjectName("label_6")
         self.horizontalLayout_4.addWidget(self.label_6)
+        self.verticalLayout_7 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_7.setContentsMargins(-1, -1, 20, -1)
+        self.verticalLayout_7.setSpacing(0)
+        self.verticalLayout_7.setObjectName("verticalLayout_7")
+        self.btn_eliminarApartado = QtWidgets.QPushButton(Form)
+        self.btn_eliminarApartado.setMinimumSize(QtCore.QSize(50, 50))
+        self.btn_eliminarApartado.setMaximumSize(QtCore.QSize(35, 35))
+        self.btn_eliminarApartado.setBaseSize(QtCore.QSize(30, 30))
+        self.btn_eliminarApartado.setStyleSheet("\n"
+"QPushButton {\n"
+"border-image: url(:/main/IMAGENES/eliminar_off.png);\n"
+" }\n"
+"\n"
+"QPushButton:hover {\n"
+"border-image: url(:/main/IMAGENES/eliminar_on.png);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"border-image: url(:/main/IMAGENES/eliminar_off.png);\n"
+"}\n"
+"")
+        self.btn_eliminarApartado.setText("")
+        self.btn_eliminarApartado.setObjectName("btn_eliminarApartado")
+        self.verticalLayout_7.addWidget(self.btn_eliminarApartado)
+        self.bel_agregar_or_guardar_apar_2 = QtWidgets.QLabel(Form)
+        self.bel_agregar_or_guardar_apar_2.setMinimumSize(QtCore.QSize(50, 35))
+        self.bel_agregar_or_guardar_apar_2.setMaximumSize(QtCore.QSize(35, 35))
+        self.bel_agregar_or_guardar_apar_2.setBaseSize(QtCore.QSize(30, 30))
+        font = QtGui.QFont()
+        font.setPointSize(6)
+        self.bel_agregar_or_guardar_apar_2.setFont(font)
+        self.bel_agregar_or_guardar_apar_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.bel_agregar_or_guardar_apar_2.setWordWrap(True)
+        self.bel_agregar_or_guardar_apar_2.setObjectName("bel_agregar_or_guardar_apar_2")
+        self.verticalLayout_7.addWidget(self.bel_agregar_or_guardar_apar_2)
+        self.horizontalLayout_4.addLayout(self.verticalLayout_7)
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setContentsMargins(-1, -1, 20, -1)
         self.verticalLayout_5.setSpacing(0)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
-        self.btn_edit_or_cancelEdit_aparSelec = QtWidgets.QPushButton(Form)
-        self.btn_edit_or_cancelEdit_aparSelec.setMinimumSize(QtCore.QSize(35, 35))
-        self.btn_edit_or_cancelEdit_aparSelec.setMaximumSize(QtCore.QSize(35, 35))
-        self.btn_edit_or_cancelEdit_aparSelec.setBaseSize(QtCore.QSize(20, 20))
-        self.btn_edit_or_cancelEdit_aparSelec.setStyleSheet("QPushButton {\n"
+        self.btn_editApartado = QtWidgets.QPushButton(Form)
+        self.btn_editApartado.setMinimumSize(QtCore.QSize(35, 35))
+        self.btn_editApartado.setMaximumSize(QtCore.QSize(35, 35))
+        self.btn_editApartado.setBaseSize(QtCore.QSize(20, 20))
+        self.btn_editApartado.setStyleSheet("QPushButton {\n"
 "border-image: url(:/main/IMAGENES/edit_off.png);\n"
 " }\n"
 "QPushButton:hover {\n"
@@ -131,9 +167,9 @@ class Ui_Form(object):
 "border-image: url(:/main/IMAGENES/edit_off.png);\n"
 "}\n"
 "")
-        self.btn_edit_or_cancelEdit_aparSelec.setText("")
-        self.btn_edit_or_cancelEdit_aparSelec.setObjectName("btn_edit_or_cancelEdit_aparSelec")
-        self.verticalLayout_5.addWidget(self.btn_edit_or_cancelEdit_aparSelec)
+        self.btn_editApartado.setText("")
+        self.btn_editApartado.setObjectName("btn_editApartado")
+        self.verticalLayout_5.addWidget(self.btn_editApartado)
         self.bel_edit_or_cancelEdit_aparSelec = QtWidgets.QLabel(Form)
         self.bel_edit_or_cancelEdit_aparSelec.setMinimumSize(QtCore.QSize(35, 35))
         self.bel_edit_or_cancelEdit_aparSelec.setMaximumSize(QtCore.QSize(35, 35))
@@ -150,11 +186,11 @@ class Ui_Form(object):
         self.verticalLayout_2.setContentsMargins(-1, -1, 20, -1)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.btn_agregar_or_guardar_apar = QtWidgets.QPushButton(Form)
-        self.btn_agregar_or_guardar_apar.setMinimumSize(QtCore.QSize(35, 35))
-        self.btn_agregar_or_guardar_apar.setMaximumSize(QtCore.QSize(35, 35))
-        self.btn_agregar_or_guardar_apar.setBaseSize(QtCore.QSize(30, 30))
-        self.btn_agregar_or_guardar_apar.setStyleSheet("\n"
+        self.btn_agregarApartado = QtWidgets.QPushButton(Form)
+        self.btn_agregarApartado.setMinimumSize(QtCore.QSize(35, 35))
+        self.btn_agregarApartado.setMaximumSize(QtCore.QSize(35, 35))
+        self.btn_agregarApartado.setBaseSize(QtCore.QSize(30, 30))
+        self.btn_agregarApartado.setStyleSheet("\n"
 "QPushButton {\n"
 "border-image: url(:/main/IMAGENES/plus_off.png);\n"
 " }\n"
@@ -167,9 +203,9 @@ class Ui_Form(object):
 "border-image: url(:/main/IMAGENES/plus_off.png);\n"
 "}\n"
 "")
-        self.btn_agregar_or_guardar_apar.setText("")
-        self.btn_agregar_or_guardar_apar.setObjectName("btn_agregar_or_guardar_apar")
-        self.verticalLayout_2.addWidget(self.btn_agregar_or_guardar_apar)
+        self.btn_agregarApartado.setText("")
+        self.btn_agregarApartado.setObjectName("btn_agregarApartado")
+        self.verticalLayout_2.addWidget(self.btn_agregarApartado)
         self.bel_agregar_or_guardar_apar = QtWidgets.QLabel(Form)
         self.bel_agregar_or_guardar_apar.setMinimumSize(QtCore.QSize(35, 35))
         self.bel_agregar_or_guardar_apar.setMaximumSize(QtCore.QSize(35, 35))
@@ -207,6 +243,8 @@ class Ui_Form(object):
         self.label_4.setText(_translate("Form", "Clase:"))
         self.bel_nombreClase.setText(_translate("Form", "Python pre-intermedio"))
         self.label_6.setText(_translate("Form", "Apartados tareas"))
+        self.bel_agregar_or_guardar_apar_2.setText(_translate("Form", "Eliminar\n"
+""))
         self.bel_edit_or_cancelEdit_aparSelec.setText(_translate("Form", "Editar"))
         self.bel_agregar_or_guardar_apar.setText(_translate("Form", "Agregar\n"
 "apartado"))

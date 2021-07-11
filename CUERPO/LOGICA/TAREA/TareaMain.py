@@ -13,7 +13,6 @@ from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
 from CUERPO.LOGICA.TAREA.VisualizadorTareas import VisualizadorTareas
 from CUERPO.LOGICA.TAREA.MostradorDetallesTarea import MostradorDetallesTareas
 from CUERPO.LOGICA.TAREA.CalificadorEnDirecto import CalificadorEnDirecto
-from CUERPO.LOGICA.TAREA.CambiadorClases import CambiadorClases
 from CUERPO.LOGICA.TAREA.CreadorTarea import CreadorTareas
 from CUERPO.DISENO.TAREA.TareaMain_d import  Ui_MainWindow
 
@@ -64,7 +63,6 @@ class TareaMain(QtWidgets.QMainWindow,Ui_MainWindow):
         self.ventana_mostradorDetallesTarea = MostradorDetallesTareas()
         self.ventana_calificadorEnDirecto=CalificadorEnDirecto()
         self.ventana_creadorTareas=CreadorTareas(listaNombresTareasYaCreadas=[])
-        self.ventana_cambiadorClases=CambiadorClases()
 
         self.listWidget.addWidget(self.ventana_visualizadorTareas)
         self.listWidget.addWidget(self.ventana_mostradorDetallesTarea)
@@ -74,8 +72,6 @@ class TareaMain(QtWidgets.QMainWindow,Ui_MainWindow):
 
         self.ventana_visualizadorTareas.senal_crearTarea.connect(self.mostrarCreadorTareas)
         self.ventana_visualizadorTareas.senal_verDetallesTarea.connect(self.verDetalleTarea)
-        self.ventana_visualizadorTareas.senal_cambiarDeClase.connect(self.mostrarMenuClases)
-
 
         self.ventana_mostradorDetallesTarea.senal_regresar.connect(self.mostrarMenuTodasTareas)
         self.ventana_mostradorDetallesTarea.senal_calificarDirecto.connect(self.mostrarCalificadorEnVivo)
@@ -85,19 +81,11 @@ class TareaMain(QtWidgets.QMainWindow,Ui_MainWindow):
         self.ventana_creadorTareas.senalUsuarioSoloCerroVentana.connect(self.desbloquearAplicacionCentral)
         self.ventana_creadorTareas.senalUsuarioCreoTarea.connect(self.registrarTareaCreada)
 
-        self.ventana_cambiadorClases.senal_cambiadorClasesFueCerrado.connect(self.desbloquearAplicacionCentral)
 
 
         # VENTANA CON LA QUE SE INICIA POR DEFAULT...
         self.listWidget.setCurrentIndex(0)
         self.listWidget.showFullScreen()
-
-
-
-
-    def mostrarMenuClases(self):
-        self.setEnabled(False)
-        self.ventana_cambiadorClases.show()
 
 
 

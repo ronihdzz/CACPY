@@ -45,6 +45,55 @@ class AdministradorProgramasClassRoom:
         return idTarea
 
 
+class CalificadorConfiguracion:
+    def __init__(self,curso_nombre=None,curso_api_id=None,programTopic_nombre=None,programTopic_id=None,retroTopic_nombre=None,retroTopic_id=None):
+
+        self.curso_nombre=curso_nombre
+        self.curso_api_id=curso_api_id
+
+        self.programTopic_id=programTopic_id
+        self.programTopic_nombre=programTopic_nombre
+
+        self.retroTopic_nombre=retroTopic_nombre
+        self.retroTopic_id=retroTopic_id
+
+
+    def reiniciarValores(self):
+        self.curso_nombre = None
+        self.curso_api_id = None
+        self.programTopic_nombre = None
+        self.programTopic_id=None
+        self.retroTopic_nombre = None
+        self.retroTopic_id = None
+
+    def cargarDatosCurso(self,id,nombre):
+        self.reiniciarValores()
+        self.curso_api_id = id
+        self.curso_nombre=nombre
+
+    def cargarDatosTopic(self,programaTopic_id,programaTopic_nombre):
+        self.programTopic_id=programaTopic_id
+        self.programTopic_nombre=programaTopic_nombre
+
+    def datosListosApartadoTareas(self):
+        if self.curso_api_id!=None and self.programTopic_id!=None:
+            return True
+        else:
+            return False
+
+    def respaldarDatos(self,nombreArchivo):
+        seDebeRespaldar= (self.curso_api_id!=None and self.programTopic_id!=None)
+        archivoDatosExiste=os.path.isfile(nombreArchivo)
+
+        if seDebeRespaldar:
+            with open(nombreArchivo,'w') as archivo:
+                archivo.write(  '\n'.join(  (self.curso_api_id,self.programTopic_id)  )   )
+
+        elif archivoDatosExiste:
+            os.remove(nombreArchivo)
+
+
+
 
 
 
@@ -193,11 +242,12 @@ class ClassRoomControl:
         lista_tuplasDatos = []
         if not curso_topics:
             print('No student submissions found.')
+            return lista_tuplasDatos
         else:
             print('Student Submissions:******************************************************')
 
             for topic in curso_topics:
-                 lista_tuplasDatos.append( [ topic.get('topicId'), topic.get('courseId'), topic.get('name') ] )
+                 lista_tuplasDatos.append( [ topic.get('topicId'), topic.get('name') ] )
             return lista_tuplasDatos
 
 
