@@ -29,6 +29,9 @@ class App_Principal():
     NOMBRE_APLICACION ="RoniHernandez99/CalificadorAutomatico"
     IMAGEN_SPLASH_SCREEN =":/main/IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_512.png"
 
+    RUTA_DESCARGAS_PDF="CUERPO/RECURSOS/PDF_DESCARGADOS"
+    RUTA_ASIGNACIONES="CUERPO/RECURSOS/ASIGNACIONES"
+
 
     NOMBRE_ARCHIVO_LOG ='depuracionPrograma.log'
 
@@ -37,6 +40,10 @@ class App_Principal():
         cls.ARCHIVO_DATOS_PROFESOR=ubicacion + cls.ARCHIVO_DATOS_PROFESOR
         cls.ARCHIVO_TRABAJO_PROFESOR=ubicacion+cls.ARCHIVO_TRABAJO_PROFESOR
         cls.FOTO_PERFIL_PROFESOR=ubicacion+ cls.FOTO_PERFIL_PROFESOR
+        cls.RUTA_DESCARGAS_PDF=ubicacion+cls.RUTA_DESCARGAS_PDF
+        cls.RUTA_ASIGNACIONES=ubicacion+cls.RUTA_ASIGNACIONES
+
+
 
 
 class App_datosCreador():

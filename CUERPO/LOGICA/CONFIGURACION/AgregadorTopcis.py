@@ -136,6 +136,7 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
                     tupla_topic_retroalimentacion=(retroalimentacion_topic_api_id,retroalimentacion_topic_nombre)
 
                     self.baseDatosLocalClassRoom.actualizarEstadoTopic(
+                        curso_id=self.curso_id,
                         programas_topic_id=programa_topic_api_id,
                         retro_topic_id=retroalimentacion_topic_api_id
                     )

@@ -65,11 +65,11 @@ cada campo.''',
     )
 
     senalUsuarioSoloCerroVentana=pyqtSignal(bool)
-    senalUsuarioCreoTarea=pyqtSignal(list)
+    senalUsuarioCreoTarea=pyqtSignal(tuple)
 
 
 
-    def __init__(self,listaNombresTareasYaCreadas):
+    def __init__(self,listaNombresTareasYaCreadas,administradorProgramasClassRoom):
 
         Ui_Dialog.__init__(self)
         QtWidgets.QDialog.__init__(self)
@@ -81,12 +81,14 @@ cada campo.''',
         self.conectarObjetos_conMetodos()
         self.restringirLasEntradas()
 
-
+        self.administradorProgramasClassRoom=administradorProgramasClassRoom
         self.USUARIO_SE_REGISTRO=False
 
 #############################################################################################################################################
 #        A C C I O N E S    F R E  C U E N  T E S :
 #############################################################################################################################################
+
+
 
     def informar(self,idDuda):
         '''
@@ -155,7 +157,7 @@ cada campo.''',
         # y un booleano que indicara si es buena o mala su sintaxis
         # otra cosa que aclara es que su keys coincide con la key del su boton estado
         self.dict_datosPediremos = {1: [self.lineEdit_nombreTarea, False],
-                                    2: [self.lineEdit_urlSoloLectura, False],
+                                    2: [self.plainText_urlSoloLectura, False],
                                     3: [self.lineEdit_idArchivo, False],
                                     4: [self.textEdit_indicaciones, False]
                                     }
@@ -176,16 +178,17 @@ cada campo.''',
     def restringirLasEntradas(self):
 
         # validacion del nombre de la tarea...
-        validator = QRegExpValidator(QRegExp("[0-9a-zA-Z_-]{1,20}"))  # maximo solo 20 caracteres
+        validator = QRegExpValidator(QRegExp("[0-9a-zA-Z_-]{1,30}"))  # maximo solo 20 caracteres
         self.lineEdit_nombreTarea.setValidator(validator)
 
         # validacion del link de acceso solo lectura..
-        validator = QRegExpValidator(QRegExp("[^ ]{1,500}"))
-        self.lineEdit_urlSoloLectura.setValidator(validator)
-        self.lineEdit_idArchivo.setValidator(validator)
+        #validator = QRegExpValidator(QRegExp("[^ ]{1,500}"))
+        #self.lineEdit_urlSoloLectura.setValidator(validator)
+        #self.lineEdit_idArchivo.setValidator(validator)
 
 
         self.textEdit_indicaciones.text=self.textEdit_indicaciones.toPlainText
+        self.plainText_urlSoloLectura.text=self.plainText_urlSoloLectura.toPlainText
 
         completer = QCompleter(self.listaNombresTareasYaCreadas)
         self.lineEdit_nombreTarea.setCompleter(completer)
@@ -213,6 +216,23 @@ cada campo.''',
                                                  "son los datos correctos?",
                                                  QMessageBox.Yes | QMessageBox.No)
                 if resultado == QMessageBox.Yes:
+                    #################################################################
+                    # CREANDO TRABAJO
+                    ################################################################
+
+
+                    titulo=self.lineEdit_nombreTarea.text()
+                    descripccion=self.textEdit_indicaciones.toPlainText()
+                    idTarea,fechaCreacion=self.administradorProgramasClassRoom.crearTarea(
+                        titulo=titulo,
+                        descripccion=descripccion,
+                        colab_link=self.plainText_urlSoloLectura.toPlainText(),
+                        colab_id=self.lineEdit_idArchivo.text(),
+                    )
+
+                    tuplaDatosMandar = (idTarea,titulo,fechaCreacion)
+                    self.senalUsuarioCreoTarea.emit(tuplaDatosMandar)
+
                     mensajeBienvenida = '''
     Felicidades, tu tarea ha sido registrada correctamente.'''
                     QMessageBox.information(self,'BLA BLA BLA ',
@@ -235,14 +255,21 @@ cada campo.''',
                                      QMessageBox.Ok)
 
 
+    def borrarTodo(self):
+        self.lineEdit_nombreTarea.setText("")
+        self.lineEdit_idArchivo.setText("")
+        self.plainText_urlSoloLectura.setPlainText("")
+        self.textEdit_indicaciones.setPlainText("")
+
+
     def closeEvent(self, event):
 
         if self.USUARIO_SE_REGISTRO:
             nombreTarea=self.lineEdit_nombreTarea.text()
-            urlSoloLectura=self.lineEdit_urlSoloLectura.text()
+            urlSoloLectura=self.plainText_urlSoloLectura.toPlainText()
             idArchivoDrive=self.lineEdit_idArchivo.text()
             indicacionesTarea=self.textEdit_indicaciones.toPlainText()
-            self.senalUsuarioCreoTarea.emit([nombreTarea,urlSoloLectura,idArchivoDrive,idArchivoDrive,indicacionesTarea])
+            self.borrarTodo()
             event.accept()
 
         else:

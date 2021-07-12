@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="main">
+    <file>IMAGENES/crear_off.png</file>
+    <file>IMAGENES/crear_on.png</file>
     <file>IMAGENES/eliminar_off.png</file>
     <file>IMAGENES/eliminar_on.png</file>
     <file>IMAGENES/github.png</file>

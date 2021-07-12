@@ -189,11 +189,11 @@ QPushButton:pressed {
          <property name="font">
           <font>
            <family>Calibri</family>
-           <pointsize>14</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="maxLength">
-          <number>20</number>
+          <number>400</number>
          </property>
         </widget>
        </item>
@@ -273,27 +273,26 @@ QPushButton:pressed{
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_urlSoloLectura">
+        <widget class="QPlainTextEdit" name="plainText_urlSoloLectura">
          <property name="minimumSize">
           <size>
            <width>300</width>
            <height>40</height>
           </size>
          </property>
-         <property name="baseSize">
+         <property name="maximumSize">
           <size>
-           <width>300</width>
-           <height>40</height>
+           <width>16777215</width>
+           <height>100</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <family>Calibri</family>
-           <pointsize>14</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
-         <property name="maxLength">
-          <number>20</number>
+         <property name="textInteractionFlags">
+          <set>Qt::LinksAccessibleByMouse|Qt::TextEditable|Qt::TextEditorInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
          </property>
         </widget>
        </item>
@@ -389,11 +388,11 @@ QPushButton:pressed{
          <property name="font">
           <font>
            <family>Calibri</family>
-           <pointsize>14</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="maxLength">
-          <number>20</number>
+          <number>400</number>
          </property>
         </widget>
        </item>
@@ -504,6 +503,11 @@ QPushButton:pressed{
            <height>60</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
         </widget>
        </item>
        <item>
@@ -608,7 +612,7 @@ QPushButton:pressed{
   </layout>
  </widget>
  <resources>
-  <include location="../../img.qrc"/>
+  <include location="../../../img.qrc"/>
   <include location="../../../img.qrc"/>
  </resources>
  <connections/>

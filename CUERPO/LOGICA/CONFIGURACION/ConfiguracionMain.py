@@ -1,13 +1,6 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QApplication, QMainWindow, QInputDialog, QMessageBox,QHeaderView
-from PyQt5.QtGui import QStandardItemModel,QStandardItem
-from PyQt5.QtWidgets import  QMessageBox,QAction,QActionGroup,QWidget,QVBoxLayout,QTabWidget,QLabel
+from PyQt5.QtWidgets import  QMessageBox
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog,QCompleter
-#from PyQt5.QtGui import Qt
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
 from PyQt5 import QtCore,QtGui
@@ -91,7 +84,7 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
         # Cargando los datos que se mostraran
-        self.cargarDatos()
+        #self.cargarDatos()
 
 
 
@@ -124,17 +117,15 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
                 id=id,
                 nombre=nombre,
             )
-            self.senal_eligioUnCurso.emit(True)
+            #self.senal_eligioUnCurso.emit(True)
             # Actualizando sus valores
 
             print("QUE PASA AQUI")
             self.ventana_agredadorTopics.curso_id=id
             self.cargarDatos()
 
-            # cargar los topic agregados de esa clase...
-
-
-            self.senal_eligioUnCurso.emit(  True )
+            # cargar los topic agregados de esa clase..
+            self.senal_eligioUnCurso.emit(True)
 
 
     def procesoCambiarClase(self):
@@ -229,10 +220,15 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
         # Insertado el nombre del topic en donde se pondran los programas
 
-        self.tableWidget.setItem(noRenglones, 0, QtWidgets.QTableWidgetItem(tupla_topic_programas[1]))
+        #Agregando nombre
+        celda=QtWidgets.QTableWidgetItem(tupla_topic_programas[1])
+        celda.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.tableWidget.setItem(noRenglones,0,celda )
 
         # Insertando el nombre del topic en donde se pondran las retroalimetnaciones
-        self.tableWidget.setItem(noRenglones, 1, QtWidgets.QTableWidgetItem(tupla_topic_retroalimentacion[1]))
+        celda = QtWidgets.QTableWidgetItem(tupla_topic_retroalimentacion[1])
+        celda.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.tableWidget.setItem(noRenglones, 1,celda )
 
 
         self.listaIds_apartadosProgramas.append( tupla_topic_programas[0] )
@@ -246,8 +242,6 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             )
 
             if respuestaPositiva:
-
-
                     self.baseDatosLocalClassRoom.eliminarTopic(curso_id=self.curso_id,
                                                                topicProgramas_id=self.listaIds_apartadosProgramas[numeroRenglon])
 
@@ -346,6 +340,9 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
     def cargarDatos(self):
         '''
+        Esta diseñado para funcionar cuando recien se inicia el programa...
+
+
         Cargara los datos, en funcion del valor de los atributos de instancia:
             - self.curso_id
             - self.topic_id
@@ -370,16 +367,9 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
         if self.curso_id!=None :
-            topicsAgregados=self.baseDatosLocalClassRoom.get_topicsAgregados(course_id_api=self.curso_id)
-            self.listaIds_apartadosProgramas=[]
-            tuplaDatos=[]
-            self.tableWidget.setRowCount(0) # Eliminando todas las filas de la tabla
-            if topicsAgregados!=() and len(topicsAgregados)>0:
-                for apartadoProgram_id,apartadoProgram_nombre,_,apartadoRetro_nombre, in topicsAgregados:
-                    self.listaIds_apartadosProgramas.append(apartadoProgram_id)
-                    tuplaDatos.append( (apartadoProgram_nombre,apartadoRetro_nombre)  )
-
-            self.cargarDatosEnTabla(tuplaDatos=tuplaDatos)
+            self.cargarTopicsCurso()
+            self.bel_nombreClase.setText(self.configuracionCalificador.curso_nombre )
+            self.senal_eligioUnCurso.emit(True)
 
             # Seleccionar renglon...
             if self.programas_topic_id!=None:
@@ -387,10 +377,32 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
                 self.colorearRenglon(renglonSeleccionar,recursos.App_Principal.COLOR_TOPIC_SELECCIONADO)
                 self.indice_topic_sele=renglonSeleccionar
 
+                nombreTopic=self.tableWidget.item(renglonSeleccionar,0).text()
+                self.senal_eligioTopic.emit(True)
+
+
+
+
+
         else:
             self.bel_nombreClase.setText(
                 recursos.App_Principal.LEYENDA_SIN_CURSO_SELECCIONADO
             )
+
+    def cargarTopicsCurso(self):
+
+        if self.curso_id != None:
+            topicsAgregados = self.baseDatosLocalClassRoom.get_topicsAgregados(course_id_api=self.curso_id)
+            self.listaIds_apartadosProgramas = []
+            tuplaDatos = []
+            self.tableWidget.setRowCount(0)  # Eliminando todas las filas de la tabla
+            if topicsAgregados != () and len(topicsAgregados) > 0:
+                for apartadoProgram_id, apartadoProgram_nombre, _, apartadoRetro_nombre, in topicsAgregados:
+                    self.listaIds_apartadosProgramas.append(apartadoProgram_id)
+                    tuplaDatos.append((apartadoProgram_nombre, apartadoRetro_nombre))
+
+            self.cargarDatosEnTabla(tuplaDatos=tuplaDatos)
+
 
 
     def cargarDatosEnTabla(self,tuplaDatos):

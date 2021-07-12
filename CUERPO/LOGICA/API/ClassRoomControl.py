@@ -11,6 +11,8 @@ import datetime     # for general datetime object handling
 import rfc3339      # for date object -> date string
 import iso8601
 
+import recursos
+
 def get_date_object(date_string):
   return iso8601.parse_date(date_string)
 
@@ -19,37 +21,126 @@ def get_date_string(date_object):
 
 
 class AdministradorProgramasClassRoom:
-    def __init__(self,classroom_control,curso_id,tareasProgramas_topic_id,retroProgramas_topic_id):
+    def __init__(self,classroom_control,baseDatosLocalClassRoom,configuracionCalificador):
         self.classroom_control=classroom_control
-        self.curso_nombre=None
-        self.curso_id=curso_id
-        self.tareasProgramas_topic_id=tareasProgramas_topic_id
-        self.retroProgramas_topic_id=retroProgramas_topic_id
+        self.configuracionCalificador=configuracionCalificador
+        self.baseDatosLocalClassRoom=baseDatosLocalClassRoom
+
+
+    def get_datosCurso(self):
+        return (self.configuracionCalificador.curso_api_id,self.configuracionCalificador.curso_nombre)
+
+    def get_datosTopic(self):
+        return (self.configuracionCalificador.programTopic_id,self.configuracionCalificador.programTopic_nombre)
+
+
+    def seleccionarBaseLocal_coursework(self,idCourseWork):
+        self.baseDatosLocalClassRoom.cambiarEstadoEleccion(
+            curso_id=self.configuracionCalificador.curso_api_id,
+            topic_id=self.configuracionCalificador.programTopic_id,
+            idCourseWorkElegido=idCourseWork
+        )
 
 
     def get_dictTareasDejadas(self):
-        dictTareas=self.classroom_control.get_dictTareasTopic(self.curso_id,self.tareasProgramas_topic_id)
-        print(dictTareas)
-        return dictTareas
+        listaTareas=self.classroom_control.get_listaTareasTopic(
+            self.configuracionCalificador.curso_api_id,
+            self.configuracionCalificador.programTopic_id
+        )
+        #datos = [
+        #    tarea.get('id'), curso_id, topic_id, tarea.get('title'),
+        #    tarea.get('description'), fechaCreacion
+        #]
+
+        print(listaTareas)
+        return listaTareas
 
     def crearTarea(self,titulo,descripccion,colab_link,colab_id):
 
         idTarea= self.classroom_control.create_asignacionPrograma(
-                    course_id=self.curso_id,
-                    topic_programas_id=self.tareasProgramas_topic_id,
+                    course_id=self.configuracionCalificador.curso_api_id,
+                    topic_programas_id=self.configuracionCalificador.programTopic_id,
                     colab_link=colab_link,
                     colab_id=colab_id,
                     titulo=titulo,
                     description=descripccion
         )
-        return idTarea
+        # formato de cadena ISO8601:  YYYY-MM-DD HH:MM:SS.SSS para compatibilidad con sqlite3
+        fechaCreacion = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
+        # tuplaDatos=(id,title,description,fechaCreacion)
+        self.agregarCourseWorks_baseDatosLocal(
+            tuplaDatos=(  (idTarea,titulo,descripccion,fechaCreacion),   )
+        )
+
+        # registrar como ya agregada
+        self.seleccionarBaseLocal_coursework(idCourseWork=idTarea)
+
+        return idTarea,fechaCreacion
+
+
+    def get_courseWorksLibres_baseDatosLocal(self):
+
+        tuplaDatosCourseWorks=self.baseDatosLocalClassRoom.get_courseWorksLibres(
+            curso_id=self.configuracionCalificador.curso_api_id,
+            topic_id=self.configuracionCalificador.programTopic_id
+        )
+        return tuplaDatosCourseWorks
+
+    def get_courseWorksAgregados_baseDatosLocal(self):
+
+        tuplaDatosCourseWorks=self.baseDatosLocalClassRoom.get_courseWorksAgregados(
+            curso_id=self.configuracionCalificador.curso_api_id,
+            topic_id=self.configuracionCalificador.programTopic_id
+        )
+        return tuplaDatosCourseWorks
+
+
+    def agregarCourseWorks_baseDatosLocal(self,tuplaDatos):
+        self.baseDatosLocalClassRoom.agregar_soloNuevosCourseWorks(
+            tuplaDatos=tuplaDatos,
+            curso_id=self.configuracionCalificador.curso_api_id,
+            topic_id=self.configuracionCalificador.programTopic_id
+        )
+
+    def eliminarCourseWork_baseDatosLocal(self,courseWork_id):
+        self.baseDatosLocalClassRoom.eliminarCourseWork(
+            curso_id=self.configuracionCalificador.curso_api_id,
+            topic_id=self.configuracionCalificador.programTopic_id,
+            coursework_id=courseWork_id
+        )
+
+
+    def get_informacionTareasEntregadas(self,courseWork_id):
+
+        #dictEntregas[user_id] = [url, asignacion_id]
+
+        datosEntraga=self.classroom_control.list_submissions(
+            course_id=self.configuracionCalificador.curso_api_id,
+            coursework_id=courseWork_id
+        )
+
+        print(datosEntraga)
+
+    def calificarEstudiantes(self, courseWork_id, noMaxEstudiantesCalificar=5):
+
+        RUTA_ASIGNACIONES=recursos.App_Principal.RUTA_ASIGNACIONES
+
+        dictEntregas=self.classroom_control.list_submissions(
+            course_id=self.configuracionCalificador.curso_api_id,
+            coursework_id=courseWork_id,
+        )
+        pass
+
+
 
 
 class CalificadorConfiguracion:
-    def __init__(self,curso_nombre=None,curso_api_id=None,programTopic_nombre=None,programTopic_id=None,retroTopic_nombre=None,retroTopic_id=None):
+    def __init__(self,curso_nombre=None,curso_api_id=None,programTopic_nombre=None,
+                 programTopic_id=None,retroTopic_nombre=None,retroTopic_id=None):
 
+        self.curso_api_id = curso_api_id
         self.curso_nombre=curso_nombre
-        self.curso_api_id=curso_api_id
 
         self.programTopic_id=programTopic_id
         self.programTopic_nombre=programTopic_nombre
@@ -75,6 +166,7 @@ class CalificadorConfiguracion:
         self.programTopic_id=programaTopic_id
         self.programTopic_nombre=programaTopic_nombre
 
+
     def datosListosApartadoTareas(self):
         if self.curso_api_id!=None and self.programTopic_id!=None:
             return True
@@ -85,9 +177,14 @@ class CalificadorConfiguracion:
         seDebeRespaldar= (self.curso_api_id!=None and self.programTopic_id!=None)
         archivoDatosExiste=os.path.isfile(nombreArchivo)
 
+        datosRespaldar=(
+            self.curso_api_id,
+            self.programTopic_id
+        )
+
         if seDebeRespaldar:
             with open(nombreArchivo,'w') as archivo:
-                archivo.write(  '\n'.join(  (self.curso_api_id,self.programTopic_id)  )   )
+                archivo.write(  '\n'.join( datosRespaldar )   )
 
         elif archivoDatosExiste:
             os.remove(nombreArchivo)
@@ -287,9 +384,13 @@ class ClassRoomControl:
                     # formato de cadena ISO8601:  YYYY-MM-DD HH:MM:SS.SSS para compatibilidad con sqlite3
                     fechaCreacion=fechaCreacion.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
 
-                    datos=[
-                        tarea.get('id'), curso_id, topic_id, tarea.get('title'),
-                        tarea.get('description'), fechaCreacion
+                    #datos=[
+                    #    tarea.get('id'), curso_id, topic_id, tarea.get('title'),
+                    #    tarea.get('description'), fechaCreacion
+                    #]
+
+                    datos = [
+                        tarea.get('id'),tarea.get('title'),tarea.get('description'), fechaCreacion
                     ]
 
                     listaDatos.append(datos)
@@ -373,8 +474,15 @@ class ClassRoomControl:
             return dictDatos
 
 
-
     def create_asignacionPrograma(self, course_id,topic_programas_id,colab_link,colab_id,titulo,description):
+
+        print("curso",course_id)
+        print("topicProgramas",topic_programas_id)
+        print("colab",colab_link)
+        print("colab_id", colab_id)
+        print("titulo:",titulo)
+        print("descripccion",description)
+
         """ Creates a coursework. """
         service = self.service_classroom
         # [START classroom_create_coursework]
@@ -412,3 +520,56 @@ class ClassRoomControl:
 ##################################################################################################################################################################################################
 #
 ##################################################################################################################################################################################################
+
+
+    def list_submissions(self, course_id, coursework_id):
+        """ Lists all student submissions for a given coursework.
+         Poner atencion a los estados:
+         RETURNED
+
+
+         """
+        service = self.service_classroom
+
+        # dictEstudiantes=self.get_listaAlumnos(course_id=course_id)
+
+        # [START classroom_list_submissions]
+        submissions = []
+        page_token = None
+
+        while True:
+            coursework = service.courses().courseWork()
+            response = coursework.studentSubmissions().list(
+                pageToken=page_token,
+                courseId=course_id,
+                states=['TURNED_IN', 'RETURNED'],
+                courseWorkId=coursework_id,
+                pageSize=10).execute()
+            submissions.extend(response.get('studentSubmissions', []))
+            page_token = response.get('nextPageToken', None)
+            if not page_token:
+                break
+
+        dictEntregas = {}  # keys= userId  values= link
+        if not submissions:
+            print('No student submissions found.')
+            return dictEntregas
+        else:
+            print('Student Submissions:******************************************************')
+
+            for submission in submissions:
+                user_id = submission.get('userId')
+                state = submission.get('state')
+                asignacion_id = submission.get('id')
+
+                # nombreAlumno=dictEstudiantes[user_id]
+
+                tarea = submission.get('assignmentSubmission')
+                # url = tarea['attachments'][0]['link']['url']
+                url = tarea['attachments'][0]['driveFile']['alternateLink']
+                print('Alumno:', user_id)
+                print('Estado:', state)
+                print(tarea['attachments'])
+                print(url)
+                dictEntregas[user_id] = [url, asignacion_id]
+            return dictEntregas
