@@ -4,6 +4,7 @@
 #  credentials.json         ignora el archivo 'credentials.json'
 # *.db                      ignora todos los archivos con terminacion *.db
 pyqt5/
+NB_GRADER/course_1/
 *.pyc
 token.json
 credentials.json

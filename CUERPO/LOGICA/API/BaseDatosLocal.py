@@ -230,7 +230,7 @@ class BaseDatos_ClassRoomProgramas():
                             id_api VARCHAR(200) not null unique ,
                             course_id_api VARCHAR(200),
                             nombre VARCHAR(200),
-                            nada_tarea_retro VARCHAR(100)
+                            agregado INTEGER
                             )
                 ''')
 
@@ -249,50 +249,9 @@ class BaseDatos_ClassRoomProgramas():
 
             return True
 
-    def eliminarCourseWork(self,curso_id,topic_id,coursework_id):
-
-        tuplaDatos=(curso_id,topic_id,coursework_id)
-
-        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
-            sql="DELETE FROM CourseWork  " \
-                "WHERE course_id_api=? AND  topic_id_api=? AND id_api=?"
-            cursor.execute( sql,tuplaDatos)
-        return True
-
-
-
-
-    def cambiarEstadoEleccion(self,curso_id,topic_id,idCourseWorkElegido):
-        tuplaDatos=(curso_id,topic_id,idCourseWorkElegido)
-
-        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
-            sql="UPDATE CourseWork SET agregado=1  " \
-                "WHERE course_id_api=? AND  topic_id_api=? AND id_api=?"
-            print(sql)
-            cursor.execute( sql,tuplaDatos)
-        return True
-
-
-
-    def actualizarEstadoTopic(self,curso_id,programas_topic_id,retro_topic_id):
-        '''
-        Actualizara el valor del atributo Topic
-        nada_tarea_retro INTEGER, # nada=0,tarea=1,retro=2
-        :return:
-        '''
-
-        tuplaDatos=(
-            (retro_topic_id,programas_topic_id ),
-            (recursos.App_Principal.VALOR_TOPCIS_RETRAOLIMENTACION,retro_topic_id)
-        )
-
-        #lista de tuplas  [ (alarma1_id,alarma1_estado), ]
-
-
-        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
-            sql="UPDATE Topic SET nada_tarea_retro=?  WHERE id_api=? AND  course_id_api='{}'".format(curso_id)
-            cursor.executemany( sql, tuplaDatos )
-        return True
+##########################################################################################################################################
+#  CURSOS
+##########################################################################################################################################
 
 
     def add_curso(self, tuplaDatos):
@@ -343,21 +302,6 @@ class BaseDatos_ClassRoomProgramas():
             cursor.execute(sqlOrden)
 
 
-    def eliminarTopic(self,curso_id,topicProgramas_id):
-        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
-            # sqlOrden = "INSERT INTO(id_api,nombre)  Course  VALUES(NULL,?,?)"
-            sqlOrden = """DELETE  FROM Topic  
-            WHERE id_api=(SELECT nada_tarea_retro FROM Topic WHERE course_id_api=? AND id_api=?)"""
-            cursor.execute(sqlOrden, (curso_id,topicProgramas_id)  )
-            print("Curso_id",curso_id)
-            print("Topic_programas",topicProgramas_id)
-            print(sqlOrden)
-
-            sqlOrden="DELETE  FROM Topic WHERE course_id_api=? AND id_api=?"
-            cursor.execute(sqlOrden,(curso_id,topicProgramas_id))
-            print(sqlOrden)
-
-
 
 
     def getNombre_curso(self,curso_id):
@@ -371,16 +315,7 @@ class BaseDatos_ClassRoomProgramas():
 
         return nombreCurso[0]
 
-    def getNombre_topic(self,curso_id,topic_id):
-        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
-            sqlOrden="SELECT nombre FROM Topic WHERE course_id_api=? AND id_api=?"
-            cursor.execute(sqlOrden,  (curso_id,topic_id) )
 
-            nombreTopic = tuple(cursor.fetchone() )  # devuelve una tupla:
-            # ('Python Pre-Intermedio',)
-            # sin embargo si no contiene nada devuelve una tupla vacia, como: ()
-
-        return nombreTopic[0]
 
 
     def get_tuplaClases(self):
@@ -395,7 +330,31 @@ class BaseDatos_ClassRoomProgramas():
 
         return listaDatos
 
+##########################################################################################################################################
+#  COUSERWORKS
+##########################################################################################################################################
 
+    def cambiarEstadoEleccion(self,curso_id,topic_id,idCourseWorkElegido):
+        tuplaDatos=(curso_id,topic_id,idCourseWorkElegido)
+
+        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
+            sql="UPDATE CourseWork SET agregado=1  " \
+                "WHERE course_id_api=? AND  topic_id_api=? AND id_api=?"
+            print(sql)
+            cursor.execute( sql,tuplaDatos)
+        return True
+
+
+
+    def eliminarCourseWork(self,curso_id,topic_id,coursework_id):
+
+        tuplaDatos=(curso_id,topic_id,coursework_id)
+
+        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
+            sql="DELETE FROM CourseWork  " \
+                "WHERE course_id_api=? AND  topic_id_api=? AND id_api=?"
+            cursor.execute( sql,tuplaDatos)
+        return True
 
 
     def get_courseWorksLibres(self,curso_id,topic_id):
@@ -407,19 +366,6 @@ class BaseDatos_ClassRoomProgramas():
 
             listaDatos = tuple(cursor.fetchall())  # devuelve una tupla:
             # (  (id_api_1,nombre_1,), (id_api_2,nombre_2), (id_api_3,nombre_3), ....)
-            # sin embargo si no contiene nada devuelve una tupla vacia, como: ()
-
-        return listaDatos
-
-
-    def get_topicsLibres(self,course_id_api):
-
-        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
-            sqlOrden = "SELECT id_api,nombre FROM Topic WHERE  course_id_api=? AND nada_tarea_retro IS NULL"
-            cursor.execute(sqlOrden,  (course_id_api,)  )
-
-            listaDatos = tuple(cursor.fetchall())  # devuelve una tupla:
-            # (  (id_api_1,nombre_1), (id_api_2,nombre_2), (id_api_3,nombre_3), ....)
             # sin embargo si no contiene nada devuelve una tupla vacia, como: ()
 
         return listaDatos
@@ -439,66 +385,6 @@ class BaseDatos_ClassRoomProgramas():
         return listaDatos
 
 
-
-
-    def get_topicsAgregados(self,course_id_api):
-        '''
-        (
-        program_topic_id,programas_topic_nombre,
-        retro_topic_id,retro_topic_nombre
-        ),
-        (
-        program_topic_id,programas_topic_nombre,
-        retro_topic_id,retro_topic_nombre
-        ),
-
-
-        :param course_id_api:
-        :return:
-        '''
-
-        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
-            sqlOrden = """
-            SELECT A.id_api AS SeccionProgramas_id,A.nombre AS SeccionProgramas_nombre,
-            B.id_api AS IdTopicRetroalimentacion_id,B.nombre AS SeccionRetroalimentacion_nombre
-            FROM Topic A INNER JOIN Topic B ON A.nada_tarea_retro=B.id_api AND A.course_id_api=?
-            """
-            cursor.execute(sqlOrden,  (course_id_api,)  )
-            print(sqlOrden)
-            #cursor.execute(sqlOrden)
-
-            listaDatos = tuple(cursor.fetchall())  # devuelve una tupla:
-            # (  (id_api_1,nombre_1), (id_api_2,nombre_2), (id_api_3,nombre_3), ....)
-            # sin embargo si no contiene nada devuelve una tupla vacia, como: ()
-
-            print(listaDatos)
-
-        return listaDatos
-
-
-
-    def agregar_soloNuevosTopics(self,tuplaDatos,curso_api_id):
-        '''
-        (
-            (id_api,nombre),
-            (id_api,nombre),
-            (id_api,nombre),
-                  .
-                  .
-                  .
-
-        )
-
-        :param tuplaDatos:
-        :param curso_api_id:
-        :return:
-        '''
-
-        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
-            # sqlOrden = "INSERT INTO(id_api,course_id_api,nombre)  Course  VALUES(NULL,?,?)"
-            sqlOrden = "INSERT OR IGNORE INTO Topic  VALUES(NULL,?,'{}',?,NULL)".format(curso_api_id)
-            cursor.executemany(sqlOrden, tuplaDatos)
-
     def agregar_soloNuevosCourseWorks(self, tuplaDatos,curso_id,topic_id):
         '''
          tarea.get('id'), curso_id, topic_id, tarea.get('title'),
@@ -513,20 +399,6 @@ class BaseDatos_ClassRoomProgramas():
             sqlOrden = "INSERT OR IGNORE INTO  CourseWork  VALUES(NULL,?,'{}','{}',?,?,?,0)".format(curso_id,topic_id)
             #'{}',?,NULL)".format(curso_api_id)
             cursor.executemany(sqlOrden, tuplaDatos)
-
-
-
-
-    def add_topic(self, tuplaDatos):
-
-        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
-            #sqlOrden = "INSERT INTO  Topic(id_api,course_id_api,nombre)  VALUES(NULL,?,?,?)"
-            sqlOrden = "INSERT INTO  Topic  VALUES(NULL,?,?,?)"
-
-            cursor.execute(sqlOrden, tuplaDatos)
-            idAsignado = cursor.lastrowid
-
-        return idAsignado
 
 
     def add_courseWork(self, tuplaDatos):
@@ -549,19 +421,97 @@ class BaseDatos_ClassRoomProgramas():
             idAsignado = cursor.lastrowid
         return idAsignado
 
+##########################################################################################################################################
+# TOPIC
+##########################################################################################################################################
+
+    def add_topic(self, tuplaDatos):
+
+        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
+            #sqlOrden = "INSERT INTO  Topic(id_api,course_id_api,nombre)  VALUES(NULL,?,?,?)"
+            sqlOrden = "INSERT INTO  Topic  VALUES(NULL,?,?,?)"
+
+            cursor.execute(sqlOrden, tuplaDatos)
+            idAsignado = cursor.lastrowid
+
+        return idAsignado
 
 
-'''
-                           CourseWork
-                                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                id_api VARCHAR(200) not null unique,
-                                course_id_api VARCHAR(200),
-                                topic_id_api VARCHAR(200),
-                                titulo VARCHAR(200),
-                                descripccion VARCHAR(500),
-                                fechaCreacion TEXT,
-                                agregado INTEGER, #0 NO  1 SI
-'''
+
+    def agregar_soloNuevosTopics(self,tuplaDatos,curso_api_id):
+        '''
+        (
+            (id_api,nombre),
+            (id_api,nombre),
+            (id_api,nombre),
+                  .
+                  .
+                  .
+
+        )
+
+        :param tuplaDatos:
+        :param curso_api_id:
+        :return:
+        '''
+
+        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
+            # sqlOrden = "INSERT INTO(id_api,course_id_api,nombre)  Course  VALUES(NULL,?,?)"
+            sqlOrden = "INSERT OR IGNORE INTO Topic  VALUES(NULL,?,'{}',?,0)".format(curso_api_id)
+            cursor.executemany(sqlOrden, tuplaDatos)
+
+    def get_topicsAgregados(self,course_id_api):
+
+        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
+            sqlOrden = "SELECT id_api,nombre FROM Topic WHERE  course_id_api=? AND agregado=1"
+            cursor.execute(sqlOrden,  (course_id_api,)  )
+
+            listaDatos = tuple(cursor.fetchall())  # devuelve una tupla:
+            # (  (id_api_1,nombre_1), (id_api_2,nombre_2), (id_api_3,nombre_3), ....)
+            # sin embargo si no contiene nada devuelve una tupla vacia, como: ()
+
+        return listaDatos
 
 
+    def registrarSelecciono_topic(self,curso_id,topic_id):
+        tuplaDatos=(topic_id,curso_id)
+
+        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
+            sql="UPDATE Topic SET agregado=1  WHERE id_api=? AND  course_id_api=?"
+            cursor.execute( sql, tuplaDatos )
+        return True
+
+
+    def get_topicsLibres(self,course_id_api):
+
+        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
+            sqlOrden = "SELECT id_api,nombre FROM Topic WHERE  course_id_api=? AND agregado=0"
+            cursor.execute(sqlOrden,  (course_id_api,)  )
+
+            listaDatos = tuple(cursor.fetchall())  # devuelve una tupla:
+            # (  (id_api_1,nombre_1), (id_api_2,nombre_2), (id_api_3,nombre_3), ....)
+            # sin embargo si no contiene nada devuelve una tupla vacia, como: ()
+
+        return listaDatos
+
+
+    def eliminarTopic(self,curso_id,topicProgramas_id):
+
+        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
+            tuplaDatos = (topicProgramas_id, curso_id)
+            sqlOrden = """DELETE  FROM Topic  WHERE id_api=? AND course_id_api=? """
+            cursor.execute(sqlOrden, tuplaDatos )
+            print(sqlOrden)
+
+
+    def getNombre_topic(self,curso_id,topic_id):
+        with Cursor(self.NOMBRE_BASE_DATOS) as cursor:
+            sqlOrden="SELECT nombre FROM Topic WHERE course_id_api=? AND id_api=?"
+            cursor.execute(sqlOrden,  (curso_id,topic_id) )
+
+            nombreTopic = tuple(cursor.fetchone() )  # devuelve una tupla:
+            # ('Python Pre-Intermedio',)
+            # sin embargo si no contiene nada devuelve una tupla vacia, como: ()
+
+        return nombreTopic[0]
 

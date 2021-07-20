@@ -7,7 +7,9 @@ from PyQt5 import QtCore,QtGui
 
 
 from CUERPO.LOGICA.CONFIGURACION.CambiadorClases import CambiadorClases
+from CUERPO.LOGICA.CONFIGURACION.CambiadorClasesNbGrader import CambiadorClases_NbGrader
 from CUERPO.LOGICA.CONFIGURACION.AgregadorTopcis import AgregadorTopics
+
 
 ###############################################################
 #  IMPORTACION DEL DISEÑO...
@@ -19,12 +21,16 @@ import recursos
 
 class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
     #DATOS_MOSTRAR='Topic programacion, Topic de retrolimentacion'
-    NO_COLUMNAS=2
+    NO_COLUMNAS=1
 
     #senal_verDetallesTarea = pyqtSignal(int)  # id de tarea
     senal_operacionImportante = pyqtSignal(bool)
     senal_eligioUnCurso = pyqtSignal(bool)
     senal_eligioTopic=pyqtSignal(bool)
+
+
+    senal_claseNbGrader_cambio=pyqtSignal(bool)
+
 
 
 
@@ -44,7 +50,6 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
         # Atributos muy importantes
         self.programas_topic_id = self.configuracionCalificador.programTopic_id
-        self.curso_id = self.configuracionCalificador.curso_api_id
         self.indice_topic_sele=None
         self.listaIds_apartadosProgramas=[]
 
@@ -61,22 +66,29 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             classRoomControl=self.classRoomControl
         )
 
+        self.ventana_cambiadorClases_NbGrader=CambiadorClases_NbGrader()
+
         self.ventana_agredadorTopics=AgregadorTopics(
             baseDatosLocalClassRoom=self.baseDatosLocalClassRoom,
             classRoomControl=self.classRoomControl
         )
 
+
+
+
         # Conectando señales de ventana
-        self.ventana_cambiadorClases.senal_eligioUnCurso.connect(self.editarValor_claseSeleccionada)
+        self.ventana_cambiadorClases.senal_eligioUnCurso.connect(self.cambiar_claseClassroom)
+        self.ventana_cambiadorClases_NbGrader.senal_eligioUnCurso.connect(self.cambiar_claseNbGrader)
         self.ventana_agredadorTopics.senal_agregoUnTopic.connect(self.agregarUnTopic)
 
 
 
         # SEÑALES DE LOS OBJETOS DE LA CLASE:
 
-        self.tableWidget.doubleClicked.connect(self.registrarTopicSeleccionado)
+        self.tableWidget.doubleClicked.connect(self.cambiar_topicClassroom)
         self.btn_agregarApartado.clicked.connect( self.mostrarVentana_agregadoraTopcis )
-        self.btn_editarClase.clicked.connect(self.procesoCambiarClase)
+        self.btn_editarClase_classroom.clicked.connect(self.procesoCambiarClase)
+        self.btn_editarClase_NbGrader.clicked.connect(lambda : self.ventana_cambiadorClases_NbGrader.show())
 
         # estableciendo opciones a partir del clic derecho a los items de la tabla
         # con la finalidad de que aparezca la opcion de eliminar objetos
@@ -92,7 +104,18 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 # CLASES
 ##################################################################################################################################################
 
-    def editarValor_claseSeleccionada(self,clase_tuplaDatos):
+    def cambiar_claseNbGrader(self,nuevoNombre):
+        self.configuracionCalificador.set_clase_nombreNbGrader(nuevoNombre)
+        self.bel_clase_nombreNbGrader.setText(nuevoNombre)
+        self.senal_claseNbGrader_cambio.emit(True)
+
+
+    def editarValor_clase_nombreNbGrader(self,nuevoNombre):
+        self.configuracionCalificador.set_clase_nombreNbGrader(nuevoNombre)
+        self.bel_clase_nombreNbGrader.setText(nuevoNombre)
+
+
+    def cambiar_claseClassroom(self, clase_tuplaDatos):
         '''
         tuplaDatos
             primer elemento - api id del curso
@@ -105,9 +128,12 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         # Solo si el valor de id escogido es diferente entonces se procedera
         # a actuar
         id, nombre = clase_tuplaDatos
-        if self.curso_id!=id:
-            self.bel_nombreClase.setText(nombre)
-            self.curso_id=id
+
+        cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
+
+        if cursoClassroom_id!=id:
+
+            self.bel_nombreClase_classroom.setText(nombre)
             self.programas_topic_id=None
             self.indice_topic_sele=None
             self.listaIds_apartadosProgramas=[]
@@ -117,11 +143,9 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
                 id=id,
                 nombre=nombre,
             )
-            #self.senal_eligioUnCurso.emit(True)
-            # Actualizando sus valores
 
             print("QUE PASA AQUI")
-            self.ventana_agredadorTopics.curso_id=id
+            self.ventana_agredadorTopics.curso_id=cursoClassroom_id
             self.cargarDatos()
 
             # cargar los topic agregados de esa clase..
@@ -132,9 +156,10 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
         respuestaAfirmativa=self.msg_preguntarAcercaCambioClase()
         if respuestaAfirmativa:
-            if self.curso_id!=None:
+            cursoClassroom_id,cursoClassroom_nombre=self.configuracionCalificador.get_id_nombre_cursoClassroom()
+            if cursoClassroom_id!=None:
                 self.ventana_cambiadorClases.prepararMostrar(
-                    curso_tuplaDatos=(self.curso_id,self.bel_nombreClase.text())
+                    curso_tuplaDatos=(cursoClassroom_id,cursoClassroom_nombre)
                 )
             self.ventana_cambiadorClases.show()
 
@@ -144,30 +169,19 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 # TOPICS
 ##################################################################################################################################################
 
-    def iniciarProcesoSeleccionarUnTopic(self):
-        '''
-        Habilitara la tabla para que se permita la seleccion de los topcis...
-        :return:
-        '''
+
+    def cambiar_topicClassroom(self, item):
 
         # mensaje de no puedes editar si no hay ningun curso esocogido
         # o si no hay ningun topic agregado
-        if self.curso_id and len(self.listaIds_apartadosProgramas)>0:
-            self.tableWidget.setEnabled(True)
-        else:
-            pass
 
+        cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
 
-    def registrarTopicSeleccionado(self,item):
-
-        # mensaje de no puedes editar si no hay ningun curso esocogido
-        # o si no hay ningun topic agregado
-        if self.curso_id and len(self.listaIds_apartadosProgramas)>0:
+        if cursoClassroom_id and len(self.listaIds_apartadosProgramas)>0:
             noRenglon = item.row()
 
             respuetaPositiva=self.msg_preguntarAcercaCambioTopic(
                 apartadoProgram_nombre=self.tableWidget.item(noRenglon,0).text(),
-                apartadoRetro_nombre=self.tableWidget.item(noRenglon,1).text()
             )
             if respuetaPositiva:
                 if self.indice_topic_sele!=None:
@@ -177,12 +191,12 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
                 self.colorearRenglon(noRenglon,recursos.App_Principal.COLOR_TOPIC_SELECCIONADO)
 
                 self.indice_topic_sele=noRenglon
+
                 self.configuracionCalificador.cargarDatosTopic(
                     programaTopic_id=self.listaIds_apartadosProgramas[noRenglon],
                     programaTopic_nombre=self.tableWidget.item(noRenglon, 0).text()
                 )
                 self.senal_eligioTopic.emit(True)
-
 
 
     def colorearRenglon(self,noRenglon,color):
@@ -191,8 +205,11 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
     def mostrarVentana_agregadoraTopcis(self):
-        if self.curso_id!=None:
-            self.ventana_agredadorTopics.cargarDatosTopics(self.curso_id)
+
+        cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
+
+        if cursoClassroom_id!=None:
+            self.ventana_agredadorTopics.cargarDatosTopics(cursoClassroom_id)
             self.ventana_agredadorTopics.show()
         else:
             # no puedes agregar un topic si no tienes ningun curso agregado
@@ -212,7 +229,7 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
         :return:
         '''
-        tupla_topic_programas, tupla_topic_retroalimentacion = tuplaTopics
+        tupla_topic_programas = tuplaTopics
 
 
         noRenglones=self.tableWidget.rowCount()
@@ -225,11 +242,6 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         celda.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.tableWidget.setItem(noRenglones,0,celda )
 
-        # Insertando el nombre del topic en donde se pondran las retroalimetnaciones
-        celda = QtWidgets.QTableWidgetItem(tupla_topic_retroalimentacion[1])
-        celda.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.tableWidget.setItem(noRenglones, 1,celda )
-
 
         self.listaIds_apartadosProgramas.append( tupla_topic_programas[0] )
 
@@ -237,21 +249,20 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
     def eliminarRenglonTopic(self,numeroRenglon):
         if numeroRenglon != self.indice_topic_sele:
             respuestaPositiva=self.msg_preguntarEleccionBorrarTopic(
-                apartadoProgram_nombre=self.tableWidget.item(numeroRenglon, 0).text(),
-                apartadoRetro_nombre=self.tableWidget.item(numeroRenglon, 1).text()
+                apartadoProgram_nombre=self.tableWidget.item(numeroRenglon, 0).text()
             )
 
             if respuestaPositiva:
-                    self.baseDatosLocalClassRoom.eliminarTopic(curso_id=self.curso_id,
-                                                               topicProgramas_id=self.listaIds_apartadosProgramas[numeroRenglon])
+                cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
+                self.baseDatosLocalClassRoom.eliminarTopic(curso_id=cursoClassroom_id,
+                                                           topicProgramas_id=self.listaIds_apartadosProgramas[numeroRenglon])
+                self.tableWidget.removeRow(numeroRenglon)
+                self.listaIds_apartadosProgramas.pop(numeroRenglon)
 
-                    self.tableWidget.removeRow(numeroRenglon)
-                    self.listaIds_apartadosProgramas.pop(numeroRenglon)
-
-                    if self.indice_topic_sele!=None:
-                        if self.indice_topic_sele>numeroRenglon:
-                            self.indice_topic_sele-=1
-                    print("INDICE SELECCIONADO:",self.indice_topic_sele)
+                if self.indice_topic_sele!=None:
+                    if self.indice_topic_sele>numeroRenglon:
+                        self.indice_topic_sele-=1
+                print("INDICE SELECCIONADO:",self.indice_topic_sele)
         else:
             self.msg_noPuedesEliminarTopicSelec()
 
@@ -362,44 +373,56 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
         '''
 
-        print(self.curso_id)
-        print(self.programas_topic_id)
 
+        cursoClassroom_id,cursoClassroom_nombre = self.configuracionCalificador.get_id_nombre_cursoClassroom()
+        topicClassroom_id,topicClassroom_nombre = self.configuracionCalificador.get_id_nombre_topicClassroom()
+        cursoNbGrader_nombre= self.configuracionCalificador.get_nombre_cursoNbGrader()
 
-        if self.curso_id!=None :
+        if cursoClassroom_id!=None :
             self.cargarTopicsCurso()
-            self.bel_nombreClase.setText(self.configuracionCalificador.curso_nombre )
+            self.bel_nombreClase_classroom.setText( cursoClassroom_nombre )
             self.senal_eligioUnCurso.emit(True)
 
             # Seleccionar renglon...
-            if self.programas_topic_id!=None:
-                renglonSeleccionar=self.listaIds_apartadosProgramas.index(self.programas_topic_id)
+            if topicClassroom_id!=None:
+                renglonSeleccionar=self.listaIds_apartadosProgramas.index(topicClassroom_id)
                 self.colorearRenglon(renglonSeleccionar,recursos.App_Principal.COLOR_TOPIC_SELECCIONADO)
                 self.indice_topic_sele=renglonSeleccionar
-
-                nombreTopic=self.tableWidget.item(renglonSeleccionar,0).text()
                 self.senal_eligioTopic.emit(True)
 
-
-
-
+            # Colocando el nombre al curso nbgrader
+            if cursoNbGrader_nombre!=None:
+                self.bel_clase_nombreNbGrader.setText(cursoNbGrader_nombre)
+            else:
+                self.bel_clase_nombreNbGrader.setText(
+                    recursos.App_Principal.LEYENDA_SIN_CURSO_SELECCIONADO
+                )
 
         else:
-            self.bel_nombreClase.setText(
+            self.bel_nombreClase_classroom.setText(
                 recursos.App_Principal.LEYENDA_SIN_CURSO_SELECCIONADO
             )
 
+            self.bel_clase_nombreNbGrader.setText(
+                recursos.App_Principal.LEYENDA_SIN_CURSO_SELECCIONADO
+            )
+
+
     def cargarTopicsCurso(self):
 
-        if self.curso_id != None:
-            topicsAgregados = self.baseDatosLocalClassRoom.get_topicsAgregados(course_id_api=self.curso_id)
+
+        topicClassroom_id,_=self.configuracionCalificador.get_id_nombre_topicClassroom()
+        cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
+
+        if cursoClassroom_id != None:
+            topicsAgregados = self.baseDatosLocalClassRoom.get_topicsAgregados(course_id_api=cursoClassroom_id)
             self.listaIds_apartadosProgramas = []
             tuplaDatos = []
             self.tableWidget.setRowCount(0)  # Eliminando todas las filas de la tabla
             if topicsAgregados != () and len(topicsAgregados) > 0:
-                for apartadoProgram_id, apartadoProgram_nombre, _, apartadoRetro_nombre, in topicsAgregados:
+                for apartadoProgram_id, apartadoProgram_nombre in topicsAgregados:
                     self.listaIds_apartadosProgramas.append(apartadoProgram_id)
-                    tuplaDatos.append((apartadoProgram_nombre, apartadoRetro_nombre))
+                    tuplaDatos.append( (apartadoProgram_nombre,)  )
 
             self.cargarDatosEnTabla(tuplaDatos=tuplaDatos)
 
@@ -448,14 +471,13 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 # MENSAJES
 ##################################################################################################################################################
 
-    def msg_preguntarEleccionBorrarTopic(self,apartadoProgram_nombre,apartadoRetro_nombre):
+    def msg_preguntarEleccionBorrarTopic(self,apartadoProgram_nombre):
         ventanaDialogo = QMessageBox()
         ventanaDialogo.setIcon(QMessageBox.Critical)
         ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
         ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
-        mensaje = "¿Seguro de querer ELIMINAR al apartado: programa:<<{}>> ".format(apartadoProgram_nombre)
-        mensaje+="retroalimentacion:<<{}>>".format(apartadoRetro_nombre)
+        mensaje = "¿Seguro de querer ELIMINAR el topic: <<{}>> ?".format(apartadoProgram_nombre)
 
         mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
@@ -527,14 +549,13 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         return False
 
 
-    def msg_preguntarAcercaCambioTopic(self,apartadoProgram_nombre,apartadoRetro_nombre):
+    def msg_preguntarAcercaCambioTopic(self,apartadoProgram_nombre):
         ventanaDialogo = QMessageBox()
         ventanaDialogo.setIcon(QMessageBox.Question)
         ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
         ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
-        mensaje = "¿Seguro de querer cambiar al apartado: programa:<<{}>> ".format(apartadoProgram_nombre)
-        mensaje+="retroalimentacion:<<{}>>".format(apartadoRetro_nombre)
+        mensaje = "¿Seguro de querer cambiar al apartado: <<{}>> ?".format(apartadoProgram_nombre)
 
         mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 

@@ -176,10 +176,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
 
         self.ventana_aplicacionConfiguracion.senal_eligioTopic.connect(self.actuarAnteCambioTopic)
         self.ventana_aplicacionConfiguracion.senal_eligioUnCurso.connect(self.actuarAnteCambioCurso)
+        self.ventana_aplicacionConfiguracion.senal_claseNbGrader_cambio.connect(self.actuarAnte_cambio_claseNbGrader)
 
         # Ventana defualt que se mostrara
         self.accion_VerApartadoPerfil.trigger()
         self.ventana_aplicacionConfiguracion.cargarDatos()
+
+    def actuarAnte_cambio_claseNbGrader(self):
+        print("*"*100)
+        print("CAMBIANDO CLASE NBGRADER...")
+        self.administradorProgramasClassRoom.actualizar_nbGraderControl()
+
 
     def actuarAnteCambioCurso(self):
         self.ventana_aplicacionTareas.actuarCambioCurso()
@@ -257,8 +264,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
         ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
-        mensaje = "Para ver las tareas asignadas primero debes definir la clase "
-        mensaje += "y el topic en donde se encuentran esas tareas, para hacer ello "
+        mensaje = "Para ver las tareas asignadas primero debes definir la clase de classroom,"
+        mensaje += "el topic en donde se encuentran esas tareas, y la clase de NbGrader, para hacer ello "
         mensaje += "debes ir al apartado de 'configuracion' "
         mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 

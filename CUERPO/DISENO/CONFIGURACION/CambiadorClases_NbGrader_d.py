@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'CambiadorClases_d.ui'
+# Form implementation generated from reading ui file 'CambiadorClases_NbGrader_d.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -14,20 +14,20 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(365, 308)
+        Dialog.resize(395, 358)
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.bel_tipoClase = QtWidgets.QLabel(Dialog)
-        self.bel_tipoClase.setMinimumSize(QtCore.QSize(100, 40))
-        self.bel_tipoClase.setMaximumSize(QtCore.QSize(100, 40))
-        self.bel_tipoClase.setAlignment(QtCore.Qt.AlignCenter)
-        self.bel_tipoClase.setWordWrap(True)
-        self.bel_tipoClase.setObjectName("bel_tipoClase")
-        self.horizontalLayout.addWidget(self.bel_tipoClase)
+        self.label = QtWidgets.QLabel(Dialog)
+        self.label.setMinimumSize(QtCore.QSize(100, 40))
+        self.label.setMaximumSize(QtCore.QSize(100, 40))
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setWordWrap(True)
+        self.label.setObjectName("label")
+        self.horizontalLayout.addWidget(self.label)
         self.bel_nombreClaseActual = QtWidgets.QLabel(Dialog)
         self.bel_nombreClaseActual.setMinimumSize(QtCore.QSize(200, 40))
         self.bel_nombreClaseActual.setMaximumSize(QtCore.QSize(16777215, 40))
@@ -68,54 +68,18 @@ class Ui_Dialog(object):
         self.horizontalLayout_4.addWidget(self.comboBox_clases)
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem5)
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_2.setSpacing(0)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.btn_refrescarLasClases = QtWidgets.QPushButton(Dialog)
-        self.btn_refrescarLasClases.setMinimumSize(QtCore.QSize(35, 35))
-        self.btn_refrescarLasClases.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_refrescarLasClases.setSizeIncrement(QtCore.QSize(0, 0))
-        self.btn_refrescarLasClases.setBaseSize(QtCore.QSize(30, 30))
-        self.btn_refrescarLasClases.setStyleSheet("QPushButton {\n"
-"border-image: url(:/main/IMAGENES/cargar_off.png);\n"
-" }\n"
-"\n"
-"QPushButton:hover {\n"
-"border-image: url(:/main/IMAGENES/cargar_on.png);\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"border-image: url(:/main/IMAGENES/cargar_off.png);\n"
-"}\n"
-"")
-        self.btn_refrescarLasClases.setText("")
-        self.btn_refrescarLasClases.setObjectName("btn_refrescarLasClases")
-        self.verticalLayout_2.addWidget(self.btn_refrescarLasClases)
-        self.label_11 = QtWidgets.QLabel(Dialog)
-        self.label_11.setMinimumSize(QtCore.QSize(35, 35))
-        self.label_11.setMaximumSize(QtCore.QSize(30, 30))
-        self.label_11.setBaseSize(QtCore.QSize(30, 30))
-        font = QtGui.QFont()
-        font.setPointSize(6)
-        self.label_11.setFont(font)
-        self.label_11.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_11.setObjectName("label_11")
-        self.verticalLayout_2.addWidget(self.label_11)
-        self.horizontalLayout_4.addLayout(self.verticalLayout_2)
-        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_4.addItem(spacerItem6)
         self.verticalLayout.addLayout(self.horizontalLayout_4)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem7)
+        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem6)
         self.btn_realizarCambio = QtWidgets.QPushButton(Dialog)
         self.btn_realizarCambio.setMinimumSize(QtCore.QSize(120, 50))
         self.btn_realizarCambio.setMaximumSize(QtCore.QSize(150, 60))
         self.btn_realizarCambio.setObjectName("btn_realizarCambio")
         self.horizontalLayout_2.addWidget(self.btn_realizarCambio)
-        spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem8)
+        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem7)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
         self.retranslateUi(Dialog)
@@ -124,7 +88,7 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.bel_tipoClase.setText(_translate("Dialog", "Clase actual:"))
+        self.label.setText(_translate("Dialog", "Clase Nb_grader actual: "))
         self.bel_nombreClaseActual.setText(_translate("Dialog", "Ninguna seleccionada"))
         self.label_3.setText(_translate("Dialog", "Selecciona la nueva clase a la cual deseas cambiar:"))
         self.comboBox_clases.setItemText(0, _translate("Dialog", "HOLA"))
@@ -132,6 +96,5 @@ class Ui_Dialog(object):
         self.comboBox_clases.setItemText(2, _translate("Dialog", "ESTAS"))
         self.comboBox_clases.setItemText(3, _translate("Dialog", "MI"))
         self.comboBox_clases.setItemText(4, _translate("Dialog", "NOMBRE"))
-        self.label_11.setText(_translate("Dialog", "Refrescar"))
         self.btn_realizarCambio.setText(_translate("Dialog", "Realizar cambio"))
 import img_rc

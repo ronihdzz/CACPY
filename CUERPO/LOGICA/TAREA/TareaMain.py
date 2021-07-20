@@ -70,6 +70,40 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.tableWidget.installEventFilter(self)
 
 
+        self.btn_calificarPendientes.clicked.connect(self.calificarTareas)
+
+
+    def calificarTareas(self):
+        self.administradorProgramasClassRoom.calificarEstudiantes(
+            courseWork_id=self.listaIds_courseworks[self.indexTareaSeleccionada],
+            courseWork_name=self.nombreTareaSeleccionada,
+        )
+
+
+    def verDetallesTarea(self, index):
+        index = index.row()
+
+        # Cargando los datos del coursework
+        nombre = self.tableWidget.item(index, 0).text()
+        fecha = self.tableWidget.item(index, 1).text()
+
+        if self.administradorProgramasClassRoom.existeEsaTarea_cursoNbGrader(nombreTarea=nombre):
+            self.btn_calificarPendientes.setEnabled(True)
+            self.nombreTareaSeleccionada=nombre
+            self.indexTareaSeleccionada=index
+
+        else:
+            self.btn_calificarPendientes.setEnabled(False)
+
+        coursework_id = self.listaIds_courseworks[index]
+
+        self.bel_nombre.setText(nombre)
+        self.bel_fechaCreacion.setText(fecha)
+
+        self.listWidget.setCurrentIndex(1)
+
+        #self.administradorProgramasClassRoom.get_informacionTareasEntregadas(courseWork_id=coursework_id)
+
 
 
     def eliminarRenglonTopic(self,numeroRenglon):
@@ -199,25 +233,7 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
 
-    def verDetallesTarea(self,index):
-        index = index.row()
 
-        # Cargando los datos del coursework
-        nombre=self.tableWidget.item(index,0).text()
-        fecha=self.tableWidget.item(index,1).text()
-
-        coursework_id=self.listaIds_courseworks[index]
-
-        self.bel_nombre.setText(nombre)
-        self.bel_fechaCreacion.setText(fecha)
-
-        self.listWidget.setCurrentIndex(1)
-
-        self.administradorProgramasClassRoom.get_informacionTareasEntregadas(courseWork_id=coursework_id)
-
-
-
-        #self.senal_verDetallesTarea.emit(index)
 
 
     def configurarTabla(self):

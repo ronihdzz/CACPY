@@ -53,7 +53,6 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
             #print("CLASES BASE DE DATOS:",tuplaDatosClases)
             self.dictTopics = {}
             self.listWidget_topicsTareasProgramas.clear()
-            self.listWidget_topicsRetroalimentacion.clear()
 
             if tuplaDatosTopics==() or len(tuplaDatosTopics)==0:
                 tuplaDatosTopics=self.classRoomControl.get_listaDatosTopicsCurso(self.curso_id)
@@ -68,7 +67,6 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
                 for topic_api_id,topic_nombre in tuplaDatosTopics:
                     self.dictTopics[topic_api_id]=topic_nombre
 
-                self.listWidget_topicsRetroalimentacion.addItems(  tuple( self.dictTopics.values() ) )
                 self.listWidget_topicsTareasProgramas.addItems(  tuple( self.dictTopics.values() )  )
 
 
@@ -93,7 +91,6 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
                 # keys= api_id de cada curso  values= nombre de cada curso
                 self.dictCursos={}
                 self.listWidget_topicsTareasProgramas.clear()
-                self.listWidget_topicsRetroalimentacion.clear()
 
 
                 tuplaDatosTopics=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=self.curso_id)
@@ -103,7 +100,6 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
                     for topic_api_id,topic_nombre in tuplaDatosTopics:
                         self.dictTopics[topic_api_id]=topic_nombre
 
-                    self.listWidget_topicsRetroalimentacion.addItems(  tuple( self.dictTopics.values() ) )
                     self.listWidget_topicsTareasProgramas.addItems(  tuple( self.dictTopics.values() )  )
 
                 self.msg_exitoDescargarTopics()
@@ -116,37 +112,28 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
             #programas_topic,retroalimentacion_topic
 
             programa_topic_index=self.listWidget_topicsTareasProgramas.currentRow()
-            retroalimentacion_topic_index=self.listWidget_topicsRetroalimentacion.currentRow()
 
-            if (programa_topic_index!=retroalimentacion_topic_index):
-                programa_topic_nombre = self.listWidget_topicsTareasProgramas.currentItem().text()
-                retroalimentacion_topic_nombre = self.listWidget_topicsRetroalimentacion.currentItem().text()
+            programa_topic_nombre = self.listWidget_topicsTareasProgramas.currentItem().text()
 
-                respuestaAfirmativa=self.msg_preguntarConfirmacionEleccionTopics(
-                    programas_topic=programa_topic_nombre,
-                    retroalimentacion_topic=retroalimentacion_topic_nombre
+
+            respuestaAfirmativa=self.msg_preguntarConfirmacionEleccionTopics(
+                programas_topic=programa_topic_nombre
+            )
+
+            if respuestaAfirmativa:
+                programa_topic_api_id=tuple( self.dictTopics.keys() )[programa_topic_index]
+
+                tupla_topic_programas=(programa_topic_api_id,programa_topic_nombre)
+
+                self.baseDatosLocalClassRoom.registrarSelecciono_topic(
+                    curso_id=self.curso_id,
+                    topic_id=programa_topic_api_id
                 )
 
-                if respuestaAfirmativa:
-                    programa_topic_api_id=tuple( self.dictTopics.keys() )[programa_topic_index]
-                    retroalimentacion_topic_api_id=tuple( self.dictTopics.keys() )[retroalimentacion_topic_index]
+                self.senal_agregoUnTopic.emit(  tupla_topic_programas  )
+                self.limpiarDeDatos()
+                self.close()
 
-
-                    tupla_topic_programas=(programa_topic_api_id,programa_topic_nombre)
-                    tupla_topic_retroalimentacion=(retroalimentacion_topic_api_id,retroalimentacion_topic_nombre)
-
-                    self.baseDatosLocalClassRoom.actualizarEstadoTopic(
-                        curso_id=self.curso_id,
-                        programas_topic_id=programa_topic_api_id,
-                        retro_topic_id=retroalimentacion_topic_api_id
-                    )
-
-                    self.senal_agregoUnTopic.emit(  ( tupla_topic_programas,tupla_topic_retroalimentacion ) )
-                    self.limpiarDeDatos()
-                    self.close()
-
-            else:
-                self.msg_noPuedesElegirTopics_iguales()
         else:
             # no se pueden elegir los mismos topics
             self.msg_noPuedesElegirTopics_siNoHay()
@@ -158,7 +145,6 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         '''
 
         self.dictTopics={}
-        self.listWidget_topicsRetroalimentacion.clear()
         self.listWidget_topicsTareasProgramas.clear()
 
 
@@ -167,14 +153,13 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 # M E N S A J E S     E M E R G E N T E S :
 ####################################################################################################################################
 
-    def msg_preguntarConfirmacionEleccionTopics(self,programas_topic,retroalimentacion_topic):
+    def msg_preguntarConfirmacionEleccionTopics(self,programas_topic):
         ventanaDialogo = QMessageBox()
         ventanaDialogo.setIcon(QMessageBox.Question)
         ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
         ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
         mensaje = f"¿Los ejercicios de programacion que asignes se adjuntaran en el topic:<<{programas_topic}>> "
-        mensaje += f"y las retroalimentaciones de dichos ejercicios se adjuntaran en el topic:<<{retroalimentacion_topic}>> "
         mensaje+="¿eso es correcto?"
         mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
