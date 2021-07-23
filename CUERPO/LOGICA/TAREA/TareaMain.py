@@ -12,6 +12,9 @@ from PyQt5 import QtCore,QtGui
 from CUERPO.DISENO.TAREA.TareaMain_d import  Ui_Form
 from CUERPO.LOGICA.TAREA.AgregadorCourseWork import AgregadorCourseWorks
 from CUERPO.LOGICA.TAREA.CreadorTarea import CreadorTareas
+from CUERPO.LOGICA.TAREA.CalificadorTareas import CalificadorTareas
+from CUERPO.LOGICA.TAREA.CalificadorEnDirecto import CalificadorEnDirecto
+
 import recursos
 
 class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
@@ -52,6 +55,10 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
             administradorProgramasClassRoom=self.administradorProgramasClassRoom
         )
 
+        self.ventanaCalificadoraTareas_enDirecto=CalificadorEnDirecto()
+
+        self.ventanaCalificadoraTareas=CalificadorTareas()
+
 
 
 
@@ -59,6 +66,7 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.btn_crearTarea.clicked.connect(lambda : self.ventanaCreadoraTareas.show() )
         self.btn_importarTarea.clicked.connect( self.mostrarVentanaAgregadora_tareas )
         self.btn_regresar.clicked.connect(self.regresarMenu)
+        self.btn_calificarVivo.clicked.connect( lambda : self.ventanaCalificadoraTareas_enDirecto.show() )
 
         self.ventanaAgregadoraTareas.senal_courseWork_selec.connect(self.agregarCouseWork_aTabla)
         self.ventanaCreadoraTareas.senalUsuarioCreoTarea.connect(self.agregarCouseWork_aTabla)
@@ -74,10 +82,12 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
     def calificarTareas(self):
-        self.administradorProgramasClassRoom.calificarEstudiantes(
-            courseWork_id=self.listaIds_courseworks[self.indexTareaSeleccionada],
-            courseWork_name=self.nombreTareaSeleccionada,
-        )
+        self.ventanaCalificadoraTareas.show()
+
+        #self.administradorProgramasClassRoom.calificarEstudiantes(
+        #    courseWork_id=self.listaIds_courseworks[self.indexTareaSeleccionada],
+        #    courseWork_name=self.nombreTareaSeleccionada,
+        #)
 
 
     def verDetallesTarea(self, index):

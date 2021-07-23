@@ -23,9 +23,12 @@ from CUERPO.LOGICA.TAREA.TareaMain import TareaMain
 from CUERPO.LOGICA.PERFIL.PerfilMain import PerfilMain
 from CUERPO.LOGICA.CONFIGURACION.ConfiguracionMain import ConfiguracionMain
 from CUERPO.LOGICA.ALUMNO.AlumnoMain import AlumnoMain
-from CUERPO.LOGICA.API.ClassRoomControl import ClassRoomControl, AdministradorProgramasClassRoom
+
+from CUERPO.LOGICA.API.ClassRoomControl import ClassRoomControl
+from CUERPO.LOGICA.API.AdministradorProgramasClassRoom import AdministradorProgramasClassRoom
+from CUERPO.LOGICA.API.CalificadorConfiguracion import CalificadorConfiguracion
 from CUERPO.LOGICA.API.BaseDatosLocal import BaseDatos_ClassRoomProgramas
-from CUERPO.LOGICA.API.ClassRoomControl import CalificadorConfiguracion
+
 from CUERPO.LOGICA.MAIN.DatosCreador import Dialog_datosCreador
 
 ###############################################################
