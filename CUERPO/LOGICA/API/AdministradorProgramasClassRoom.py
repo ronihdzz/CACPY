@@ -1,5 +1,4 @@
 from __future__ import print_function
-import os.path
 
 import datetime     # for general datetime object handling
 import recursos
@@ -7,16 +6,7 @@ import recursos
 from nbgrader.apps import NbGraderAPI
 from traitlets.config import Config
 
-import os
-import io
-from googleapiclient.http import MediaIoBaseDownload
 
-
-# para convertir a pdf y para saber el sistema operativo
-import pdfkit
-import platform
-
-from apiclient.http import MediaFileUpload
 
 ##########################################################################################################################################
 #  IMPORTANCION LOGICA
@@ -137,6 +127,23 @@ class AdministradorProgramasClassRoom:
         )
 
         print(datosEntraga)
+
+
+    def getDatosCourseWork(self, courseWork_id):
+
+        dictDatosEntrega= self.classroom_control.get_datosEntregas(
+            course_id=self.configuracionCalificador.curso_api_id,
+            coursework_id=courseWork_id
+        )
+
+        #    dictDatosEntrega={
+        #        'calificados':0, #RETURNED
+        #        'porCalificar':0, # TURNED_IN
+        #        'porEntregar':0,
+        #    }
+
+
+        return dictDatosEntrega
 
 
 

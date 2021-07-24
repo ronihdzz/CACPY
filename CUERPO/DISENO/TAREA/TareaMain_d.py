@@ -236,40 +236,6 @@ class Ui_Form(object):
         self.horizontalLayout_8.addWidget(self.bel_fechaCreacion)
         self.verticalLayout_6.addLayout(self.horizontalLayout_8)
         self.horizontalLayout_9.addLayout(self.verticalLayout_6)
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_2.setSpacing(0)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.btn_refrescar = QtWidgets.QPushButton(self.widget_3)
-        self.btn_refrescar.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_refrescar.setMaximumSize(QtCore.QSize(50, 50))
-        self.btn_refrescar.setSizeIncrement(QtCore.QSize(0, 0))
-        self.btn_refrescar.setBaseSize(QtCore.QSize(30, 30))
-        self.btn_refrescar.setStyleSheet("QPushButton {\n"
-"border-image: url(:/main/IMAGENES/cargar_off.png);\n"
-" }\n"
-"\n"
-"QPushButton:hover {\n"
-"border-image: url(:/main/IMAGENES/cargar_on.png);\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"border-image: url(:/main/IMAGENES/cargar_off.png);\n"
-"}\n"
-"")
-        self.btn_refrescar.setText("")
-        self.btn_refrescar.setObjectName("btn_refrescar")
-        self.verticalLayout_2.addWidget(self.btn_refrescar)
-        self.label_13 = QtWidgets.QLabel(self.widget_3)
-        self.label_13.setMinimumSize(QtCore.QSize(70, 30))
-        self.label_13.setMaximumSize(QtCore.QSize(50, 50))
-        self.label_13.setBaseSize(QtCore.QSize(30, 30))
-        font = QtGui.QFont()
-        font.setPointSize(8)
-        self.label_13.setFont(font)
-        self.label_13.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_13.setObjectName("label_13")
-        self.verticalLayout_2.addWidget(self.label_13)
-        self.horizontalLayout_9.addLayout(self.verticalLayout_2)
         self.verticalLayout.addLayout(self.horizontalLayout_9)
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
@@ -288,6 +254,7 @@ class Ui_Form(object):
 "border-radius:5px\n"
 "")
         self.bel_noTareasCalificadas.setText("")
+        self.bel_noTareasCalificadas.setAlignment(QtCore.Qt.AlignCenter)
         self.bel_noTareasCalificadas.setObjectName("bel_noTareasCalificadas")
         self.horizontalLayout_2.addWidget(self.bel_noTareasCalificadas)
         self.horizontalLayout_12.addLayout(self.horizontalLayout_2)
@@ -306,6 +273,7 @@ class Ui_Form(object):
 "border-radius:5px\n"
 "")
         self.bel_noTareasPorCalificar.setText("")
+        self.bel_noTareasPorCalificar.setAlignment(QtCore.Qt.AlignCenter)
         self.bel_noTareasPorCalificar.setObjectName("bel_noTareasPorCalificar")
         self.horizontalLayout_4.addWidget(self.bel_noTareasPorCalificar)
         self.horizontalLayout_12.addLayout(self.horizontalLayout_4)
@@ -324,11 +292,13 @@ class Ui_Form(object):
 "border-radius:5px\n"
 "")
         self.bel_noTareasPorEntregar.setText("")
+        self.bel_noTareasPorEntregar.setAlignment(QtCore.Qt.AlignCenter)
         self.bel_noTareasPorEntregar.setObjectName("bel_noTareasPorEntregar")
         self.horizontalLayout_6.addWidget(self.bel_noTareasPorEntregar)
         self.horizontalLayout_12.addLayout(self.horizontalLayout_6)
         self.verticalLayout.addLayout(self.horizontalLayout_12)
         self.horizontalLayout_13 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_13.setContentsMargins(-1, 15, -1, -1)
         self.horizontalLayout_13.setSpacing(50)
         self.horizontalLayout_13.setObjectName("horizontalLayout_13")
         self.label = QtWidgets.QLabel(self.widget_3)
@@ -399,7 +369,6 @@ class Ui_Form(object):
         item.setText(_translate("Form", "Sin entregar"))
         self.label_4.setText(_translate("Form", "Nombre:"))
         self.label_5.setText(_translate("Form", "Fecha emision:"))
-        self.label_13.setText(_translate("Form", "Refrescar"))
         self.label_3.setText(_translate("Form", "Calificadas:"))
         self.label_14.setText(_translate("Form", "Por calificar:"))
         self.label_18.setText(_translate("Form", "Por entregar:"))

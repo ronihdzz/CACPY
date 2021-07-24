@@ -3,8 +3,12 @@
 #  token.json               ignora el archivo 'token.json'
 #  credentials.json         ignora el archivo 'credentials.json'
 # *.db                      ignora todos los archivos con terminacion *.db
+# RECURSOS/NB_GRADER/course_1
+# RECURSOS/PROFESOR_EN_CURSO
 pyqt5/
-NB_GRADER/course_1/
+RECURSOS
+PAQUETES_NO_SE_PUDIERON_INSTALAR
+fuentesInformacion.txt
 *.pyc
 token.json
 credentials.json

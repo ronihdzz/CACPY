@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="72372155-40bc-4ad3-ad79-4d964c120a5c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fuentesInformacion.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/calificadorRoni.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CalificadorTareas_d.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CalificadorTareas_d.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CalificadorTareas_d.ui" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CalificadorTareas_d.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/TareaMain_d.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/TareaMain_d.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/TareaMain_d.ui" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/TareaMain_d.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/AdministradorProgramasClassRoom.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/AdministradorProgramasClassRoom.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/ClassRoomControl.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/ClassRoomControl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/HiloCalificadorTarea.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/HiloCalificadorTarea.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/respaldo" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/respaldo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/CalificadorTareas.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/CalificadorTareas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/TareaMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/TareaMain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/RECURSOS/PROFESOR_EN_CURSO/archivo_datos_profesor.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/RECURSOS/PROFESOR_EN_CURSO/archivo_trabajo_profesor.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/RECURSOS/PROFESOR_EN_CURSO/fotoProfesor.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/RECURSOS/PROGRAMADOR_FOTO/programador.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recursos.py" beforeDir="false" afterPath="$PROJECT_DIR$/recursos.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="1uwPjPRBn5Mu5x4P10onQOG8hJ0" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_MARK_IGNORED_FILES_AS_EXCLUDED" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ronal\Desktop\proyectos\calificadorRoni\CUERPO\LOGICA\CONFIGURACION" />
+      <recent name="C:\Users\ronal\Desktop\proyectos\calificadorRoni" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="VisualizadorTareas" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="calificadorRoni" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:\Users\ronal\Desktop\proyectos\calificadorRoni\VisualizadorTareas.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="72372155-40bc-4ad3-ad79-4d964c120a5c" name="Default Changelist" comment="" />
+      <created>1625573813826</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1625573813826</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>

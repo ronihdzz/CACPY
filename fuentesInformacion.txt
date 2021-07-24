@@ -1,0 +1,8 @@
+
+# pyinstaller
+# https://realpython.com/pyinstaller-python/
+# https://docs.hektorprofe.net/python/distribucion/pyinstaller/
+# https://datatofish.com/executable-pyinstaller/
+# para generar un solo archivo: pyinstaller cli.py --onefile
+# pyinstaller --onefile --icon=./ICONO.ico analizadorSenales.py
+

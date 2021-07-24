@@ -325,4 +325,41 @@
             print('ERROR:\n', '\t', resultadoAlCalificar['error'])
             print('LOG:\n', '\t', resultadoAlCalificar['log'])
             return False
+
+
+    def generarRetraolimentacionTarea_pdf(self, courseWork_name, idEstudiante, nombreCompletoRetro):
+        estatus_retroalimentacion = self.nbGrader_control.generate_feedback(assignment_id=courseWork_name,
+                                                                            student_id=idEstudiante, force=True)
+
+        # hubo exito al crear el feedbak
+        if estatus_retroalimentacion['success']:
+
+            sistema = platform.system()
+            # print("Estamos en {}".format(sistema))
+
+            urlpath = nombreCompletoRetro + '.html'
+            pdffilepath = nombreCompletoRetro + '.pdf'
+            print("RUTA DEL ARCHIVO A COPIAR...", urlpath)
+            print("RUTA DEL ARCHIVO A CREAR...", pdffilepath)
+
+            # C:\Users\ronal\Desktop\proyectos\calificadorRoni\NB_GRADER\course_1\feedback\114283316418743255552\tarea_2
+            if sistema == 'Windows':
+                path_wkthmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+                config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
+                pdfkit.from_url(url=urlpath, output_path=pdffilepath, configuration=config)
+                return True
+
+            elif sistema == 'Linux':
+                pdfkit.from_url(url=urlpath, output_path=pdffilepath)
+                return True
+            elif sistema == 'Darwin':  # sistema operativo mac
+                return False
+
+        else:
+            print("PROBLEMAS AL GENERAR LA RETROALIMENTACION")
+            print('ERROR:\n', '\t', estatus_retroalimentacion['error'])
+            print('LOG:\n', '\t', estatus_retroalimentacion['log'])
+            return False
+
+
 """

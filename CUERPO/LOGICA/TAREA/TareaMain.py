@@ -25,6 +25,8 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
     senal_verDetallesTarea = pyqtSignal(int)  # id de tarea
     senal_crearTarea=pyqtSignal(bool)
     senal_cambiarDeClase=pyqtSignal(bool)
+    senal_operacionCompleja=pyqtSignal(bool)
+
 
     def __init__(self,baseDatosLocalClassRoom,administradorProgramasClassRoom):
         QWidget.__init__(self)
@@ -57,7 +59,8 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
 
         self.ventanaCalificadoraTareas_enDirecto=CalificadorEnDirecto()
 
-        self.ventanaCalificadoraTareas=CalificadorTareas()
+        self.ventanaCalificadoraTareas=CalificadorTareas(
+            administradorProgramasClassRoom=self.administradorProgramasClassRoom)
 
 
 
@@ -70,6 +73,7 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
 
         self.ventanaAgregadoraTareas.senal_courseWork_selec.connect(self.agregarCouseWork_aTabla)
         self.ventanaCreadoraTareas.senalUsuarioCreoTarea.connect(self.agregarCouseWork_aTabla)
+        self.ventanaCalificadoraTareas.senal_calificadorTareas_cerro.connect( self.terminarProcesoCalificadorTareas )
 
         self.listaIds_courseworks=[]
 
@@ -81,7 +85,25 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.btn_calificarPendientes.clicked.connect(self.calificarTareas)
 
 
+    def terminarProcesoCalificadorTareas(self,dictDatosEntrega):
+
+        numeroTareasCalificar=dictDatosEntrega['porCalificar']
+        numeroTareasCalificadasTotales=dictDatosEntrega['calificados']
+        numeroTareasPorEntregar=dictDatosEntrega['porEntregar']
+
+        self.bel_noTareasPorCalificar.setText( str(numeroTareasCalificar) )
+        self.bel_noTareasCalificadas.setText( str(numeroTareasCalificadasTotales) )
+        self.bel_noTareasPorEntregar.setText( str(numeroTareasPorEntregar) )
+
+        self.senal_operacionCompleja.emit(False)
+
+
+
     def calificarTareas(self):
+
+        self.senal_operacionCompleja.emit(True)
+
+
         self.ventanaCalificadoraTareas.show()
 
         #self.administradorProgramasClassRoom.calificarEstudiantes(
@@ -111,6 +133,27 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.bel_fechaCreacion.setText(fecha)
 
         self.listWidget.setCurrentIndex(1)
+
+        dictDatosEntrega=self.administradorProgramasClassRoom.getDatosCourseWork(
+            courseWork_id=coursework_id
+        )
+        numeroTareasCalificar=dictDatosEntrega['porCalificar']
+        numeroTareasCalificadasTotales=dictDatosEntrega['calificados']
+        numeroTareasPorEntregar=dictDatosEntrega['porEntregar']
+
+        self.bel_noTareasPorCalificar.setText( str(numeroTareasCalificar) )
+        self.bel_noTareasCalificadas.setText( str(numeroTareasCalificadasTotales) )
+        self.bel_noTareasPorEntregar.setText( str(numeroTareasPorEntregar) )
+
+
+        self.ventanaCalificadoraTareas.cargarDatosTareaCalificar(
+            cousework_id=coursework_id,
+            coursework_name=self.nombreTareaSeleccionada,
+            coursework_fechaCreacion=self.tableWidget.item(self.indexTareaSeleccionada,1).text(),
+            dictDatosEntrega=dictDatosEntrega
+        )
+
+
 
         #self.administradorProgramasClassRoom.get_informacionTareasEntregadas(courseWork_id=coursework_id)
 

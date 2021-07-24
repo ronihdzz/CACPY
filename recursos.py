@@ -3,49 +3,54 @@ class App_Principal():
 
     # Contiene los datos cada uno separado por un salto de linea
     # correo del profesor, nombre completo del profesor
-    ARCHIVO_DATOS_PROFESOR="CUERPO/RECURSOS/PROFESOR_EN_CURSO/archivo_datos_profesor.txt"
+    ARCHIVO_DATOS_PROFESOR="RECURSOS/PROFESOR_EN_CURSO/archivo_datos_profesor.txt"
 
     # Contiene los datos cada uno separado por un salto de linea
     # curso_id, topic_id
-    ARCHIVO_TRABAJO_PROFESOR="CUERPO/RECURSOS/PROFESOR_EN_CURSO/archivo_trabajo_profesor.txt"
+    ARCHIVO_TRABAJO_PROFESOR="RECURSOS/PROFESOR_EN_CURSO/archivo_trabajo_profesor.txt"
 
-    FOTO_PERFIL_PROFESOR="CUERPO/RECURSOS/PROFESOR_EN_CURSO/fotoProfesor.png"
+    FOTO_PERFIL_PROFESOR="RECURSOS/PROFESOR_EN_CURSO/fotoProfesor.png"
+
+    NOMBRE_COMPLETO_BASE_DATOS='RECURSOS/baseDatos.db'
+
+    NOMBRE_COMPLETO_TOKEN='RECURSOS/API/token.json'
+    NOMBRE_COMPLETO_CREDENCIALES='RECURSOS/API/credentials.json'
+
+    RUTA_NB_GRADER = "RECURSOS/NB_GRADER/"
+
 
 
     LEYENDA_SIN_CURSO_SELECCIONADO='Curso no seleccionado'
-    VALOR_TOPCIS_RETRAOLIMENTACION='AAA'
     COLOR_TOPIC_SELECCIONADO="#0DDEFF"
     COLOR_TOPIC_NO_SELECCIONADO="#EEF2F3"
     COLOR_TABLA_TOPICS="#F1DAF9"
 
     #self.COLOR_TABLA = "#EEF2F3"
     #self.COLOR_RESPUESTA = "#9AE5E0"
-    #self.COLOR_MALO = "#E22E1C"
+    COLOR_MALO = "#E22E1C"
     #self.COLOR_REGULAR = "#DCE21C"
     #self.COLOR_BUENO = "#1CE285"
-    #self.COLOR_EXCELENTE = "#0DDEFF"
+    COLOR_EXCELENTE = "#0DDEFF"
 
     ICONO_APLICACION =":/main/IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_64.png"
     NOMBRE_APLICACION ="RoniHernandez99/CalificadorAutomatico"
     IMAGEN_SPLASH_SCREEN =":/main/IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_512.png"
 
-    RUTA_DESCARGAS_PDF="CUERPO/RECURSOS/PDF_DESCARGADOS/"
-    RUTA_ASIGNACIONES="CUERPO/RECURSOS/ASIGNACIONES/"
 
-    RUTA_NB_GRADER="NB_GRADER/"
 
 
     NOMBRE_ARCHIVO_LOG ='depuracionPrograma.log'
+
 
     @classmethod
     def actualizarUbicaciones(cls ,ubicacion):
         cls.ARCHIVO_DATOS_PROFESOR=ubicacion + cls.ARCHIVO_DATOS_PROFESOR
         cls.ARCHIVO_TRABAJO_PROFESOR=ubicacion+cls.ARCHIVO_TRABAJO_PROFESOR
         cls.FOTO_PERFIL_PROFESOR=ubicacion+ cls.FOTO_PERFIL_PROFESOR
-        cls.RUTA_DESCARGAS_PDF=ubicacion+cls.RUTA_DESCARGAS_PDF
-        cls.RUTA_ASIGNACIONES=ubicacion+cls.RUTA_ASIGNACIONES
         cls.RUTA_NB_GRADER=ubicacion+cls.RUTA_NB_GRADER
-
+        cls.NOMBRE_COMPLETO_BASE_DATOS=ubicacion+cls.NOMBRE_COMPLETO_BASE_DATOS
+        cls.NOMBRE_COMPLETO_TOKEN=ubicacion+cls.NOMBRE_COMPLETO_TOKEN
+        cls.NOMBRE_COMPLETO_CREDENCIALES=ubicacion+cls.NOMBRE_COMPLETO_CREDENCIALES
 
 
 

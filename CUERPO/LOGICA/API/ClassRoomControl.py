@@ -1,31 +1,16 @@
 from __future__ import print_function
 import os.path
-from subprocess import check_output
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 import requests
 
-import datetime     # for general datetime object handling
 import rfc3339      # for date object -> date string
 import iso8601
-
 import recursos
 
-from nbgrader.apps import NbGraderAPI
-from traitlets.config import Config
-
 import os
-import io
-from googleapiclient.http import MediaIoBaseDownload
-
-
-# para convertir a pdf y para saber el sistema operativo
-import pdfkit
-import platform
-
-from apiclient.http import MediaFileUpload
 
 
 def get_date_object(date_string):
@@ -95,18 +80,24 @@ class ClassRoomControl:
         # The file token.json stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
-        if os.path.exists('token.json'):
-            creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+        #if os.path.exists('token.json'):
+        print("EXISTE??{}".format(recursos.App_Principal.NOMBRE_COMPLETO_TOKEN))
+        if os.path.exists(recursos.App_Principal.NOMBRE_COMPLETO_TOKEN):
+
+            creds = Credentials.from_authorized_user_file(recursos.App_Principal.NOMBRE_COMPLETO_TOKEN, SCOPES)
+            #creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+
         # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials.json', SCOPES)
+                #flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+                flow = InstalledAppFlow.from_client_secrets_file(recursos.App_Principal.NOMBRE_COMPLETO_CREDENCIALES,SCOPES)
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
-            with open('token.json', 'w') as token:
+            #with open('token.json', 'w') as token:
+            with open(recursos.App_Principal.NOMBRE_COMPLETO_TOKEN, 'w') as token:
                 token.write(creds.to_json())
 
         self.service_classroom = build('classroom', 'v1', credentials=creds)
@@ -361,11 +352,80 @@ class ClassRoomControl:
 #
 ##################################################################################################################################################################################################
 
+    def get_datosEntregas(self, course_id, coursework_id):
+        """ Lists all student submissions for a given coursework.
+         Poner atencion a los estados:
+         RETURNED
+
+        SUBMISSION_STATE_UNSPECIFIED	Ningún estado especificado. Esto nunca debe devolverse.
+        NEW	El alumno nunca ha accedido a este envío. Los archivos adjuntos no se devuelven
+            y las marcas de tiempo no se establecen.
+        CREATED	Ha sido creado.
+        TURNED_IN	Ha sido entregado al maestro.
+        RETURNED	Ha sido devuelto al alumno.
+        RECLAIMED_BY_STUDENT	El estudiante eligió "anular la entrega" de la tarea.
+
+
+         """
+        service = self.service_classroom
+
+        # dictEstudiantes=self.get_listaAlumnos(course_id=course_id)
+
+        # [START classroom_list_submissions]
+        submissions = []
+        page_token = None
+
+        while True:
+            coursework = service.courses().courseWork()
+            response = coursework.studentSubmissions().list(
+                pageToken=page_token,
+                courseId=course_id,
+                states=['NEW','CREATED','RETURNED','TURNED_IN','RECLAIMED_BY_STUDENT'],
+                courseWorkId=coursework_id,
+                pageSize=10).execute()
+            submissions.extend(response.get('studentSubmissions', []))
+            page_token = response.get('nextPageToken', None)
+            if not page_token:
+                break
+
+        dictEntregas = {}  # keys= userId  values= link
+        if not submissions:
+            print('No student submissions found.')
+            return dictEntregas
+        else:
+            print('Student Submissions:******************************************************')
+
+            dictDatosEntrega={
+                'calificados':0, #RETURNED
+                'porCalificar':0, # TURNED_IN
+                'porEntregar':0,
+            }
+
+            for submission in submissions:
+                state = submission.get('state')
+
+                if state=='RETURNED':
+                    dictDatosEntrega['calificados']+=1
+                elif state=='TURNED_IN':
+                    dictDatosEntrega['porCalificar']+=1
+                else:
+                    dictDatosEntrega['porEntregar']+=1
+
+            return dictDatosEntrega
+
 
     def list_submissions(self, course_id, coursework_id):
         """ Lists all student submissions for a given coursework.
          Poner atencion a los estados:
          RETURNED
+
+        SUBMISSION_STATE_UNSPECIFIED	Ningún estado especificado. Esto nunca debe devolverse.
+        NEW	El alumno nunca ha accedido a este envío. Los archivos adjuntos no se devuelven
+            y las marcas de tiempo no se establecen.
+        CREATED	Ha sido creado.
+        TURNED_IN	Ha sido entregado al maestro.
+        RETURNED	Ha sido devuelto al alumno.
+        RECLAIMED_BY_STUDENT	El estudiante eligió "anular la entrega" de la tarea.
 
 
          """
@@ -404,12 +464,20 @@ class ClassRoomControl:
 
                 # nombreAlumno=dictEstudiantes[user_id]
 
-                tarea = submission.get('assignmentSubmission')
-                # url = tarea['attachments'][0]['link']['url']
-                url = tarea['attachments'][0]['driveFile']['alternateLink']
                 print('Alumno:', user_id)
                 print('Estado:', state)
-                print(tarea['attachments'])
+
+
+
+                # url = tarea['attachments'][0]['link']['url']
+                try:
+                    #print(tarea['attachments'])
+                    tarea = submission.get('assignmentSubmission')
+                    url = tarea['attachments'][0]['driveFile']['alternateLink']
+                    # Si el usuario entrego pero no entrego nada...
+                except:
+                    continue
+
                 print(url)
                 dictEntregas[user_id] = [url, asignacion_id]
             return dictEntregas

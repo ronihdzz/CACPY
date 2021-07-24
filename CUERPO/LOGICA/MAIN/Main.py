@@ -55,7 +55,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         self.setupUi(self)
 
         # Obteniendo los permisos de la API...
-        self.baseDatosLocalClassRoomProgramas = BaseDatos_ClassRoomProgramas('roni.db')
+        self.baseDatosLocalClassRoomProgramas = BaseDatos_ClassRoomProgramas(recursos.App_Principal.NOMBRE_COMPLETO_BASE_DATOS)
         self.baseDatosLocalClassRoomProgramas.crearBaseDatos()
         self.elClassRoom_control = ClassRoomControl()
         self.elClassRoom_control.obtenerValor_service_classroom_and_drive()
@@ -181,9 +181,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         self.ventana_aplicacionConfiguracion.senal_eligioUnCurso.connect(self.actuarAnteCambioCurso)
         self.ventana_aplicacionConfiguracion.senal_claseNbGrader_cambio.connect(self.actuarAnte_cambio_claseNbGrader)
 
+        self.ventana_aplicacionTareas.senal_operacionCompleja.connect(self.actuarAnteEstado_operacionCompleja)
+
         # Ventana defualt que se mostrara
         self.accion_VerApartadoPerfil.trigger()
         self.ventana_aplicacionConfiguracion.cargarDatos()
+
+    def actuarAnteEstado_operacionCompleja(self,estadoSenalCompleja):
+        if estadoSenalCompleja==True:
+            self.setEnabled(False)
+        else:
+            self.setEnabled(True)
 
     def actuarAnte_cambio_claseNbGrader(self):
         print("*"*100)
