@@ -4,12 +4,11 @@ import os
 import io
 from googleapiclient.http import MediaIoBaseDownload
 
-
 # para convertir a pdf y para saber el sistema operativo
 
 from apiclient.http import MediaFileUpload
 from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
-
+from CUERPO.LOGICA.API import FuncionesDrive
 
 
 
@@ -22,27 +21,36 @@ class HiloCalificadorTarea(QThread):
 
     # Errores de red...
     senal_errorRed=pyqtSignal(tuple )
-    # 1) error al buscar la carpeta en donde se suben las retroalimentaciones y obtener su id
-    # 2) error al crear la carpeta en caso de no existir y posteriormente obtener su id
-    # 3) error al obtener la informacion de los alumnos que han entregado tareas
-    # 4) error al descargar el colab del alumno
-    # 5) error al obtener la version de la retraolimentacion
-    # 6) error al subir a drive la retroalimentacion del alumno
-    # 7) error al obtener el link de acceso publico con permisos de solo vista de la
-    # retroalimentacion del alumno
-    # 8) error al subir el link de la retroalimentacion al alumno
-    # 9) error al subir la calificacion del alumno
+
 
     LISTA_ERRORES_RED=[
-        "1) error al buscar la carpeta en donde se suben las retroalimentaciones y obtener su id",
-        "2) error al crear la carpeta en caso de no existir y posteriormente obtener su id",
-        "3) error al obtener la informacion de los alumnos que han entregado tareas",
-        "4) error al descargar el colab del alumno",
-        "5) error al obtener la version de la retraolimentacion",
-        "6) error al subir a drive la retroalimentacion del alumno",
-        "7) error al obtener el link de acceso publico con permisos de solo vista de la retroalimentacion del alumno",
-        "8) error al subir el link de la retroalimentacion al alumno",
-        "9) error al subir la calificacion del alumno"
+        "1) error al buscar la carpeta de la clase de classroom en donde se suben las retroalimentaciones,"
+        "con el objetivo de obtener su id o crearla",
+
+        "2) error al obtener la informacion de todas las asignaciones que han realizado los alumnos en la "
+        "tarea respectiva",
+        
+        "3) error al obtener el correo electronico y nombre del alumno cuya tarea se esta calificando ",
+        
+        "4) error al buscar o crear la carpeta que contiene todas retroalimentaciones de todas las tareas "
+        "de  un alumno en especifico",
+
+        "5) error al buscar o crear la carpeta que contendra la retroalimentacion del estudiante de la tarea "
+        " que se esta calificando",
+        
+        "6) error al descargar el colab de la tarea  del alumno",
+
+        "7) error al obtener la version de la retroalimentacion de la tarea",
+
+        "8) error al subir a drive la retroalimentacion del alumno",
+
+        "9) error al compartir al estudiante el acceso a la vista de la carpeta de drive que almacena las "
+        "retroalimetaciones de la tarea que se esta calificando ",
+
+        "10) error al subir la calificacion de la tarea del alumno a classroom",
+
+        "11) error al adjuntar el link para que accedan a la carpeta de retroalimentaciones de classroom"
+
     ]
 
 
@@ -93,392 +101,456 @@ class HiloCalificadorTarea(QThread):
                 print("Coursework_id", courseWork_id)
 
                 # DATOS DE LA CARPETA EN DONDE SE ADJUNTARAN LAS RETROALIMENTACIONES
-                folder_id = '1W5StOtU4tJERcsRtUjj2lLhkJ8ybdbW1'
-                nombreCarpetaCurso = 'israel_mejia'  # sera el id del curso
+                folder_id = self.configuracionCalificador.getIdApiCarpetaRetro()
+                idClase,nombreClase=self.configuracionCalificador.get_id_nombre_cursoClassroom()
+
+
+                nombreCarpetaCurso = "{}_{}".format(nombreClase,idClase)  # sera el id del curso
                 drive_service = self.classroom_control.service_drive
                 page_token = None
 
                 ############################################################################################################################################
                 #   POSIBLE ERROR POR CONEXION DE RED 1:
-                #   SI EXISTE EN DRIVE LA CARPETA EN DONDE SE SUBIRAN LAS RETROALIMENTACIONES
+                #   ¿EXISTE EN DRIVE LA CARPETA DE LA CLASE DE CLASSROOM EN DONDE SE SUBIRAN LAS RETROALIMENTACIONES?
                 ############################################################################################################################################
-                try:
-                    # Lo que se busca es una CARPETA, la carpeta que se busca NO SE ENCUENTRA en la papelera de reciclaje
-                    # la carpeta que se busca se encuentra dentro de la carpeta  cuyo id es igual a un id especifico
-                    query = "trashed=False and mimeType='application/vnd.google-apps.folder' and name='{}'   and  '{}' in parents".format(
-                        nombreCarpetaCurso, folder_id)
-                    # print("QUERY=",query)
-                    listaResultados = []
-                    while True:
-                        response = drive_service.files().list(
-                            q=query,
-                            spaces='drive',
-                            fields='nextPageToken, files(id, name)',
-                            pageToken=page_token).execute()
 
-                        for file in response.get('files', []):
-                            # Process change
-                            print('Found file: %s (%s)' % (file.get('name'), file.get('id')))
-                            listaResultados.append([file.get('name'), file.get('id')])
-                        page_token = response.get('nextPageToken', None)
-                        if page_token is None:
-                            break
-                except Exception as e:
-                    # 1) error al buscar la carpeta en donde se suben las
-                    # retroalimentaciones y obtener su id
-                    self.senal_errorRed.emit((self.LISTA_ERRORES_RED[0], e))
-                    self.HILO_ACTIVO=False
+                print("*" * 100)
+                print("PASO 1: ¿EXISTE EN DRIVE LA CARPETA DE LA CLASE DE CLASSROOM EN DONDE SE SUBIRAN LAS RETROALIMENTACIONES?")
 
-                if self.HILO_ACTIVO:
-                    if listaResultados != []:
-                        # Si solo existe una carpeta con dicho nombre y especificaciones se obtiene su ID
-                        if len(listaResultados) == 1:
-                            print("Si existe la carpeta")
-                            ID_SUPREMO = listaResultados[0][1]
-                        # Si existe mas de una carpeta con dicho nombre y especificaciones entonces hay un error
-                        else:
-                            print("ERROR de repeticion de dos carpeta, arreglar cuanto antes")
+                # obteniendo el id o creando la carpeta donde se guardara las retroalimentaciones
+                # de la clase de classroom
+                respuesta=FuncionesDrive.getId_carpeta(nombre=nombreCarpetaCurso,
+                                                       idCarpetaAlmacena=folder_id,
+                                                       intermediarioAPI_drive=drive_service)
+
+                if respuesta['exito'] is False:
+                    errorPresentado=respuesta['resultado']
+                    self.HILO_ACTIVO = False
+                    self.senal_errorRed.emit((self.LISTA_ERRORES_RED[0],errorPresentado))
+
+
+                else:
+                    id_carpetaRetroClase=respuesta['resultado']['id']
+
 
                     ############################################################################################################################################
                     #   POSIBLE ERROR POR CONEXION DE RED 2:
-                    #   SI  NO EXISTE EN DRIVE LA CARPETA EN DONDE SE SUBIRAN LAS RETROALIMENTACIONES
-                    #   SE CREARA LA CARPETA Y SE OBTENDRA SU ID
+                    #   OBTENIENDO LA INFORMACIÓN DE TODAS LAS ENTREGAS HECHAS POR LOS ALUMNOS EN LA TAREA RESPECTIVA
                     ############################################################################################################################################
 
-                    else:
-                        try:
-                            print("No existe la carpeta")
-                            file_metadata = {
-                                'name': nombreCarpetaCurso,
-                                'parents': [folder_id],
-                                'mimeType': 'application/vnd.google-apps.folder'
-                            }
-                            file = drive_service.files().create(body=file_metadata,
-                                                                fields='id').execute()
-                            print('Folder ID: %s' % file.get('id'))
-                            ID_SUPREMO = file.get('id')
-                            print("")
-                        except Exception as e:
-                            self.senal_errorRed.emit((self.LISTA_ERRORES_RED[1], e))
-                            self.HILO_ACTIVO=False
+                    try:
+                        print("*" * 100)
+                        print("PASO 2: OBTENIENDO LA INFORMACIÓN DE TODAS  LAS ENTREGAS HECHAS POR LOS ALUMNOS EN LA TAREA RESPECTIVA")
+
+                        # formato del diccionario: dictEntregas[user_id] = [listaAttachments, asignacion_id]
+                        dictEntregasEstudiantes_deTarea = self.classroom_control.list_submissions(
+                            course_id=self.configuracionCalificador.curso_idApi,
+                            coursework_id=courseWork_id,
+                        )
+                    except Exception as e:
+                        self.HILO_ACTIVO = False
+                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[1], e))
+
 
                     if self.HILO_ACTIVO:
+                        ruta_asignaciones_nbgrader = self.get_rutaAsignaciones()
 
-                        # YA QUE SE TIENE EL ID DE LA CARPETA EN DONDE SE SUBIRAN LAS RETROALIMENTACIONES..
-                        ############################################################################################################################################
-                        #   POSIBLE ERROR POR CONEXION DE RED 3:
-                        #   SE OBTENDRA LA INFORMACION DE TODOS LOS ALUMNOS QUE HAN ENTREGADO LA TAREA
-                        ############################################################################################################################################
+                        # ¿hay por lo menos una entrega de un estudiante que calificar?
+                        if len(dictEntregasEstudiantes_deTarea) > 0:
+                            for user_id, listaAttachments_y_idAsginacion in tuple(dictEntregasEstudiantes_deTarea.items())[:NUMERO_TAREAS_CALIFICAR]:
 
-                        try:
+                                # se parte de que el estudiante entrego la tarea de forma correcta
+                                sin_errorEntregaTareaPorEstudiante=True
+                                # calificacion de la tarea del estudiante
+                                calificacionFinal=0
+                                listaAttachments,idAsignacion = listaAttachments_y_idAsginacion
 
-                            # formato del diccionario: dictEntregas[user_id] = [url, asignacion_id]
-                            dictEntregas = self.classroom_control.list_submissions(
-                                course_id=self.configuracionCalificador.curso_api_id,
-                                coursework_id=courseWork_id,
-                            )
-                        except Exception as e:
-                            self.senal_errorRed.emit((self.LISTA_ERRORES_RED[2], e))
-                            self.HILO_ACTIVO=False
 
-                        if self.HILO_ACTIVO:
 
-                            RUTA_ASIGNACIONES = self.get_rutaAsignaciones()
 
-                            datosTareas= (tuple(dictEntregas.items())[:NUMERO_TAREAS_CALIFICAR])
-                            print("TAREAS A CALIFICAR: ",len(datosTareas) )
-                            print("NUMERO DE TAREAS DESEADAS:",NUMERO_TAREAS_CALIFICAR)
+                                ############################################################################################################################################
+                                #   POSIBLE ERROR POR CONEXION DE RED 3
+                                #   Obteniendo el correo y el nombre del alumno que se esta calificando
+                                ############################################################################################################################################
 
-                            if len(dictEntregas) > 0:
-                                for user_id, url_or_idAsignacion in datosTareas:
-                                    if self.HILO_ACTIVO is False:
-                                        break
+                                print("*" * 100)
+                                print("PASO 3: Obteniendo el correo y el nombre del alumno que se esta calificando")
+                                try:
+                                    correoAlumno, nombreAlumno = self.classroom_control.get_datosAlumno(
+                                        idAlumno=user_id)
+                                except Exception as e:
+                                    self.HILO_ACTIVO = False
+                                    self.senal_errorRed.emit((self.LISTA_ERRORES_RED[2], e))
+                                    break
 
-                                    url, idAsignacion = url_or_idAsignacion
+                                ############################################################################################################################################
+                                #
+                                #   3.1) OBTENIENDO EL LINK DE LA ENTREGA DE LA TAREA DEL ALUMNO
+                                ############################################################################################################################################
 
-                                    ####################################################################################
-                                    #  OBTENIENDO EL NOMBRE EN DONDE SE DESCARGARA LA TAREA ENTREGADA POR EL USUARIO
-                                    ####################################################################################
+                                print("*" * 100)
+                                print("PASO 3.1: OBTENIENDO EL LINK DE LA ENTREGA DE LA TAREA DEL ALUMNO")
 
-                                    RUTA_TAREA = RUTA_ASIGNACIONES + user_id + '/' + courseWork_name + '/'
-                                    os.makedirs(RUTA_TAREA, exist_ok=True)
-                                    nombreArchivo = RUTA_TAREA + courseWork_name + '.ipynb'
+                                try:
 
-                                    ####################################################################################
-                                    #  DESCARGANDO LA ASIGNACION DEL ESTUDIANTE EN LA RUTA DEBIDA
-                                    ####################################################################################
+                                    # cada entrega del estudiante debe tener solo  un archivo adjunto
+                                    # el cual  debe ser el colab
+                                    numeroAttachmentsRegistrados = len(listaAttachments)
+
+                                    assert (numeroAttachmentsRegistrados==1)
+
+                                    # de cada entrega de cada estudiante se espera un documento de google colab
+                                    # al inicio de la entrega por ende a continuacion se obtienE su link para
+                                    # posteriormente poder descargarlo
+                                    url_colabEntregadoPorEstudiante=listaAttachments[0]['driveFile']['alternateLink']
 
                                     # FORMATO DE LINK: 'https://drive.google.com/file/d/1m-LNYFiQeNKeeGRxo03dPg5HMrzQI3Wl/view?usp=drive_web'
                                     # si el archivo ya existe en la ruta debida, se eliminara de ahi
-                                    archivo_id = url.split('/')[-2]
-                                    if os.path.exists(nombreArchivo):
-                                        print("YA EXISTE :DDDD")
-                                        os.remove(nombreArchivo)
+                                    id_colabEntregadoPorEstudiante = url_colabEntregadoPorEstudiante.split('/')[-2]
 
-                                    # Descargando el archivo en la ruta debida
+                                except:
+                                    # el alumno entrego una cosa diferente a un documento colab, entre otras cosas
+                                    sin_errorEntregaTareaPorEstudiante=False
+
+
+                                if sin_errorEntregaTareaPorEstudiante:
+
+
                                     ############################################################################################################################################
-                                    #   POSIBLE ERROR POR CONEXION DE RED 4:
-                                    #   DESCARGAR EL COLAB DEL ALUMNO
+                                    #   POSIBLE ERROR POR CONEXION DE RED 4
+                                    #   Buscando o creando la carpeta que contiene todas retroalimentaciones de todas las tareas de  un alumno en especifico
                                     ############################################################################################################################################
-                                    try:
 
-                                        request = self.classroom_control.service_drive.files().get_media(fileId=archivo_id)
-                                        fh = io.BytesIO()
-                                        downloader = MediaIoBaseDownload(fh, request)
-                                        done = False
-                                        while done is False:
-                                            status, done = downloader.next_chunk()
-                                            print("Download %d%%." % int(status.progress() * 100))
+                                    print("*" * 100)
+                                    print("PASO 4: Buscando o creando la carpeta que contiene todas retroalimentaciones de todas las "
+                                          "tareas de  un alumno en especifico")
 
-                                        fh.seek(0)
-                                        with open(nombreArchivo, 'wb') as f:
-                                            f.write(fh.read())
-                                            f.close()
-                                    except Exception as e:
-                                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[3], e))
-                                        self.HILO_ACTIVO=False
-                                        break
-
-
-                                    ####################################################################################
-                                    #  CALIFICANDO LA TAREA CON NBGRADER
-                                    ####################################################################################
-
-                                    resultadoAlCalificar = self.nbGrader_control.autograde(assignment_id=courseWork_name,
-                                                                                           student_id=user_id)
-
-                                    calificacionFinal = 0
-                                    puntosTotales = 0
-                                    exitoCalificar_conNbgrader = False
-
-                                    if resultadoAlCalificar['success'] is True:
-                                        exitoCalificar_conNbgrader = True
-                                        calif = self.nbGrader_control.get_submission(assignment_id=courseWork_name,
-                                                                                     student_id=user_id)
-                                        puntosObtenidos = calif['score']
-                                        puntosTotales = calif['max_score']
-                                        print(puntosObtenidos, '/', puntosTotales)
-
-                                        calificacionFinal=puntosObtenidos
-                                        if puntosObtenidos > 100:
-                                            calificacionFinal = 100
-
-                                        # Si hubo exito al calificar la tarea entonces se puede crear la reotroalimentacion
-                                        # estatus_retroalimentacion=self.nbGrader_control.generate_feedback(assignment_id=courseWork_name,student_id=user_id,force=True)
-
-                                        nombreCopletoRetro = self.get_rutaRetroalimentacion() + user_id + '/' + courseWork_name + '/' + courseWork_name
-
-                                        estatus_retroalimentacion = self.nbGrader_control.generate_feedback(
-                                            assignment_id=courseWork_name,
-                                            student_id=user_id, force=True)
-
-                                        if estatus_retroalimentacion['success']:
-
-                                            ############################################################################################################################################
-                                            # SUBIENDO EL ARCHIVO A LA CARPETA DEL CURSO, OBTENIENDO SU LINK DE ACCESO Y POSTERIORMENTE MODIFICANDO SUS PERMISOS PARA UN ACCESO PUBLICO
-                                            ############################################################################################################################################
-
-                                            print("ID_SUPREMO:", ID_SUPREMO)
-                                            nombreGuardaraArchivo = '{}_{}'.format(user_id,
-                                                                                   courseWork_id)  # Id de los archivos   alumnoId_topicId_courseworkId_numeroVersion
-
-                                            #############################################################################################
-                                            # ADJUNTANDO EL NUMERO DE VERSION AL NOMBRE DEL ARCHIVO QUE SE DESEA SUBIR
-                                            #############################################################################################
-
-                                            ############################################################################################################################################
-                                            #   POSIBLE ERROR POR CONEXION DE RED 5:
-                                            #   OBTENER LA VERSION DEL ARCHIVO DE RETROALIMENTACION
-                                            ############################################################################################################################################
-
-                                            # Se busca la existencia de archivos con la palabra 'nombreGuardaraArchivo' contenida
-                                            # trashed=False and mimeType!='application/vnd.google-apps.folder' and
-                                            # fullText contains 'hello'
-                                            query = "trashed=False and mimeType!='application/vnd.google-apps.folder' and fullText contains '{}'  and  '{}' in parents".format(
-                                                nombreGuardaraArchivo, ID_SUPREMO)
-                                            print("QUERY=", query)
-                                            listaResultados = []
-
-                                            try:
-                                                while True:
-                                                    # " mimeType = 'application/vnd.google-apps.folder'    '{}' in parents ".format(folder_id)
-                                                    response = drive_service.files().list(
-                                                        q=query,
-                                                        spaces='drive',
-                                                        fields='nextPageToken, files(id, name)',
-                                                        pageToken=page_token).execute()
-
-                                                    for file in response.get('files', []):
-                                                        # Process change
-                                                        print('Found file: %s (%s)' % (file.get('name'), file.get('id')))
-                                                        listaResultados.append([file.get('name'), file.get('id')])
-                                                    page_token = response.get('nextPageToken', None)
-                                                    if page_token is None:
-                                                        break
-                                            except Exception as e:
-                                                self.senal_errorRed.emit((self.LISTA_ERRORES_RED[4], e))
-                                                self.HILO_ACTIVO=False
-                                                break
-
-
-                                            numeroVersionArchivo = len(listaResultados)
-                                            nombreGuardaraArchivo += ('_{}.html'.format(numeroVersionArchivo))
-
-                                            #############################################################################################
-                                            # POSIBLE ERROR POR CONEXION DE RED 6:
-                                            # SUBIENDO EL ARCHIVO Y OBTENIENDO SU LINK DE VISTA
-                                            #############################################################################################
-
-                                            file_metadata = {
-                                                'name': nombreGuardaraArchivo,  # nombre que tendra en el archivo que se subira
-                                                'parents': [ID_SUPREMO]
-                                            }
-                                            media = MediaFileUpload(nombreCopletoRetro + '.html',  # '.pdf',
-                                                                    # nombre completo en donde se encuentra el archivo
-                                                                    # mimetype='application/pdf',
-                                                                    mimetype='application/json',
-                                                                    # pdf=application/pdf   jpg=image/jpeg   html=application/json
-                                                                    resumable=True)
-                                            try:
-                                                file = drive_service.files().create(body=file_metadata,
-                                                                                    media_body=media,
-                                                                                    fields='id,name,webContentLink,webViewLink'
-                                                                                    ).execute()
-                                            except Exception as e:
-                                                self.senal_errorRed.emit((self.LISTA_ERRORES_RED[5], e))
-                                                self.HILO_ACTIVO=False
-                                                break
-
-
-                                            # caracteristicas: https://developers.google.com/drive/api/v3/reference/files
-                                            print('File ID: %s' % file.get('id'))
-                                            print('File webView: %s' % file.get('webViewLink'))
-
-                                            URL_RETROALIMENTACION = file.get('webViewLink')
-
-                                            ID_RETROALIMENTACION = file.get('id')
-
-                                            #############################################################################################
-                                            # POSIBLE ERROR POR CONEXION DE RED 7:
-                                            # DANDOLE ACCESO PUBLICO AL ARCHIVO COMPARTIDO
-                                            #############################################################################################
-
-                                            ID_ARCHIVO_COMPARTIR = ID_RETROALIMENTACION
-
-                                            try:
-                                                def callback(request_id, response, exception):
-                                                    if exception:
-                                                        # Handle error
-                                                        print(exception)
-                                                    else:
-                                                        print("Permission Id: %s " % response.get('id'))
-                                                        print('File webView: %s' % response.get('webViewLink'))
-                                                        print(response)
-                                                        print(request_id)
-
-                                                batch = drive_service.new_batch_http_request(callback=callback)
-                                                user_permission = {
-                                                    'type': 'anyone',  # compartir para cualquier persona
-                                                    'role': 'reader',  # los permisos compartidos seran unicamente de lector
-                                                }
-                                                batch.add(drive_service.permissions().create(
-                                                    fileId=ID_ARCHIVO_COMPARTIR,
-                                                    body=user_permission,
-                                                    fields='id'
-                                                ))
-                                                batch.execute()
-                                            except Exception as e:
-                                                self.senal_errorRed.emit((self.LISTA_ERRORES_RED[6], e))
-                                                self.HILO_ACTIVO=False
-                                                break
-
-                                        else:
-                                            # ocurrio un error al generar el reporte...
-                                            continue
-
-
-                                    if exitoCalificar_conNbgrader is False:
-                                        calificacionFinal = 0
-                                        URL_RETROALIMENTACION = RECURSO_EXPLICACION_ERROR
-
-                                    #############################################################################################
-                                    # SUBIENDO LOS RESULTADOS AL USUARIO
-                                    #############################################################################################
-
-                                    # RESPUESTA AL USUARIO
-                                    studentSubmission = {
-                                        'assignedGrade': calificacionFinal,
-                                        'draftGrade': calificacionFinal,
-                                        'state': 'RETURNED',
-                                    }
-
-                                    print("Id sudmision:", idAsignacion)
-
-                                    #############################################################################################
-                                    # POSIBLE ERROR POR CONEXION DE RED 9:
-                                    # SUBIR LA CALIFICACION AL ALUMNO
-                                    #############################################################################################
-                                    try:
-                                        pass
-                                        # self.classroom_control.service_classroom.courses().courseWork().studentSubmissions().patch(
-                                        #    courseId=self.configuracionCalificador.curso_api_id,
-                                        #    courseWorkId=courseWork_id,
-                                        #    id=idAsignacion,
-                                        #    updateMask='assignedGrade,draftGrade',
-                                        #    # updateMask='assignedGrade,draftGrade',
-                                        #    body=studentSubmission).execute()
-                                    except Exception as e:
-                                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[8], e))
-                                        self.HILO_ACTIVO=False
-                                        break
-
-
-                                    request = {
-                                        'addAttachments': [
-                                            {
-                                                'link': {
-                                                    "url": URL_RETROALIMENTACION
-                                                }
-                                            }
-                                        ]
-                                    }
-                                    coursework = self.classroom_control.service_classroom.courses().courseWork()
-
-                                    #############################################################################################
-                                    # POSIBLE ERROR POR CONEXION DE RED 8:
-                                    # SUBIR EL LINK DE RETROALUMENTACION
-                                    #############################################################################################
-                                    try:
-                                        pass
-                                        # coursework.studentSubmissions().modifyAttachments(
-                                        #    courseId=self.configuracionCalificador.curso_api_id,
-                                        #    courseWorkId=courseWork_id,
-                                        #    id=idAsignacion,
-                                        #    body=request).execute()
-                                    except Exception as e:
-                                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[7], e))
-                                        self.HILO_ACTIVO=False
-                                        break
-
-
-                                    tuplaDatosEstudianteCalficado = (
-                                        exitoCalificar_conNbgrader,
-                                        user_id,  # id del estudiante
-                                        user_id,  # id del estudiante
-                                        calificacionFinal  # los puntos obtenidos
+                                    # Buscando si ya existe una carpeta con el id del estudiante la cual es donde
+                                    # se almacenan todas las retroalimentaciones de sus tareas entragadas
+                                    respuesta=FuncionesDrive.getId_carpeta(
+                                        nombre=user_id,
+                                        idCarpetaAlmacena=id_carpetaRetroClase,
+                                        intermediarioAPI_drive=drive_service
                                     )
 
-                                    self.senal_unAlumnoCalificado.emit(tuplaDatosEstudianteCalficado)
-                                    print("ESTUDIANTE: ", user_id, " TEMRINADO DE CALIFICAR")
+                                    if respuesta['exito'] is False:
+                                        errorPresentado = respuesta['resultado']
+                                        self.HILO_ACTIVO = False
+                                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[1], errorPresentado))
+                                        break
 
-                                    # no hubo exito al calificar...
-                                    # else:
-                                    #    print("PROBLEMAS AL CALIFICAR AUTOMATICAMENTE")
-                                    #    print('ERROR:\n', '\t', resultadoAlCalificar['error'])
-                                    #    print('LOG:\n', '\t', resultadoAlCalificar['log'])
+                                    else:
+                                        id_carpetaRetroEstudiante=respuesta['resultado']['id']
 
-                                print("TERMINANDO DE CALIFICAR A TODOS")
-                                # solo si el hilo termino naturalmente
+                                        ############################################################################################################################################
+                                        #   POSIBLE ERROR POR CONEXION DE RED 5
+                                        #   Buscando o creando la carpeta que contendra la retroalimentacion de la tarea que se esta calificando
+                                        ############################################################################################################################################
+
+                                        print("*" * 100)
+                                        print("PASO 5: Buscando o creando la carpeta que contendra la retroalimentacion del estudiante de la tarea que se esta calificando")
+
+                                        # Buscando o creando la carpeta que contendra la retroalimentacion
+                                        # de la tarea que se esta calificando
+                                        respuesta = FuncionesDrive.getId_carpeta(
+                                            nombre=courseWork_name,
+                                            idCarpetaAlmacena=id_carpetaRetroEstudiante,
+                                            intermediarioAPI_drive=drive_service
+                                        )
+
+                                        if respuesta['exito'] is False:
+                                            errorPresentado = respuesta['resultado']
+                                            self.HILO_ACTIVO = False
+                                            self.senal_errorRed.emit((self.LISTA_ERRORES_RED[4], errorPresentado))
+                                            break
+
+
+                                        id_carpetaRetroTareaEstudiante= respuesta['resultado']['id']
+                                        webViewLink_carpetaRetroTareaEstudiante= respuesta['resultado']['webViewLink']
+
+                                        ####################################################################################
+                                        #  OBTENIENDO EL NOMBRE EN DONDE SE DESCARGARA LA TAREA ENTREGADA POR EL USUARIO
+                                        ####################################################################################
+
+                                        ruta_descargaraColabTareaEntregada = ruta_asignaciones_nbgrader + user_id + '/' + courseWork_name + '/'
+                                        os.makedirs(ruta_descargaraColabTareaEntregada, exist_ok=True)
+                                        nombreCompleto_colabEntregado = ruta_descargaraColabTareaEntregada + courseWork_name + '.ipynb'
+
+                                        ####################################################################################
+                                        #  DESCARGANDO LA ASIGNACION DEL ESTUDIANTE EN LA RUTA DEBIDA
+                                        ####################################################################################
+
+                                        if os.path.exists(nombreCompleto_colabEntregado):
+                                            os.remove(nombreCompleto_colabEntregado)
+
+                                        # Descargando el archivo en la ruta debida
+                                        ############################################################################################################################################
+                                        #   POSIBLE ERROR POR CONEXION DE RED 6:
+                                        #   DESCARGAR EL COLAB DEL ALUMNO
+                                        ############################################################################################################################################
+                                        try:
+                                            print("*" * 100)
+                                            print("PASO 6: Descargando el colab entregado por el estudiante")
+
+                                            request = self.classroom_control.service_drive.files().get_media(fileId=id_colabEntregadoPorEstudiante)
+                                            fh = io.BytesIO()
+                                            downloader = MediaIoBaseDownload(fh, request)
+                                            done = False
+                                            while done is False:
+                                                status, done = downloader.next_chunk()
+                                                print("Download %d%%." % int(status.progress() * 100))
+
+                                            fh.seek(0)
+                                            with open(nombreCompleto_colabEntregado, 'wb') as f:
+                                                print("Archivo descargado en:",nombreCompleto_colabEntregado)
+                                                f.write(fh.read())
+                                                f.close()
+                                        except Exception as e:
+                                            #self.HILO_ACTIVO = False
+                                            #self.senal_errorRed.emit( (self.LISTA_ERRORES_RED[5],e)  )
+                                            #break
+                                            sin_errorEntregaTareaPorEstudiante=False
+                                            print("ERROR AL DESCARGAR LA ENTREGA DEL ESTUDIANTE:")
+                                            print(e)
+
+                                        if sin_errorEntregaTareaPorEstudiante:
+
+                                            ####################################################################################
+                                            #  CALIFICANDO LA TAREA CON NBGRADER
+                                            ####################################################################################
+
+                                            print("*" * 100)
+                                            print("PASO 6.1: CALIFICANDO TAREA ")
+                                            resultadoAlCalificar = self.nbGrader_control.autograde(assignment_id=courseWork_name,
+                                                                                                   student_id=user_id)
+
+                                            if resultadoAlCalificar['success'] != True:
+                                                sin_errorEntregaTareaPorEstudiante=False
+
+                                                print("ERROR AL CALIFICAR LA TAREA DE PROGRAMACION..")
+                                                print(resultadoAlCalificar['error'])
+                                                print(resultadoAlCalificar['log'])
+
+                                            else:
+
+
+                                                calif = self.nbGrader_control.get_submission(assignment_id=courseWork_name,
+                                                                                             student_id=user_id)
+                                                puntosObtenidos = calif['score']
+
+                                                # todas las tareas que se califiquen se calificaran baja 100 puntos
+                                                # por ende si hay tareas que al calificarlas dan mas de 100 puntos
+                                                # la calificacion sera 100 puntos
+                                                calificacionFinal=puntosObtenidos
+                                                if puntosObtenidos > 100:
+                                                    calificacionFinal = 100.0
+
+                                                # Si hubo exito al calificar la tarea entonces se puede crear la reotroalimentacion
+                                                # estatus_retroalimentacion=self.nbGrader_control.generate_feedback(assignment_id=courseWork_name,student_id=user_id,force=True)
+                                                nombre_completoRetro = self.get_rutaRetroalimentacion() + user_id + '/' + courseWork_name + '/' + courseWork_name
+
+                                                print("*" * 100)
+                                                print("PASO 6.2: OBTENIENDO RETROALIMENTACION DE LA TAREA")
+
+                                                # obteniendo la retroalimentacion de la tarea
+                                                estatus_retroalimentacion = self.nbGrader_control.generate_feedback(
+                                                    assignment_id=courseWork_name,
+                                                    student_id=user_id, force=True)
+
+                                                if estatus_retroalimentacion['success'] != True:
+
+                                                    # si es obtuvo un error al caliciar con NbGrader o al obtener
+                                                    # la retroalimentacion del alumno, lo mas probable es que se
+                                                    # debe a una entrega de la tarea del estudiante
+                                                    sin_errorEntregaTareaPorEstudiante = False
+
+                                                    print("ERROR AL OBTENER LA RETROALIMENTACION...")
+                                                    print(estatus_retroalimentacion['error'])
+                                                    print(estatus_retroalimentacion['log'])
+
+                                                else:
+                                                    # nombre con el cual se guardara la retroalimentacion en google drive
+                                                    nombreRetro_drive=courseWork_name
+
+
+                                                    ############################################################################################################################################
+                                                    #   POSIBLE ERROR POR CONEXION DE RED 7:
+                                                    #   OBTENER LA VERSION DEL ARCHIVO DE RETROALIMENTACION
+                                                    ############################################################################################################################################
+
+                                                    # Se busca la existencia de archivos con la palabra que almacena la variable: 'nombreRetro_drive'
+                                                    # en la carpeta con id igual al valor que almacena en la variable: 'id_carpetaRetroTareaEstudiante'
+                                                    # los archivos que se buscan se indican que no estan en la papelera de reciclaje del drive
+                                                    query = "trashed=False and '{}' in parents".format(id_carpetaRetroTareaEstudiante)
+                                                    listaResultados = []
+
+                                                    try:
+                                                        print("*" * 100)
+                                                        print("PASO 7: OBTENIENDO LA VERSION DEL ARCHIVO DE RETROALIMENTACION", id_carpetaRetroClase)
+                                                        print("QUERY=", query)
+                                                        while True:
+                                                            # " mimeType = 'application/vnd.google-apps.folder'    '{}' in parents ".format(folder_id)
+                                                            response = drive_service.files().list(
+                                                                q=query,
+                                                                spaces='drive',
+                                                                fields='nextPageToken, files(id, name)',
+                                                                pageToken=page_token).execute()
+
+                                                            for file in response.get('files', []):
+                                                                # Process change
+                                                                print('Found file: %s (%s)' % (file.get('name'), file.get('id')))
+                                                                listaResultados.append([file.get('name'), file.get('id')])
+                                                            page_token = response.get('nextPageToken', None)
+                                                            if page_token is None:
+                                                                break
+                                                    except Exception as e:
+                                                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[6], e))
+                                                        self.HILO_ACTIVO=False
+                                                        break
+
+                                                    # como se dejara que los alumnos entregen mas de una vez una misma tarea,
+                                                    # entonces en la carpeta en donde se suben las retroalimentaciones de una
+                                                    # tarea y estudiante especifico, podra tener mas de un archivo, lo cual
+                                                    # indirectamente indicara cuantas veces ha intentado una misma tarea un
+                                                    # alumno
+                                                    numeroVersionArchivo = len(listaResultados)
+                                                    nombreRetro_drive += ('_intento_{}.html'.format(numeroVersionArchivo+1))
+
+                                                    #############################################################################################
+                                                    # POSIBLE ERROR POR CONEXION DE RED 8:
+                                                    # SUBIENDO LA RETROALIMENTACION DEL ESTUDIANTE A LA CARPETA DE DRIVE
+                                                    #############################################################################################
+
+                                                    file_metadata = {
+                                                        'name': nombreRetro_drive,  # nombre que tendra en el archivo que se subira
+                                                        'parents': [id_carpetaRetroTareaEstudiante]
+                                                    }
+                                                    media = MediaFileUpload(nombre_completoRetro + '.html',  # '.pdf',
+                                                                            # nombre completo en donde se encuentra el archivo
+                                                                            # mimetype='application/pdf',
+                                                                            mimetype='application/json',
+                                                                            # pdf=application/pdf   jpg=image/jpeg   html=application/json
+                                                                            resumable=True)
+                                                    try:
+                                                        print("*" * 100)
+                                                        print("PASO 8: SUBIENDO LA RETROALIMENTACION DEL ESTUDIANTE EN DRIVE")
+                                                        file = drive_service.files().create(body=file_metadata,
+                                                                                            media_body=media,
+                                                                                            fields='id,name,webContentLink,webViewLink'
+                                                                                            ).execute()
+                                                    except Exception as e:
+                                                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[7], e))
+                                                        self.HILO_ACTIVO=False
+                                                        break
+
+
+                                                    #############################################################################################
+                                                    # POSIBLE ERROR POR CONEXION DE RED 9:
+                                                    # COMPARTIR EL ACCESO A VISTA A LA CARPETA QUE ALMACENA LAS RETROALIMENTACIONES
+                                                    #############################################################################################
+
+                                                    print("*" * 100)
+                                                    print("PASO 9: COMPARTIR EL ACCESO A VISTA A LA CARPETA QUE ALMACENA LAS RETROALIMENTACIONES ")
+                                                    try:
+                                                        def callback(request_id, response, exception):
+                                                            if exception:
+                                                                # Handle error
+                                                                print(exception)
+                                                            else:
+                                                                print("Permission Id: %s " % response.get('id'))
+                                                                print('File webView: %s' % response.get('webViewLink'))
+                                                                print(response)
+                                                                print(request_id)
+
+                                                        batch = drive_service.new_batch_http_request(callback=callback)
+                                                        user_permission = {
+                                                            'type': 'user',   # compartir a un usuario en especifico
+                                                            'role': 'reader', # los permisos compartidos seran unicamente de lector
+                                                            'emailAddress': correoAlumno # correo electronico del usuario que tendra acceso a esta carpeta
+                                                        }
+                                                        batch.add(drive_service.permissions().create(
+                                                            fileId=id_carpetaRetroTareaEstudiante,
+                                                            body=user_permission,
+                                                            fields='id'
+                                                        ))
+                                                        batch.execute()
+                                                    except Exception as e:
+                                                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[8], e))
+                                                        self.HILO_ACTIVO=False
+                                                        break
+
+
+                                                    #############################################################################################
+                                                    # POSIBLE ERROR POR CONEXION DE RED 10:
+                                                    # SUBIR LA CALIFICACION AL ALUMNO
+                                                    #############################################################################################
+
+                                                    # Respuesta que le dara al estudiante
+                                                    studentSubmission = {
+                                                        'assignedGrade': calificacionFinal,
+                                                        'draftGrade': calificacionFinal
+                                                    }
+
+                                                    try:
+                                                        print("*" * 100)
+                                                        print("PASO 10: SUBIENDO CALIFICAION AL ALUMNO ")
+                                                        self.classroom_control.service_classroom.courses().courseWork().studentSubmissions().patch(
+                                                            courseId=self.configuracionCalificador.curso_idApi,
+                                                            courseWorkId=courseWork_id,
+                                                            id=idAsignacion,
+                                                            updateMask='assignedGrade,draftGrade',
+                                                            body=studentSubmission).execute()
+                                                    except Exception as e:
+                                                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[9], e))
+                                                        self.HILO_ACTIVO=False
+                                                        break
+
+
+
+                                                    #############################################################################################
+                                                    # POSIBLE ERROR POR CONEXION DE RED 11:
+                                                    # SUBIR EL LINK DE RETROALUMENTACION
+                                                    #############################################################################################
+
+                                                    # Mensaje de retroalimentacion que se le adjuntara al estudiante
+                                                    request = {
+                                                        'addAttachments': [
+                                                            {
+                                                                'link': {
+                                                                    "url": webViewLink_carpetaRetroTareaEstudiante
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+
+                                                    try:
+                                                        print("*" * 100)
+                                                        print("PASO 11: ADJUNTANDO RETROALIMENTACION AL ALUMNO")
+                                                        self.classroom_control.service_classroom.courses().courseWork().studentSubmissions().modifyAttachments(
+                                                            courseId=self.configuracionCalificador.curso_idApi,
+                                                            courseWorkId=courseWork_id,
+                                                            id=idAsignacion,
+                                                            body=request).execute()
+                                                    except Exception as e:
+                                                        self.senal_errorRed.emit((self.LISTA_ERRORES_RED[10], e))
+                                                        self.HILO_ACTIVO=False
+                                                        break
+
+
+
+                                tuplaDatosEstudianteCalficado = (
+                                    sin_errorEntregaTareaPorEstudiante,
+                                    nombreAlumno,  # id del estudiante
+                                    correoAlumno,  # id del estudiante
+                                    calificacionFinal  # los puntos obtenidos
+                                )
+
+                                self.senal_unAlumnoCalificado.emit(tuplaDatosEstudianteCalficado)
+                                print(f"ESTUDIANTE: nombre:{nombreAlumno} con correo:{correoAlumno} TEMRINADO DE CALIFICAR")
+
+                            print("TERMINANDO DE CALIFICAR A TODOS")
+                            # solo si el hilo termino naturalmente
+
             self.senal_terminoCalificar.emit(self.HILO_ACTIVO)
 
     def activarHiloParaCalificar(self):

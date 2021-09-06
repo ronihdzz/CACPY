@@ -37,6 +37,13 @@ class CambiadorClases_NbGrader(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplica
 
         self.cargarDatosClase()
 
+    def cargarClaseNbGrader(self,nombreClase):
+        if nombreClase in self.listaClases:
+            self.comboBox_clases.setCurrentText(nombreClase)
+            return True
+        return False
+
+
 
     def prepararMostrar(self,curso_tuplaDatos):
         '''

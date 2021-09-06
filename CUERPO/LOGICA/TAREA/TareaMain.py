@@ -119,43 +119,47 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         nombre = self.tableWidget.item(index, 0).text()
         fecha = self.tableWidget.item(index, 1).text()
 
+        nombreClaseNbGrader=self.administradorProgramasClassRoom.configuracionCalificador.get_nombre_cursoNbGrader()
+
         if self.administradorProgramasClassRoom.existeEsaTarea_cursoNbGrader(nombreTarea=nombre):
             self.btn_calificarPendientes.setEnabled(True)
             self.nombreTareaSeleccionada=nombre
             self.indexTareaSeleccionada=index
 
+            coursework_id = self.listaIds_courseworks[index]
+
+            self.bel_nombre.setText(nombre)
+            self.bel_fechaCreacion.setText(fecha)
+
+            self.listWidget.setCurrentIndex(1)
+
+            dictDatosEntrega=self.administradorProgramasClassRoom.getDatosCourseWork(
+                courseWork_id=coursework_id
+            )
+            numeroTareasCalificar=dictDatosEntrega['porCalificar']
+            numeroTareasCalificadasTotales=dictDatosEntrega['calificados']
+            numeroTareasPorEntregar=dictDatosEntrega['porEntregar']
+
+            self.bel_noTareasPorCalificar.setText( str(numeroTareasCalificar) )
+            self.bel_noTareasCalificadas.setText( str(numeroTareasCalificadasTotales) )
+            self.bel_noTareasPorEntregar.setText( str(numeroTareasPorEntregar) )
+
+
+            self.ventanaCalificadoraTareas.cargarDatosTareaCalificar(
+                cousework_id=coursework_id,
+                coursework_name=self.nombreTareaSeleccionada,
+                coursework_fechaCreacion=self.tableWidget.item(self.indexTareaSeleccionada,1).text(),
+                dictDatosEntrega=dictDatosEntrega
+            )
+
+            #self.administradorProgramasClassRoom.get_informacionTareasEntregadas(courseWork_id=coursework_id)
+
         else:
             self.btn_calificarPendientes.setEnabled(False)
-
-        coursework_id = self.listaIds_courseworks[index]
-
-        self.bel_nombre.setText(nombre)
-        self.bel_fechaCreacion.setText(fecha)
-
-        self.listWidget.setCurrentIndex(1)
-
-        dictDatosEntrega=self.administradorProgramasClassRoom.getDatosCourseWork(
-            courseWork_id=coursework_id
-        )
-        numeroTareasCalificar=dictDatosEntrega['porCalificar']
-        numeroTareasCalificadasTotales=dictDatosEntrega['calificados']
-        numeroTareasPorEntregar=dictDatosEntrega['porEntregar']
-
-        self.bel_noTareasPorCalificar.setText( str(numeroTareasCalificar) )
-        self.bel_noTareasCalificadas.setText( str(numeroTareasCalificadasTotales) )
-        self.bel_noTareasPorEntregar.setText( str(numeroTareasPorEntregar) )
-
-
-        self.ventanaCalificadoraTareas.cargarDatosTareaCalificar(
-            cousework_id=coursework_id,
-            coursework_name=self.nombreTareaSeleccionada,
-            coursework_fechaCreacion=self.tableWidget.item(self.indexTareaSeleccionada,1).text(),
-            dictDatosEntrega=dictDatosEntrega
-        )
-
-
-
-        #self.administradorProgramasClassRoom.get_informacionTareasEntregadas(courseWork_id=coursework_id)
+            self.msg_tareaNoRegistradaNbGrader(
+                nombreClaseNbGrader=nombreClaseNbGrader,
+                nombreTarea=nombre
+            )
 
 
 
@@ -304,9 +308,10 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         # la tabla tiene 3 columnas
         # ("NOMBRE","DATA_TIME", "PREGUNTAS")
         header = self.tableWidget.horizontalHeader()
-        for columna in range(0, 3):
-            header.setSectionResizeMode(columna, QtWidgets.QHeaderView.ResizeToContents)
+        #for columna in range(0, 2):
+        #    header.setSectionResizeMode(columna, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
 
         self.tableWidget.verticalHeader().setDefaultSectionSize(60)
 
@@ -386,6 +391,24 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         if ventanaDialogo.clickedButton() == btn_yes:
             return True
         return False
+
+
+    def msg_tareaNoRegistradaNbGrader(self,nombreClaseNbGrader,nombreTarea):
+            ventanaDialogo = QMessageBox()
+            ventanaDialogo.setIcon(QMessageBox.Critical)
+            ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+            ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+            mensaje = f"No existe ninguna tarea registrada con el nombre de: <<{nombreTarea}>> " \
+                      f"en la clase NbGrader:<<{nombreClaseNbGrader}>> que tu escogiste como calificadora"
+
+            mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+            ventanaDialogo.setText(mensaje)
+            ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+            btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+            btn_ok.setText('Entendido')
+            ventanaDialogo.exec_()
 
 
 if __name__ == '__main__':

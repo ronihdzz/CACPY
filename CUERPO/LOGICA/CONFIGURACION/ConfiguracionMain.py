@@ -9,7 +9,7 @@ from PyQt5 import QtCore,QtGui
 from CUERPO.LOGICA.CONFIGURACION.CambiadorClases import CambiadorClases
 from CUERPO.LOGICA.CONFIGURACION.CambiadorClasesNbGrader import CambiadorClases_NbGrader
 from CUERPO.LOGICA.CONFIGURACION.AgregadorTopcis import AgregadorTopics
-
+from CUERPO.LOGICA.CONFIGURACION.CambiadorCarpetaDrive import CambiadorCarpetaDrive
 
 ###############################################################
 #  IMPORTACION DEL DISEÑO...
@@ -41,7 +41,6 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         Ui_Form.__init__(self)
         self.setupUi(self)
 
-        # ATRIBUTOS DE LA CLASE
 
         # Objetos que ayudaran a la clase a cargar los datos
         self.baseDatosLocalClassRoom=baseDatosLocalClassRoom
@@ -49,29 +48,53 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.configuracionCalificador=configuracionCalificador
 
         # Atributos muy importantes
-        self.programas_topic_id = self.configuracionCalificador.programTopic_id
+        self.programas_topic_id = self.configuracionCalificador.topic_idApi
         self.indice_topic_sele=None
-        self.listaIds_apartadosProgramas=[]
+        self.listaIds_topicsClaseClassroom=[]
 
         # Breves configuraciones a la tabla
         self.configurarTabla()
 
 
 
-        # VENTANAS:
-
         # Creando ventanas
+        # Este ventana permitira elegir al profesor la clase de classroom en la
+        # que se encuentran los ejercicios de programacion que desea calificar
         self.ventana_cambiadorClases=CambiadorClases(
             baseDatosLocalClassRoom=self.baseDatosLocalClassRoom,
             classRoomControl=self.classRoomControl
         )
 
+        # Esta ventana permitiria elergir al profesor la carpeta de clase
+        # de NbGrader en la cual se encuentran las tareas que desea calificar
+        # de sus alumnons
         self.ventana_cambiadorClases_NbGrader=CambiadorClases_NbGrader()
 
+
+        # Esta ventana permite elegir un topic de la clase de classrom seleccinada
         self.ventana_agredadorTopics=AgregadorTopics(
             baseDatosLocalClassRoom=self.baseDatosLocalClassRoom,
             classRoomControl=self.classRoomControl
         )
+
+        self.ventana_cambiadorCarpetaDrive =CambiadorCarpetaDrive(
+            classRoomControl=self.classRoomControl,
+            configuracionCalificador=self.configuracionCalificador
+        )
+
+
+        # Mostramos el nombre de la carpeta elegida en caso de existir
+        if self.configuracionCalificador.getNombreCarpetaRetro() != None and self.configuracionCalificador.getIdApiCarpetaRetro()!=None:
+            self.bel_nombreCarpetaDriveMadre.setText(
+                self.configuracionCalificador.getNombreCarpetaRetro()
+            )
+            self.ventana_cambiadorCarpetaDrive.bel_nombreCarpetaActual.setText(
+                self.configuracionCalificador.getNombreCarpetaRetro()
+            )
+        else:
+            self.bel_nombreCarpetaDriveMadre.setText("Sin ninguna carpeta drive seleccionada")
+
+
 
 
 
@@ -80,15 +103,20 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.ventana_cambiadorClases.senal_eligioUnCurso.connect(self.cambiar_claseClassroom)
         self.ventana_cambiadorClases_NbGrader.senal_eligioUnCurso.connect(self.cambiar_claseNbGrader)
         self.ventana_agredadorTopics.senal_agregoUnTopic.connect(self.agregarUnTopic)
+        self.ventana_cambiadorCarpetaDrive.senal_eligioUnaCarpetaDrive.connect(self.mostrarNuevaCarpetaDriveElegida)
+
 
 
 
         # SEÑALES DE LOS OBJETOS DE LA CLASE:
-
         self.tableWidget.doubleClicked.connect(self.cambiar_topicClassroom)
         self.btn_agregarApartado.clicked.connect( self.mostrarVentana_agregadoraTopcis )
         self.btn_editarClase_classroom.clicked.connect(self.procesoCambiarClase)
         self.btn_editarClase_NbGrader.clicked.connect(lambda : self.ventana_cambiadorClases_NbGrader.show())
+        self.btn_editarCarpetaMadre.clicked.connect(lambda : self.ventana_cambiadorCarpetaDrive.show() )
+
+
+
 
         # estableciendo opciones a partir del clic derecho a los items de la tabla
         # con la finalidad de que aparezca la opcion de eliminar objetos
@@ -103,20 +131,38 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 ##################################################################################################################################################
 # CLASES
 ##################################################################################################################################################
+    def mostrarNuevaCarpetaDriveElegida(self):
+        nombreCarpeta=self.configuracionCalificador.getNombreCarpetaRetro()
+        self.bel_nombreCarpetaDriveMadre.setText(nombreCarpeta)
+
 
     def cambiar_claseNbGrader(self,nuevoNombre):
+        '''
+        Este metodo es llamado cuando se selecciona una  clase NbGrader diferente a la seleccionada
+        ¿Que hara este metodo?
+            -   En la GUI realizara el cambio de nombre correspondiente a la nueva clase NbGrader
+                seleccionada
+            -   Registrara el cambio en el objeto 'self.configuracionCalificador'
+            -   Mandara una señal a la clase 'Main' de la aplicacion, para informarle que
+                se cambio de  clase NbGrader seleccionada.
+
+        Parametros:
+            nuevoNombre (str): Representa el nuevo nombre de la clase NbGrader seleccionada
+        '''
+
         self.configuracionCalificador.set_clase_nombreNbGrader(nuevoNombre)
+
+        # Renovando en nombre de la clase NbGrader seleccionada
         self.bel_clase_nombreNbGrader.setText(nuevoNombre)
+
         self.senal_claseNbGrader_cambio.emit(True)
-
-
-    def editarValor_clase_nombreNbGrader(self,nuevoNombre):
-        self.configuracionCalificador.set_clase_nombreNbGrader(nuevoNombre)
-        self.bel_clase_nombreNbGrader.setText(nuevoNombre)
 
 
     def cambiar_claseClassroom(self, clase_tuplaDatos):
         '''
+        Este metodo es llamado cuando se selecciona una clase de classroom diferente a la seleccionada
+        ¿Que hara este metodo?
+
         tuplaDatos
             primer elemento - api id del curso
             segundo elemetno - nombre del curso
@@ -127,29 +173,42 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
         # Solo si el valor de id escogido es diferente entonces se procedera
         # a actuar
-        id, nombre = clase_tuplaDatos
+        clase_idApi, clase_nombre = clase_tuplaDatos
 
         cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
 
-        if cursoClassroom_id!=id:
 
-            self.bel_nombreClase_classroom.setText(nombre)
+        # ¿la clase que se selecciono es diferente a la acutal seleccionada?
+        if cursoClassroom_id!=id:
+            # Renovando en nombre de la clase classroom seleccionada
+            self.bel_nombreClase_classroom.setText(clase_nombre)
+
+            # Cuando se selecciona una clase de classroom diferente a la actual, el valor
+            # del topic seleccionado cambiara a None
             self.programas_topic_id=None
             self.indice_topic_sele=None
-            self.listaIds_apartadosProgramas=[]
 
-            # Cargando los datos del curso
-            self.configuracionCalificador.cargarDatosCurso(
-                id=id,
-                nombre=nombre,
+            # Cada clase de classroom tiene diferentes topics con diferentes id, por lo tanto la
+            # lista que almacenaba todos los ids de los topics de la clase de classroom anterior
+            # debere incilizarse a una lista vacia
+            self.listaIds_topicsClaseClassroom=[]
+
+            # Avisando al objeto 'configuracionCalificador' que la clase de classroom seleccionada ahora
+            # es una diferente
+            self.configuracionCalificador.cargarDatosClaseClassroom_seleccionada(
+                clase_idApi=clase_idApi,
+                clase_nombre=clase_nombre,
             )
-
-            print("QUE PASA AQUI")
+            
+            
             self.ventana_agredadorTopics.curso_id=cursoClassroom_id
             self.cargarDatos()
 
             # cargar los topic agregados de esa clase..
             self.senal_eligioUnCurso.emit(True)
+            self.bel_clase_nombreNbGrader.setText(
+                "Ninguna clase NbGrader seleccionada"
+            )
 
 
     def procesoCambiarClase(self):
@@ -177,7 +236,7 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
         cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
 
-        if cursoClassroom_id and len(self.listaIds_apartadosProgramas)>0:
+        if cursoClassroom_id and len(self.listaIds_topicsClaseClassroom)>0:
             noRenglon = item.row()
 
             respuetaPositiva=self.msg_preguntarAcercaCambioTopic(
@@ -193,7 +252,7 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
                 self.indice_topic_sele=noRenglon
 
                 self.configuracionCalificador.cargarDatosTopic(
-                    programaTopic_id=self.listaIds_apartadosProgramas[noRenglon],
+                    programaTopic_id=self.listaIds_topicsClaseClassroom[noRenglon],
                     programaTopic_nombre=self.tableWidget.item(noRenglon, 0).text()
                 )
                 self.senal_eligioTopic.emit(True)
@@ -243,7 +302,7 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.tableWidget.setItem(noRenglones,0,celda )
 
 
-        self.listaIds_apartadosProgramas.append( tupla_topic_programas[0] )
+        self.listaIds_topicsClaseClassroom.append(tupla_topic_programas[0])
 
 
     def eliminarRenglonTopic(self,numeroRenglon):
@@ -255,9 +314,9 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             if respuestaPositiva:
                 cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
                 self.baseDatosLocalClassRoom.eliminarTopic(curso_id=cursoClassroom_id,
-                                                           topicProgramas_id=self.listaIds_apartadosProgramas[numeroRenglon])
+                                                           topicProgramas_id=self.listaIds_topicsClaseClassroom[numeroRenglon])
                 self.tableWidget.removeRow(numeroRenglon)
-                self.listaIds_apartadosProgramas.pop(numeroRenglon)
+                self.listaIds_topicsClaseClassroom.pop(numeroRenglon)
 
                 if self.indice_topic_sele!=None:
                     if self.indice_topic_sele>numeroRenglon:
@@ -351,52 +410,50 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
     def cargarDatos(self):
         '''
-        Esta diseñado para funcionar cuando recien se inicia el programa...
-
-
-        Cargara los datos, en funcion del valor de los atributos de instancia:
-            - self.curso_id
-            - self.topic_id
-
-        Posteriormente cargar los datos de los topics del curso seleccionado en
-        la tabla
-
-
-        (
-        program_topic_id,programas_topic_nombre,
-        retro_topic_id,retro_topic_nombre
-        ),
-        (
-        program_topic_id,programas_topic_nombre,
-        retro_topic_id,retro_topic_nombre
-        ),
-
+        Este metodo es diseñado para cargar los datos de la clase de classroom seleccionada.
+        ¿Que datos carga?
+        -   Carga los topics de la clase de classroom con ayuda de  la base de datos local
+            que los almacena.
+                    - En la tabla muestra los topics que el profesor ha elegido con anterioridad
+                    - En la ventana que sirve para agregar los topcis a la tabla carga los topcis
+                    faltantes
         '''
 
+        claseClassroom_idApi,claseClassroom_nombre = self.configuracionCalificador.get_id_nombre_cursoClassroom()
+        topicClassroom_idApi,topicClassroom_nombre = self.configuracionCalificador.get_id_nombre_topicClassroom()
 
-        cursoClassroom_id,cursoClassroom_nombre = self.configuracionCalificador.get_id_nombre_cursoClassroom()
-        topicClassroom_id,topicClassroom_nombre = self.configuracionCalificador.get_id_nombre_topicClassroom()
-        cursoNbGrader_nombre= self.configuracionCalificador.get_nombre_cursoNbGrader()
 
-        if cursoClassroom_id!=None :
+        if claseClassroom_idApi!=None :
             self.cargarTopicsCurso()
-            self.bel_nombreClase_classroom.setText( cursoClassroom_nombre )
+            self.bel_nombreClase_classroom.setText( claseClassroom_nombre )
             self.senal_eligioUnCurso.emit(True)
 
             # Seleccionar renglon...
-            if topicClassroom_id!=None:
-                renglonSeleccionar=self.listaIds_apartadosProgramas.index(topicClassroom_id)
+            if topicClassroom_idApi!=None:
+                renglonSeleccionar=self.listaIds_topicsClaseClassroom.index(topicClassroom_idApi)
                 self.colorearRenglon(renglonSeleccionar,recursos.App_Principal.COLOR_TOPIC_SELECCIONADO)
                 self.indice_topic_sele=renglonSeleccionar
                 self.senal_eligioTopic.emit(True)
 
             # Colocando el nombre al curso nbgrader
-            if cursoNbGrader_nombre!=None:
-                self.bel_clase_nombreNbGrader.setText(cursoNbGrader_nombre)
-            else:
-                self.bel_clase_nombreNbGrader.setText(
-                    recursos.App_Principal.LEYENDA_SIN_CURSO_SELECCIONADO
+            if self.configuracionCalificador.get_nombre_cursoNbGrader() != None:
+                respuestaPositiva = self.ventana_cambiadorClases_NbGrader.cargarClaseNbGrader(
+                    self.configuracionCalificador.get_nombre_cursoNbGrader()
                 )
+
+                if respuestaPositiva is False:
+                    self.configuracionCalificador.set_nombre_cursoNbGrader(
+                        nombre=None
+                    )
+                    self.bel_clase_nombreNbGrader.setText(
+                        "Ninguna clase NbGrader seleccionada"
+                    )
+
+                else:
+                    self.bel_clase_nombreNbGrader.setText(
+                        self.configuracionCalificador.get_nombre_cursoNbGrader()
+                    )
+                    self.senal_claseNbGrader_cambio.emit(True)
 
         else:
             self.bel_nombreClase_classroom.setText(
@@ -404,25 +461,35 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             )
 
             self.bel_clase_nombreNbGrader.setText(
-                recursos.App_Principal.LEYENDA_SIN_CURSO_SELECCIONADO
+                "Ninguna clase NbGrader seleccionada"
             )
 
 
     def cargarTopicsCurso(self):
+        '''
+        Este metodo carga los topics que fueron agregados con anterioridad a la tabla
+        por parte del profesor.
+        ¿De que clase de classroom carga los topics?
+            R= De la clase de classroom seleccionada
+        Este metodo es usualmente llamado cuando se cambia de clase de classroom seleccionada
+        '''
 
 
-        topicClassroom_id,_=self.configuracionCalificador.get_id_nombre_topicClassroom()
-        cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
+        claseClassroom_idApi,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
 
-        if cursoClassroom_id != None:
-            topicsAgregados = self.baseDatosLocalClassRoom.get_topicsAgregados(course_id_api=cursoClassroom_id)
-            self.listaIds_apartadosProgramas = []
+        if claseClassroom_idApi != None:
+
+            # carga los topics que han sido agregados con anteriodidad por parte del profesor
+            topicsAgregados = self.baseDatosLocalClassRoom.get_topicsAgregados(course_id_api=claseClassroom_idApi)
+
+            self.listaIds_topicsClaseClassroom = []
             tuplaDatos = []
             self.tableWidget.setRowCount(0)  # Eliminando todas las filas de la tabla
+
             if topicsAgregados != () and len(topicsAgregados) > 0:
-                for apartadoProgram_id, apartadoProgram_nombre in topicsAgregados:
-                    self.listaIds_apartadosProgramas.append(apartadoProgram_id)
-                    tuplaDatos.append( (apartadoProgram_nombre,)  )
+                for topicClassroom_idApi, topicClassroom_nombre in topicsAgregados:
+                    self.listaIds_topicsClaseClassroom.append(topicClassroom_idApi)
+                    tuplaDatos.append( (topicClassroom_nombre,)  )
 
             self.cargarDatosEnTabla(tuplaDatos=tuplaDatos)
 
@@ -430,40 +497,23 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
     def cargarDatosEnTabla(self,tuplaDatos):
         '''
-        Cargara los datos de los cuestionarios en la tabla, los datos que cargara
-        son los que  vienen en el parametro cuyo nombre es: 'tuplaDatos'
+        Cargara los nombre de los topcis que vienen inmerso en el valor que tomara el
+        parametro con nombre de: 'tuplaDatos'
 
-        :param tuplaDatos:
-         ¿Como vendran los datos?
-         (
-            ( Nombre,Calificadas,Por calificar,Fecha emision,Promedio ),
-            ( Nombre,Calificadas,Por calificar,Fecha emision,Promedio ),
-                                    .
-                                    .
-                                    .
-            ( Nombre,Calificadas,Por calificar,Fecha emision,Promedio )
-        )
-
-        :return:
+        Parametros:
+            tuplaDatos (tuple): Es una tupla de n elementos donde cada elemento de ellas
+            representa el nombre de un topic de la clase de classroom seleccionada.
         '''
 
-        # Si tan siquiera hay un dato...
-
         if len(tuplaDatos)>0:
-
-            # Nombre,Calificadas,Por calificar,Fecha emision,Promedio
             FILAS = len(tuplaDatos)
-            COLUMNAS = self.NO_COLUMNAS
-
-            self.noCuestionarios = FILAS
             self.tableWidget.setRowCount(FILAS)
 
             for f in range(FILAS):
-                for c in range(COLUMNAS):
-                    dato_celda_string = str(tuplaDatos[f][c])
-                    a = QtWidgets.QTableWidgetItem(dato_celda_string)
-                    a.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # change the alignment
-                    self.tableWidget.setItem(f, c, a)
+                dato_celda_string = str(tuplaDatos[f][0])
+                a = QtWidgets.QTableWidgetItem(dato_celda_string)
+                a.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # change the alignment
+                self.tableWidget.setItem(f,0, a)
 
 
 

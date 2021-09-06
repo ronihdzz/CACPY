@@ -3,7 +3,6 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QMessageBox, QAction, QActionGroup, QWidget, QVBoxLayout, QTabWidget, QLabel, QMainWindow
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog, QCompleter
-# from PyQt5.QtGui import Qt
 
 from PyQt5.QtCore import Qt
 from PyQt5 import QtWidgets
@@ -39,39 +38,46 @@ import recursos
 
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
-    '''
-    El objetivo de esta clase  sera mostrar todo el sistema que permite
-    agregar deberes, eliminar los deberes cuando se cumplen,cambiar la posicion del texto de los deberes
-    y cambiar el tamaño del texto de los deberes, por ello esta clase basicamente estara compuesta de
-    una apartado en donde se mostraran todos los deberes a realizar  y unos botones que permitieran hacer
-    lo mencionado anteriormente.
-    '''
 
-    def __init__(self, correo_profesor=None, nombre_profesor=None, curso_id=None, topic_id=None):
+
+    def __init__(self,baseDatosLocalClassRoom,classRoomControl,configuracionCalificador):
+        '''
+        Cuando un profesor abre la aplicación, se espera que ingrese los datos de los parametros, sin
+        embargo pueden no ser obligatorios en caso de que sea la primera vez que el profesor abre
+        la aplicacion.Una vez que el profesor abre la aplicacion este clase tiene como objetivo
+        cargar todos los datos del classroom del profesor.
+
+        Parametros:
+            correo_profesor (str) : representa el correo electronico del profesor que quiere abrir
+            el programa
+            nombre_profesor (str): representa en nombre completo del profesor que quiere abrir
+            el programa
+            curso_id (str) : representa el id del ultimo curso que selecciono el profesor la ultima
+            vez que cerro el programa
+            topic_id (str): representan el id del ultimo topic que selecciono el profesor la ultima
+            vez que cerro el programa
+        '''
+
 
         QtWidgets.QMainWindow.__init__(self)
         recursos.HuellaAplicacion.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
 
-        # Obteniendo los permisos de la API...
-        self.baseDatosLocalClassRoomProgramas = BaseDatos_ClassRoomProgramas(recursos.App_Principal.NOMBRE_COMPLETO_BASE_DATOS)
-        self.baseDatosLocalClassRoomProgramas.crearBaseDatos()
-        self.elClassRoom_control = ClassRoomControl()
-        self.elClassRoom_control.obtenerValor_service_classroom_and_drive()
+        # Se obtiene un objeto que permitira el manejo de la base de datos local
+        # que almacenara los datos de classroom del profesor.
+        self.baseDatosLocalClassRoomProgramas = baseDatosLocalClassRoom
 
-        self.profesor_correo = correo_profesor
-        self.profesor_nombre = nombre_profesor
-        if not (correo_profesor and nombre_profesor):
-            self.profesor_correo, self.profesor_nombre = self.elClassRoom_control.get_datosProfesor(
-                recursos.App_Principal.FOTO_PERFIL_PROFESOR)
-        self.curso_id = curso_id
-        self.topic_id = topic_id
+        # Se obtiene un objeto que podra hacer consultas al classroom del profesor
+        # que abrio la aplicacion
+        self.elClassRoom_control = classRoomControl
 
-        self.configuracionCalificador = CalificadorConfiguracion(
-            curso_api_id=curso_id,
-            programTopic_id=topic_id
-        )
+
+        # esta instancia contiene todos los datos  que se necesitan para administrar la calificacion de  las tareas
+        # de programación del profesor que inicia sesion en el programa
+        self.configuracionCalificador = configuracionCalificador
+
+
 
         self.administradorProgramasClassRoom = AdministradorProgramasClassRoom(
             classroom_control=self.elClassRoom_control,
@@ -79,70 +85,27 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
             baseDatosLocalClassRoom=self.baseDatosLocalClassRoomProgramas
         )
 
-        if curso_id!=None:
-            self.configuracionCalificador.curso_nombre=self.baseDatosLocalClassRoomProgramas.getNombre_curso(curso_id)
-            if topic_id!=None:
-                self.configuracionCalificador.programTopic_nombre =self.baseDatosLocalClassRoomProgramas.getNombre_topic(curso_id,topic_id)
+        if self.configuracionCalificador.getIdApi_cursoClassroom()!=None:
+            self.configuracionCalificador.curso_nombre=self.baseDatosLocalClassRoomProgramas.getNombre_curso(
+                curso_id=self.configuracionCalificador.getIdApi_cursoClassroom()
+            )
+
+            if self.configuracionCalificador.getIdApi_topicClassroom()!=None:
+                self.configuracionCalificador.topic_nombre =self.baseDatosLocalClassRoomProgramas.getNombre_topic(
+                    curso_id=self.configuracionCalificador.getIdApi_cursoClassroom(),
+                    topic_id=self.configuracionCalificador.getIdApi_topicClassroom()
+                )
+
+
+        # Creando la barra de navegacion
+        self.crear_barraNavegacion()
 
 
 
-        ##############################################################################################################
-        # CONFIGURACIONES DE LA TOOL BAR
-        toolbar = self.addToolBar('')
-
-        # self.addToolBar(QtCore.Qt.Lef,toolbar)  # ubicando a la toolbar en la posicion  inferior de la widget
-        self.addToolBar(QtCore.Qt.LeftToolBarArea, toolbar)
-
-        # self.addToolBar(QtCore.Qt.BottomToolBarArea,toolbar) # ubicando a la toolbar en la posicion  inferior de la widget
-        toolbar.setStyleSheet(
-            " *{background:#d8d8d8; border:none} QToolButton:checked {background-color:#94DCD3; border:none;  } ")
-        toolbar.setMovable(False)  # restringir que la toolbar pueda ser movida por el usuario
-        toolbar.setOrientation(QtCore.Qt.Vertical)  # posicion horizontal tool bar
-        toolbar.setContextMenuPolicy(
-            Qt.PreventContextMenu)  # restringir el clic derecho sobre la toolbar para evitar que
-        # el usuario pueda desaparecerla
-
-        toolbar.setIconSize(QtCore.QSize(35, 35))
-        toolbar.setFixedWidth(60)
-
-        self.crear_accionesParaPosiciones()  # crear los atributos 'self.alineacion_izquierda','self.alineacion_centro'
-        # 'self.alineacion_derecha' los cuales son acciones que serviran para
-        # editar las posicion del texto de los deberes
-
-        toolbar.addWidget(
-            self.get_separadorQAction())  # agrendado widget entre cada objeto de la toobar para que tengan separacion entre si
-        toolbar.addAction(self.accion_verInfoProgramador)
-
-        toolbar.addWidget(self.get_expansorWidget())  # agregando una widget con tal anchura que hara el todos
-        # los iconos de la toolbar esten alineados a la izquierda
-
-        toolbar.addAction(self.accion_VerApartadoPerfil)
-        toolbar.addSeparator()
-        toolbar.addWidget(
-            self.get_separadorQAction())  # agrendado widget entre cada objeto de la toobar para que tengan separacion entre si
-
-        toolbar.addAction(self.accion_verApartadoTareas)
-        toolbar.addSeparator()
-        toolbar.addWidget(self.get_separadorQAction())
-
-        toolbar.addAction(self.accion_verApartadoAlumnos)
-        toolbar.addSeparator()
-        toolbar.addWidget(self.get_separadorQAction())
-
-        toolbar.addAction(self.accion_verApartadoConfiguracion)
-        toolbar.addSeparator()
-        toolbar.addWidget(self.get_separadorQAction())
-
-        toolbar.addWidget(self.get_separadorQAction())
-
-        toolbar.addWidget(self.get_expansorWidget())  # agregando una widget con tal anchura que hara el todos
-        # los iconos de la toolbar esten alineados a la izquierda
-
-        # CREACION DE VENTANAS...
 
         # Creando los diferentes apartados del programa:
-        self.ventana_aplicacionPerfil = PerfilMain(profesor_correo=self.profesor_correo,
-                                                   profesor_nombre=self.profesor_nombre,
+        self.ventana_aplicacionPerfil = PerfilMain(profesor_correo=self.configuracionCalificador.getNombreProfesor(),
+                                                   profesor_nombre=self.configuracionCalificador.getCorreoProfesor(),
                                                    profesor_imagenPerfil=recursos.App_Principal.FOTO_PERFIL_PROFESOR
                                                    )
         self.ventana_aplicacionPerfil.cargarPerfilProfesor()
@@ -157,35 +120,49 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
             administradorProgramasClassRoom=self.administradorProgramasClassRoom,
             baseDatosLocalClassRoom=self.baseDatosLocalClassRoomProgramas
         )
-        self.ventana_aplicacionAlumnos = AlumnoMain()
+        self.ventana_aplicacionAlumnos = AlumnoMain(
+            baseDatosLocalClassRoom=self.baseDatosLocalClassRoomProgramas,
+            classRoomControl=self.elClassRoom_control,
+            configuracionCalificador=self.configuracionCalificador
+        )
 
         self.ventanaDatosCreador = Dialog_datosCreador()
 
-        # Agregando las widget de las ventanas
 
+        # Agregando cada  apartados del programa a la list  widget
         self.listWidget.addWidget(self.ventana_aplicacionPerfil)
         self.listWidget.addWidget(self.ventana_aplicacionTareas)
         self.listWidget.addWidget(self.ventana_aplicacionAlumnos)
         self.listWidget.addWidget(self.ventana_aplicacionConfiguracion)
 
-        ##############################################################################################################
-        # CONECTANDO LAS ACCIONES DE LOS OBJETOS:
-        self.accion_VerApartadoPerfil.triggered.connect(self.mostrar_apartadoPerfil)
+        # Conectando las QAction que creo la funcion 'crear_barraNavegacion()' con cada
+        # respectiva parte de la aplicacion.
+
+        self.accion_verApartadoPerfil.triggered.connect(self.mostrar_apartadoPerfil)
         self.accion_verApartadoTareas.triggered.connect(self.mostrar_apartadoTareas)
         self.accion_verApartadoAlumnos.triggered.connect(self.mostrar_apartadoAlumnos)
         self.accion_verApartadoConfiguracion.triggered.connect(self.mostrar_apartadoConfiguracion)
-
         self.accion_verInfoProgramador.triggered.connect(lambda: self.ventanaDatosCreador.show())
 
+        # Contanto las señales de los diferentes apartados del programa
         self.ventana_aplicacionConfiguracion.senal_eligioTopic.connect(self.actuarAnteCambioTopic)
         self.ventana_aplicacionConfiguracion.senal_eligioUnCurso.connect(self.actuarAnteCambioCurso)
         self.ventana_aplicacionConfiguracion.senal_claseNbGrader_cambio.connect(self.actuarAnte_cambio_claseNbGrader)
-
         self.ventana_aplicacionTareas.senal_operacionCompleja.connect(self.actuarAnteEstado_operacionCompleja)
 
-        # Ventana defualt que se mostrara
-        self.accion_VerApartadoPerfil.trigger()
+        self.ventana_aplicacionPerfil.senal_cerrarAplicacion.connect(self.cerrarPrograma)
+
+
+        # Mostrando de forma default el el perfil del apartado del programa
+        self.accion_verApartadoPerfil.trigger()
         self.ventana_aplicacionConfiguracion.cargarDatos()
+
+        self.CERRAR_PROGRAMA=False
+
+    def cerrarPrograma(self):
+        self.CERRAR_PROGRAMA=True
+        self.close()
+
 
     def actuarAnteEstado_operacionCompleja(self,estadoSenalCompleja):
         if estadoSenalCompleja==True:
@@ -200,7 +177,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
 
 
     def actuarAnteCambioCurso(self):
+        print("ACTUANDO ANTE EL CAMBIO DE UNA CLASEEEEEEEE.................")
         self.ventana_aplicacionTareas.actuarCambioCurso()
+        self.ventana_aplicacionAlumnos.actuarCambioCurso()
+
+
+
+
 
     def actuarAnteCambioTopic(self):
         self.ventana_aplicacionTareas.actuarCambioTopic()
@@ -232,20 +215,20 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         programa, en caso de que su respuesta sea afirmativa se cerrara el programa.
         '''
 
-        respuesta = self.msg_cerrarVentana()
-
-        if respuesta:
-            if self.profesor_correo and self.profesor_nombre:
-                with open(recursos.App_Principal.ARCHIVO_DATOS_PROFESOR, 'w') as archivo:
-                    archivo.write('\n'.join((self.profesor_correo, self.profesor_nombre)))
-
-            # respaldando los datos del  curso_id y topic_id de ser necesarios
-            self.configuracionCalificador.respaldarDatos(recursos.App_Principal.ARCHIVO_TRABAJO_PROFESOR)
+        if self.CERRAR_PROGRAMA:
             event.accept()
-        else:
-            event.ignore()  # No saldremos del evento
 
-##########################################################################################################################
+        else:
+            respuestaAfirmativa = self.msg_cerrarVentana()
+            if respuestaAfirmativa:
+                # respaldando los datos del  curso_id y topic_id de ser necesarios
+                self.configuracionCalificador.respaldarDatosProfesor(recursos.App_Principal.ARCHIVO_DATOS_PROFESOR)
+                self.configuracionCalificador.respaldarDatosSesion(recursos.App_Principal.ARCHIVO_TRABAJO_PROFESOR)
+                event.accept()
+            else:
+                event.ignore()  # No saldremos del evento
+
+####################################################################################################################################
 # M E N S A J E S     E M E R G E N T E S :
 ####################################################################################################################################
 
@@ -289,25 +272,85 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
 ################################################################################################################################
 #  C R E A D O R E S :
 ################################################################################################################################
-    def crear_accionesParaPosiciones(self):
+    def crear_barraNavegacion(self):
         '''
-        Creara 3 atributos de instancia que seran objetos de la clase 'QAction', el objetivo
-        de estos 3 atributos de instancia es permitir al usuario modificar la posición del texto
-        de los deberes, aparte esta metodo tambien les asigna una imagen como icono a las 'QAction'
-        y tambien los agrupa de tal manera  que solo una de las 'QAction' puedo estar seleccionado
-        a la vez.
-        Los atributos de instancia que se crean y que son objetos de tipo 'QAction' son los siguientes:
-            A) self.alineacion_izquierda
-            B) self.alineacion_centro
-            C) sel.alineacion_derecha
+        Creara una toolbar la cual sera la barra de navegacion de la aplicacion.
+        Este metodo creara 5 atributos de instancia:
+            self.accion_VerApartadoPerfil
+            self.accion_verApartadoTareas
+            self.accion_verApartadoAlumnos
+            self.accion_verApartadoConfiguracion
+            self.accion_verInfoProgramador
 
-        Estos atributos de instancia en el metodo contructor  se anexaran  a la toolbar y se vincularan algunas
-        señales de estos con los metodos correspondientes.
+        Cada una de ellas es un objeto de la clase 'QAction' y su funcion son ser
+        el medio por el cual el profesor podra navegar por la aplicacion.
+        '''
+
+
+        toolbar = self.addToolBar('')
+
+
+        # QtCore.Qt.BottomToolBarArea= toolbar ubicada abajo
+        # Qt.LeftToolBarArea = toolbar ubicada en la parte izquierda
+        self.addToolBar(QtCore.Qt.LeftToolBarArea, toolbar)
+
+
+        toolbar.setStyleSheet(
+            " *{background:#d8d8d8; border:none} QToolButton:checked {background-color:#94DCD3; border:none;  }"
+        )
+
+        # restringiendo  que la toolbar pueda ser movida por el usuario
+        toolbar.setMovable(False)
+        # establenciendo la horientacion de la tool bar
+        toolbar.setOrientation(QtCore.Qt.Vertical)
+
+        # restringiendo que el clic derecho sobre la toolbar pueda desaparecerla
+        toolbar.setContextMenuPolicy(Qt.PreventContextMenu)
+
+
+        toolbar.setIconSize(QtCore.QSize(35, 35))
+        toolbar.setFixedWidth(60)
+
+        # creando los QAction de la toolbar
+        self.crear_acciones()
+
+
+        toolbar.addWidget( self.get_separadorQAction() )
+
+        toolbar.addAction(self.accion_verInfoProgramador)
+        toolbar.addWidget(self.get_expansorWidget())
+
+        toolbar.addAction(self.accion_verApartadoPerfil)
+        toolbar.addSeparator()
+        toolbar.addWidget(self.get_separadorQAction())
+
+        toolbar.addAction(self.accion_verApartadoTareas)
+        toolbar.addSeparator()
+        toolbar.addWidget(self.get_separadorQAction())
+
+        toolbar.addAction(self.accion_verApartadoAlumnos)
+        toolbar.addSeparator()
+        toolbar.addWidget(self.get_separadorQAction())
+
+        toolbar.addAction(self.accion_verApartadoConfiguracion)
+        toolbar.addSeparator()
+        toolbar.addWidget(self.get_separadorQAction())
+
+        toolbar.addWidget(self.get_expansorWidget())
+
+
+
+
+    def crear_acciones(self):
+        '''
+        Creara 5 atributos de instancia que seran objetos de la clase 'QAction', el objetivo
+        de estos 5 atributos de instancia es crear los medios por los cuales el profesor
+        navegara por toda la interfaz grafica del programa
 
         '''
 
         # Creando los 'QAction' asi como asignandoles nombres y aparte iconos:
-        self.accion_VerApartadoPerfil = QAction(QIcon(":/main/IMAGENES/cuenta.png"), 'Perfil', self)
+        self.accion_verApartadoPerfil = QAction(QIcon(":/main/IMAGENES/cuenta.png"), 'Perfil', self)
         self.accion_verApartadoTareas = QAction(QIcon(":/main/IMAGENES/tareas.png"), 'Tareas', self)
         self.accion_verApartadoAlumnos = QAction(QIcon(":/main/IMAGENES/estudiantes.png"), 'Alumnos', self)
         self.accion_verApartadoConfiguracion = QAction(QIcon(":/main/IMAGENES/configuraciones.png"), 'Configuraciones',
@@ -316,15 +359,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         self.accion_verInfoProgramador = QAction(QIcon(":/main/IMAGENES/info_off.png"), 'Info programador', self)
 
         # Permitiendo que las 'QAction' puedan ser seleccionadas
-        self.accion_VerApartadoPerfil.setCheckable(True)
+        self.accion_verApartadoPerfil.setCheckable(True)
         self.accion_verApartadoTareas.setCheckable(True)
         self.accion_verApartadoAlumnos.setCheckable(True)
         self.accion_verApartadoConfiguracion.setCheckable(True)
 
         # Agrupando las acciones que permitiran al usuario alinear el texto de sus deberes,
         # con la finalidad de que solo una de las acciones  pueda ser seleccionada a la vez
-        self.grupoAcciones = QActionGroup(self.accion_VerApartadoPerfil)
-        self.grupoAcciones.addAction(self.accion_VerApartadoPerfil)
+        self.grupoAcciones = QActionGroup(self.accion_verApartadoPerfil)
+        self.grupoAcciones.addAction(self.accion_verApartadoPerfil)
         self.grupoAcciones.addAction(self.accion_verApartadoTareas)
         self.grupoAcciones.addAction(self.accion_verApartadoAlumnos)
         self.grupoAcciones.addAction(self.accion_verApartadoConfiguracion)

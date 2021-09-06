@@ -1,3 +1,4 @@
+import os
 
 class App_Principal():
 
@@ -17,6 +18,7 @@ class App_Principal():
     NOMBRE_COMPLETO_CREDENCIALES='RECURSOS/API/credentials.json'
 
     RUTA_NB_GRADER = "RECURSOS/NB_GRADER/"
+    RUTA_CARPETA_RECURSOS="RECURSOS/"
 
 
 
@@ -44,6 +46,7 @@ class App_Principal():
 
     @classmethod
     def actualizarUbicaciones(cls ,ubicacion):
+        cls.RUTA_CARPETA_RECURSOS=ubicacion+'RECURSOS/'
         cls.ARCHIVO_DATOS_PROFESOR=ubicacion + cls.ARCHIVO_DATOS_PROFESOR
         cls.ARCHIVO_TRABAJO_PROFESOR=ubicacion+cls.ARCHIVO_TRABAJO_PROFESOR
         cls.FOTO_PERFIL_PROFESOR=ubicacion+ cls.FOTO_PERFIL_PROFESOR
@@ -52,6 +55,34 @@ class App_Principal():
         cls.NOMBRE_COMPLETO_TOKEN=ubicacion+cls.NOMBRE_COMPLETO_TOKEN
         cls.NOMBRE_COMPLETO_CREDENCIALES=ubicacion+cls.NOMBRE_COMPLETO_CREDENCIALES
 
+
+    @classmethod
+    def serciorarExistenciaCarpetaRecursos(cls):
+        '''
+        Si no existen las carpeta de los datos del profesor ni de los datos
+        de la API, entonces se van a crear
+        '''
+
+        os.makedirs(cls.RUTA_CARPETA_RECURSOS+'PROFESOR_EN_CURSO/', exist_ok=True)
+        os.makedirs(cls.RUTA_CARPETA_RECURSOS + 'API/', exist_ok=True)
+        os.makedirs(cls.RUTA_CARPETA_RECURSOS + 'NB_GRADER/', exist_ok=True)
+
+    @classmethod
+    def borrarDatosSesionProfesor(cls):
+        if os.path.isfile(cls.FOTO_PERFIL_PROFESOR):
+            os.remove(cls.FOTO_PERFIL_PROFESOR)
+
+        if os.path.isfile(cls.ARCHIVO_DATOS_PROFESOR):
+            os.remove(cls.ARCHIVO_DATOS_PROFESOR)
+
+        if os.path.isfile(cls.ARCHIVO_TRABAJO_PROFESOR):
+            os.remove(cls.ARCHIVO_TRABAJO_PROFESOR)
+
+        if os.path.isfile(cls.NOMBRE_COMPLETO_BASE_DATOS):
+            os.remove(cls.NOMBRE_COMPLETO_BASE_DATOS)
+
+        if os.path.isfile(cls.NOMBRE_COMPLETO_TOKEN):
+            os.remove(cls.NOMBRE_COMPLETO_TOKEN)
 
 
 class App_datosCreador():

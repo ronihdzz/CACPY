@@ -34,24 +34,24 @@ class AdministradorProgramasClassRoom:
 
 
     def get_datosCurso(self):
-        return (self.configuracionCalificador.curso_api_id,self.configuracionCalificador.curso_nombre)
+        return (self.configuracionCalificador.curso_idApi, self.configuracionCalificador.curso_nombre)
 
     def get_datosTopic(self):
-        return (self.configuracionCalificador.programTopic_id,self.configuracionCalificador.programTopic_nombre)
+        return (self.configuracionCalificador.topic_idApi, self.configuracionCalificador.topic_nombre)
 
 
     def seleccionarBaseLocal_coursework(self,idCourseWork):
         self.baseDatosLocalClassRoom.cambiarEstadoEleccion(
-            curso_id=self.configuracionCalificador.curso_api_id,
-            topic_id=self.configuracionCalificador.programTopic_id,
+            curso_id=self.configuracionCalificador.curso_idApi,
+            topic_id=self.configuracionCalificador.topic_idApi,
             idCourseWorkElegido=idCourseWork
         )
 
 
     def get_dictTareasDejadas(self):
         listaTareas=self.classroom_control.get_listaTareasTopic(
-            self.configuracionCalificador.curso_api_id,
-            self.configuracionCalificador.programTopic_id
+            self.configuracionCalificador.curso_idApi,
+            self.configuracionCalificador.topic_idApi
         )
         #datos = [
         #    tarea.get('id'), curso_id, topic_id, tarea.get('title'),
@@ -64,8 +64,8 @@ class AdministradorProgramasClassRoom:
     def crearTarea(self,titulo,descripccion,colab_link,colab_id):
 
         idTarea= self.classroom_control.create_asignacionPrograma(
-                    course_id=self.configuracionCalificador.curso_api_id,
-                    topic_programas_id=self.configuracionCalificador.programTopic_id,
+                    course_id=self.configuracionCalificador.curso_idApi,
+                    topic_programas_id=self.configuracionCalificador.topic_idApi,
                     colab_link=colab_link,
                     colab_id=colab_id,
                     titulo=titulo,
@@ -88,16 +88,16 @@ class AdministradorProgramasClassRoom:
     def get_courseWorksLibres_baseDatosLocal(self):
 
         tuplaDatosCourseWorks=self.baseDatosLocalClassRoom.get_courseWorksLibres(
-            curso_id=self.configuracionCalificador.curso_api_id,
-            topic_id=self.configuracionCalificador.programTopic_id
+            curso_id=self.configuracionCalificador.curso_idApi,
+            topic_id=self.configuracionCalificador.topic_idApi
         )
         return tuplaDatosCourseWorks
 
     def get_courseWorksAgregados_baseDatosLocal(self):
 
         tuplaDatosCourseWorks=self.baseDatosLocalClassRoom.get_courseWorksAgregados(
-            curso_id=self.configuracionCalificador.curso_api_id,
-            topic_id=self.configuracionCalificador.programTopic_id
+            curso_id=self.configuracionCalificador.curso_idApi,
+            topic_id=self.configuracionCalificador.topic_idApi
         )
         return tuplaDatosCourseWorks
 
@@ -105,14 +105,14 @@ class AdministradorProgramasClassRoom:
     def agregarCourseWorks_baseDatosLocal(self,tuplaDatos):
         self.baseDatosLocalClassRoom.agregar_soloNuevosCourseWorks(
             tuplaDatos=tuplaDatos,
-            curso_id=self.configuracionCalificador.curso_api_id,
-            topic_id=self.configuracionCalificador.programTopic_id
+            curso_id=self.configuracionCalificador.curso_idApi,
+            topic_id=self.configuracionCalificador.topic_idApi
         )
 
     def eliminarCourseWork_baseDatosLocal(self,courseWork_id):
         self.baseDatosLocalClassRoom.eliminarCourseWork(
-            curso_id=self.configuracionCalificador.curso_api_id,
-            topic_id=self.configuracionCalificador.programTopic_id,
+            curso_id=self.configuracionCalificador.curso_idApi,
+            topic_id=self.configuracionCalificador.topic_idApi,
             coursework_id=courseWork_id
         )
 
@@ -122,7 +122,7 @@ class AdministradorProgramasClassRoom:
         #dictEntregas[user_id] = [url, asignacion_id]
 
         datosEntraga=self.classroom_control.list_submissions(
-            course_id=self.configuracionCalificador.curso_api_id,
+            course_id=self.configuracionCalificador.curso_idApi,
             coursework_id=courseWork_id
         )
 
@@ -132,7 +132,7 @@ class AdministradorProgramasClassRoom:
     def getDatosCourseWork(self, courseWork_id):
 
         dictDatosEntrega= self.classroom_control.get_datosEntregas(
-            course_id=self.configuracionCalificador.curso_api_id,
+            course_id=self.configuracionCalificador.curso_idApi,
             coursework_id=courseWork_id
         )
 
@@ -171,7 +171,7 @@ class AdministradorProgramasClassRoom:
         :return:
         '''
 
-        nombreNuevaClase=self.configuracionCalificador.clase_nombreNbGrader
+        nombreNuevaClase=self.configuracionCalificador.claseNbGrader_nombre
 
         # create a custom config object to specify options for nbgrader
         config = Config()

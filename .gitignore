@@ -9,6 +9,7 @@ pyqt5/
 RECURSOS
 PAQUETES_NO_SE_PUDIERON_INSTALAR
 fuentesInformacion.txt
+libreriasNecesarias.txt
 *.pyc
 token.json
 credentials.json

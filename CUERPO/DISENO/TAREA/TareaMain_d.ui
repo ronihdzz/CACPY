@@ -75,6 +75,11 @@
          <height>50</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="styleSheet">
         <string notr="true">border: 1px solid black;
 border-radius:5px;</string>
@@ -138,6 +143,11 @@ border-radius:5px;</string>
            <width>200</width>
            <height>50</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
          </property>
          <property name="styleSheet">
           <string notr="true">border: 1px solid black;
@@ -410,21 +420,6 @@ tarea</string>
             <column>
              <property name="text">
               <string>Fecha creacion</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Calificadas</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Por calificar</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Sin entregar</string>
              </property>
             </column>
            </widget>

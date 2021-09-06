@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="main">
+    <file>IMAGENES/subir_off.png</file>
+    <file>IMAGENES/subir_on.png</file>
     <file>IMAGENES/crear_off.png</file>
     <file>IMAGENES/crear_on.png</file>
     <file>IMAGENES/eliminar_off.png</file>

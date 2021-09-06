@@ -274,9 +274,6 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
             ventanaDialogo.exec_()
 
 
-
-
-
 if __name__ == '__main__':
     app = QApplication([])
     application = AgregadorTopics()
