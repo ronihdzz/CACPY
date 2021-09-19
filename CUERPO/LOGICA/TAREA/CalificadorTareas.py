@@ -28,11 +28,13 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
     def __init__(self,administradorProgramasClassRoom):
 
         QtWidgets.QDialog.__init__(self)
-        recursos.HuellaAplicacion.__init__(self)
         Ui_Dialog.__init__(self)
+        self.setupUi(self)
+        recursos.HuellaAplicacion.__init__(self)
+
 
         self.administradorProgramasClassRoom=administradorProgramasClassRoom
-        self.setupUi(self)
+        
 
         self.LISTA_CALIFICAR = True  # 0=> Se acaba de terminar de calificar
         # 1=> Esta lista para calificar nuevamente

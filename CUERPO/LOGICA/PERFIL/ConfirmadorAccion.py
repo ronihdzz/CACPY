@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QDialog
 import sys, re
 from PyQt5.QtWidgets import QApplication,QMessageBox
 from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
+from PyQt5.QtGui import QIcon
 
 ###############################################################
 #  IMPORTACION DEL DISEÑO...
@@ -69,11 +70,10 @@ class ConfirmadorAccion(QDialog, Ui_Dialog,recursos.HuellaAplicacion):
 
     def concretarAccion(self):
         if self.palabraConfirmacion!=self.lineEdit_firma.text():
-            QMessageBox.critical(self, "Atencion", "Las palabras no coinciden", QMessageBox.Ok)
+            self.msg_lasPalabrasNoCoinciden()
         else:
-            resultado = QMessageBox.warning(self,"Atencion",f"¿Estas seguro de lo que haras?",
-                                             QMessageBox.Yes | QMessageBox.No)
-            if resultado == QMessageBox.Yes:
+            resultado=self.msg_cersiorarDesicion()
+            if resultado:
                 self.firmaEscritaCorrectamente=True
                 self.close()
 
@@ -90,6 +90,67 @@ class ConfirmadorAccion(QDialog, Ui_Dialog,recursos.HuellaAplicacion):
             self.accionConfirmada.emit(True) # mandando nombre
 
         event.accept()
+
+####################################################################################################################################
+# M E N S A J E S     E M E R G E N T E S :
+####################################################################################################################################
+
+    def msg_cersiorarDesicion(self):
+        '''
+        Mostrara un cuadro de dialogo con el objetivo de: preguntarle el profesor
+        si en realidad desea cerrar la aplicacion
+
+        Returns:
+            True : En caso de que el profesor presione el boton de 'Si'
+            False: En caso de que el profesor presione el boton de 'No'
+        '''
+        
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Warning)
+        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = "¿Estas seguro de lo que haras?"
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            return True
+        return False
+
+
+
+
+    def msg_lasPalabrasNoCoinciden(self):
+        '''
+        Mostrara un cuadro de dialogo con el objetivo de: informarle al
+        profesor la razon por la cual no puede acceder al apartado de
+        alumnos.
+        '''
+
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Critical)
+        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = "Las palabras no coinciden"
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+        btn_ok.setText('Entendido')
+        ventanaDialogo.exec_()
+
+
+
+
 
 ########################################################################################
 if __name__ == "__main__":

@@ -1,21 +1,47 @@
+
+'''
+ConfiguracionMain.py :  Contine una sola  clase, la clase 'Main', la cual  es la clase principal 
+                        ya que se encarga de unificar  todos los scripts de python que realice 
+                        para dar vida  a esta aplicacion, sin embargo es importante  aclarar 
+                        que a pesar de ello este script se encuentra en este  apartado por que 
+                        para hacer una instancia  de la  clase 'Main' se necesitan algunos objetos 
+                        y configuraciones  extras las cuales para hacer un  codigo mas  limpio se 
+                        efectuan en el script 'CACPY.py' el cual es la que  crea una  instancia de 
+                        esta clase  entre otras cosas, por tal motivo si se desea ejecutar todo el 
+                        sofware el script que debe ser ejecutado es el script : 'CACPY.py'
+'''
+
+__author__      = "David Roni Hernández Beltrán"
+__email__ = "roni.hernandez.1999@gmail.com"
+
+
+###########################################################################################################################################
+# librerias estandar
+###########################################################################################################################################
+
+
+
+###########################################################################################################################################
+# Paquetes de terceros
+###########################################################################################################################################
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import  QMessageBox
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
+from PyQt5.QtCore import pyqtSignal  
 from PyQt5 import QtCore,QtGui
 
 
+###########################################################################################################################################
+# fuente local
+###########################################################################################################################################
+import recursos
+# diseño de este apartado de la aplicación
+from CUERPO.DISENO.CONFIGURACION.ConfiguracionMain_d import Ui_Form  
 from CUERPO.LOGICA.CONFIGURACION.CambiadorClases import CambiadorClases
 from CUERPO.LOGICA.CONFIGURACION.CambiadorClasesNbGrader import CambiadorClases_NbGrader
 from CUERPO.LOGICA.CONFIGURACION.AgregadorTopcis import AgregadorTopics
 from CUERPO.LOGICA.CONFIGURACION.CambiadorCarpetaDrive import CambiadorCarpetaDrive
-
-###############################################################
-#  IMPORTACION DEL DISEÑO...
-##############################################################
-from CUERPO.DISENO.CONFIGURACION.ConfiguracionMain_d import Ui_Form
-import recursos
 
 
 
@@ -35,11 +61,27 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
     def __init__(self,baseDatosLocalClassRoom,classRoomControl,configuracionCalificador):
+        '''
+        Parametros:
+        baseDatosLocalClassRoom (objeto de la clase: BaseDatos_ClassRoomProgramas): dicho
+        objeto permitira acceder a la base de datos local, la cual almacena los datos de
+        lo 'CourseWork' asi como los 'Topics' y 'Clases' del ClassRoom del profesor que ha
+        iniciado sesión
+
+        classRoomControl (objeto de la clase: ClassRoomControl): dicho objeto es una capa
+        de abstracción para poder hacer algunas peticiones al ClassRoom del profesor, asi
+        como al GoogleDrive del profesor
+
+        configuracionCalificador (objeto de la clase: CalificadorConfiguracion): dicho objeto
+        contiene ordenados los datos de configuracion que necesitara el programa, asi como tambien
+        contiene metodos que serviran para obtener o editar dichos datos
+        '''
 
         QtWidgets.QWidget.__init__(self)
-        recursos.HuellaAplicacion.__init__(self)
         Ui_Form.__init__(self)
         self.setupUi(self)
+        recursos.HuellaAplicacion.__init__(self)
+        
 
 
         # Objetos que ayudaran a la clase a cargar los datos
@@ -71,12 +113,16 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.ventana_cambiadorClases_NbGrader=CambiadorClases_NbGrader()
 
 
-        # Esta ventana permite elegir un topic de la clase de classrom seleccinada
+        # Esta ventana permitirar agregar  topics de interes
         self.ventana_agredadorTopics=AgregadorTopics(
             baseDatosLocalClassRoom=self.baseDatosLocalClassRoom,
             classRoomControl=self.classRoomControl
         )
 
+
+        # Esta ventana permitira elegir la carpeta de GoogleDrive en la
+        # que se almacenaran las retroalimetnaciones de las tareas de los
+        # estudiantes.
         self.ventana_cambiadorCarpetaDrive =CambiadorCarpetaDrive(
             classRoomControl=self.classRoomControl,
             configuracionCalificador=self.configuracionCalificador
@@ -95,10 +141,6 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             self.bel_nombreCarpetaDriveMadre.setText("Sin ninguna carpeta drive seleccionada")
 
 
-
-
-
-
         # Conectando señales de ventana
         self.ventana_cambiadorClases.senal_eligioUnCurso.connect(self.cambiar_claseClassroom)
         self.ventana_cambiadorClases_NbGrader.senal_eligioUnCurso.connect(self.cambiar_claseNbGrader)
@@ -108,17 +150,18 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
 
-        # SEÑALES DE LOS OBJETOS DE LA CLASE:
+        # Conectando las señales de los objetos de la clase 
         self.tableWidget.doubleClicked.connect(self.cambiar_topicClassroom)
         self.btn_agregarApartado.clicked.connect( self.mostrarVentana_agregadoraTopcis )
         self.btn_editarClase_classroom.clicked.connect(self.procesoCambiarClase)
-        self.btn_editarClase_NbGrader.clicked.connect(lambda : self.ventana_cambiadorClases_NbGrader.show())
-        self.btn_editarCarpetaMadre.clicked.connect(lambda : self.ventana_cambiadorCarpetaDrive.show() )
+        self.btn_editarClase_NbGrader.clicked.connect(self.procesoCambiarClaseNbGrader)
+        self.btn_editarCarpetaMadre.clicked.connect(self.procesoCambiarCarpetaDrive )
 
 
 
 
-        # estableciendo opciones a partir del clic derecho a los items de la tabla
+        # haciendo que la tabla  a partir del clic derecho muestre un 
+        # menu que permita eliminar renglones de estaa los items de la tabla
         # con la finalidad de que aparezca la opcion de eliminar objetos
         self.tableWidget.installEventFilter(self)
 
@@ -223,6 +266,20 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             self.ventana_cambiadorClases.show()
 
 
+    def procesoCambiarClaseNbGrader(self):
+
+        respuestaAfirmativa=self.msg_preguntarAcercaCambioClase_NbGrader()
+        if respuestaAfirmativa:
+            self.ventana_cambiadorClases_NbGrader.show()
+
+
+    def procesoCambiarCarpetaDrive(self):
+
+        respuestaAfirmativa=self.msg_preguntarAcercaCambioCarpetaDrive()
+        if respuestaAfirmativa:
+            self.ventana_cambiadorCarpetaDrive.show()
+
+        
 
 ##################################################################################################################################################
 # TOPICS
@@ -597,6 +654,53 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         if ventanaDialogo.clickedButton() == btn_yes:
             return True
         return False
+
+
+    def msg_preguntarAcercaCambioClase_NbGrader(self):
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Question)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = "¿Seguro que quieres cambiar de la clase NbGrader seleccionada?"
+
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            return True
+        return False
+
+
+
+    def msg_preguntarAcercaCambioCarpetaDrive(self):
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Question)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = "¿Seguro que quieres cambiar la carpeta de drive en donde se almacenan todas "
+        mensaje+="las retroalimentaciones de tus cursos de programacion?"
+
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            return True
+        return False
+
 
 
     def msg_preguntarAcercaCambioTopic(self,apartadoProgram_nombre):

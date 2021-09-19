@@ -13,7 +13,6 @@ from CUERPO.DISENO.TAREA.TareaMain_d import  Ui_Form
 from CUERPO.LOGICA.TAREA.AgregadorCourseWork import AgregadorCourseWorks
 from CUERPO.LOGICA.TAREA.CreadorTarea import CreadorTareas
 from CUERPO.LOGICA.TAREA.CalificadorTareas import CalificadorTareas
-from CUERPO.LOGICA.TAREA.CalificadorEnDirecto import CalificadorEnDirecto
 
 import recursos
 
@@ -53,11 +52,8 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         )
 
         self.ventanaCreadoraTareas=CreadorTareas(
-            listaNombresTareasYaCreadas=[],
             administradorProgramasClassRoom=self.administradorProgramasClassRoom
         )
-
-        self.ventanaCalificadoraTareas_enDirecto=CalificadorEnDirecto()
 
         self.ventanaCalificadoraTareas=CalificadorTareas(
             administradorProgramasClassRoom=self.administradorProgramasClassRoom)
@@ -69,8 +65,6 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.btn_crearTarea.clicked.connect(lambda : self.ventanaCreadoraTareas.show() )
         self.btn_importarTarea.clicked.connect( self.mostrarVentanaAgregadora_tareas )
         self.btn_regresar.clicked.connect(self.regresarMenu)
-        self.btn_calificarVivo.clicked.connect( lambda : self.ventanaCalificadoraTareas_enDirecto.show() )
-
         self.ventanaAgregadoraTareas.senal_courseWork_selec.connect(self.agregarCouseWork_aTabla)
         self.ventanaCreadoraTareas.senalUsuarioCreoTarea.connect(self.agregarCouseWork_aTabla)
         self.ventanaCalificadoraTareas.senal_calificadorTareas_cerro.connect( self.terminarProcesoCalificadorTareas )
@@ -253,6 +247,7 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         if nombre!=None:
             self.bel_nombreCurso.setText(nombre)
             self.tableWidget.setRowCount(0)
+        self.regresarMenu()
 
 
     def actuarCambioTopic(self):
@@ -262,6 +257,7 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
             self.bel_nombreTopic.setText(nombre)
             self.tableWidget.setRowCount(0)
             self.cargarDatos()
+        self.regresarMenu()
 
 
 
@@ -287,10 +283,6 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
 
     def regresarMenu(self):
         self.listWidget.setCurrentIndex(0)
-
-
-
-
 
 
     def configurarTabla(self):

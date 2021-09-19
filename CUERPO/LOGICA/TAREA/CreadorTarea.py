@@ -11,19 +11,19 @@ from functools import partial
 
 from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QDoubleValidator,QRegExpValidator
-
+from PyQt5 import QtCore,QtGui
 
 ###############################################################
 #  IMPORTACION DEL DISEÑO...
 ##############################################################
 from CUERPO.DISENO.TAREA.CreadorTarea_d import Ui_Dialog
-
+import recursos
 ###############################################################
 #  IMPORTACIONES DE LAS DEMAS VENTANAS LOGICAS...
 ##############################################################
 
 
-class CreadorTareas(QtWidgets.QDialog, Ui_Dialog):
+class CreadorTareas(QtWidgets.QDialog, Ui_Dialog,recursos.HuellaAplicacion):
     # las siguientes constantes almacenan los nombres de las imagenes que cambiaran en función
     # del comportamiento de cada boton...
 
@@ -37,45 +37,38 @@ class CreadorTareas(QtWidgets.QDialog, Ui_Dialog):
 
     TUPLA_RESOLUCION_DUDAS = (
 
-        '''Restricciones:
-Cada campo tiene sus propias restricciones, 
-para poder verlas debes dar click en el 
-boton que tiene forma de tache o  paloma,
-este boton se encuentra a lado derecho de
-cada campo.''',
+        "Restricciones: cada campo tiene sus propias restricciones "
+        "para poder verlas debes dar click en el  boton que tiene forma " 
+        "de tache o  paloma, este boton se encuentra a lado derecho de "
+        "cada campo.",
 
-        '''El nombre de usuario:
-    -Solo puede ser una palabra.
-    -Solo puede estar conformado de
-    letras minusculas y numeros.
-    -No debe coincidir con los 
-    nombres ya existentes:''',
+        "Recuerda que el nombre de la tarea: solo puede ser una palabra, "
+        "solo puede estar conformado de letras minusculas y numeros y no debe " 
+        "tener espacios en blanco",
 
-        '''La edad:
-    -La edad minima que debes tener
-    son 4 años.''',
+        "Aqui debes inscrustar el link que se te adjunta cuando se desea "
+        "compartir un google colab, cabe  mencionar que no importa que tipo " 
+        "de permisos tenga el google colab, solo debes adjuntar el link.",
 
-        '''La contraseña:
-    -Su unica restricción es que no 
-    debe tener espacios en blanco.''',
+        "Aqui debes inscrutar el id del google colab, es importante mencionar "
+        "que el id se encuentra dentro del link que incrustate en el apartado "
+        "anterior.",
 
-        '''La repetición de contraseña:
-    -Debe ser exactamente la misma que 
-    la contraseña.'''
+        "Por lo menos debes escribir una instruccion breve acerca de lo que lo " 
+        "que trata la tarea que deseas adjuntar."
     )
 
     senalUsuarioSoloCerroVentana=pyqtSignal(bool)
     senalUsuarioCreoTarea=pyqtSignal(tuple)
 
 
-
-    def __init__(self,listaNombresTareasYaCreadas,administradorProgramasClassRoom):
+    def __init__(self,administradorProgramasClassRoom):
 
         Ui_Dialog.__init__(self)
         QtWidgets.QDialog.__init__(self)
         self.setupUi(self)
+        recursos.HuellaAplicacion.__init__(self)
 
-        self.listaNombresTareasYaCreadas = listaNombresTareasYaCreadas
 
         self.agruparVariablesInstancia()
         self.conectarObjetos_conMetodos()
@@ -89,19 +82,6 @@ cada campo.''',
 #############################################################################################################################################
 
 
-
-    def informar(self,idDuda):
-        '''
-        Lo que hace esta funcion es que en funcion del boton de estado que
-        se oprima se mostrara la restriccion de su apartado...
-        '''
-        mensaje = self.TUPLA_RESOLUCION_DUDAS[idDuda]
-        if idDuda==1: #si el id de la duda es del nombre de usuario
-           mensaje+= ( "\n\t-" + "\n\t-".join(self.listaNombresTareasYaCreadas) )
-
-        QMessageBox.information(self, 'bla bla bla ',mensaje,
-                             QMessageBox.Ok)
-
     def validarEntradas(self, id_le):
         '''
         Lo que hara el siguiente metodo es validar los datos que el usuario ingresa
@@ -114,13 +94,6 @@ cada campo.''',
         if self.dict_datosPediremos[id_le][0].text() != "":
             self.dict_datosPediremos[id_le][1] = True
 
-            # Si el dato que se modifico fue el nombre pero ese nombre ya existe..
-            # entonces...
-            if self.dict_datosPediremos[id_le][0] == self.lineEdit_nombreTarea:  # si el dato que se esta modificando
-                # es el nombre de usuario debemos preguntar
-                # lo siguiente...
-                if self.lineEdit_nombreTarea.text() in self.listaNombresTareasYaCreadas:
-                    self.dict_datosPediremos[id_le][1] = False
         else:
             self.dict_datosPediremos[id_le][1] = False
 
@@ -170,7 +143,7 @@ cada campo.''',
 
         # en funcion del boton estado que se presione mostraremos su respectivo mensaje...
         for x in tuple(self.dict_btnEstadoAviso.keys()):
-            self.dict_btnEstadoAviso[x].clicked.connect(partial(self.informar, x))
+            self.dict_btnEstadoAviso[x].clicked.connect(partial(self.msg_informar, x))
 
         self.btn_asignarTarea.clicked.connect(self.terminarRegistro)
 
@@ -181,21 +154,11 @@ cada campo.''',
         validator = QRegExpValidator(QRegExp("[0-9a-zA-Z_-]{1,30}"))  # maximo solo 20 caracteres
         self.lineEdit_nombreTarea.setValidator(validator)
 
-        # validacion del link de acceso solo lectura..
-        #validator = QRegExpValidator(QRegExp("[^ ]{1,500}"))
-        #self.lineEdit_urlSoloLectura.setValidator(validator)
-        #self.lineEdit_idArchivo.setValidator(validator)
-
 
         self.textEdit_indicaciones.text=self.textEdit_indicaciones.toPlainText
         self.plainText_urlSoloLectura.text=self.plainText_urlSoloLectura.toPlainText
 
-        completer = QCompleter(self.listaNombresTareasYaCreadas)
-        self.lineEdit_nombreTarea.setCompleter(completer)
-
-
-
-
+ 
 
 #############################################################################################################################################
 #      A C C I O N E S     F I N A L E S :
@@ -233,27 +196,12 @@ cada campo.''',
                     tuplaDatosMandar = (idTarea,titulo,fechaCreacion)
                     self.senalUsuarioCreoTarea.emit(tuplaDatosMandar)
 
-                    mensajeBienvenida = '''
-    Felicidades, tu tarea ha sido registrada correctamente.'''
-                    QMessageBox.information(self,'BLA BLA BLA ',
-                                            mensajeBienvenida,
-                                            QMessageBox.Ok)
+                    self.msg_exitoCrearTarea()
                     self.USUARIO_SE_REGISTRO=True
                     self.close()
 
             else:
-                mensajeError = '''El registro no se puede realizar porque:
-    tienes errores en los datos requeridos.
-    Por favor respeta las restricciones de 
-    cada campo,si tienes dudas acerca de 
-    cuales son, da click en el boton que
-    tiene forma de tache o paloma, el cual
-    se encuentra al lado derecho de cada 
-    campo.'''
-                QMessageBox.critical(self,'BLA BLA BLA',
-                                     mensajeError,
-                                     QMessageBox.Ok)
-
+                self.msg_errorCrearTarea()
 
     def borrarTodo(self):
         self.lineEdit_nombreTarea.setText("")
@@ -273,24 +221,117 @@ cada campo.''',
             event.accept()
 
         else:
-
-            mensage='''¿En verdad deseas salir?
-Si sales tus datos ingresados 
-se perderan'''
-            resultado = QMessageBox.question(self,'BLA BLA BLA ',
-                                             mensage,
-                                             QMessageBox.Yes | QMessageBox.No)
-            if resultado == QMessageBox.Yes:
+            
+            resultado = self.msg_cerrarVentana()
+            if resultado:
                 event.accept()
                 self.senalUsuarioSoloCerroVentana.emit(True)
             else:
                 event.ignore()  # No saldremos del evento
 
 
+##################################################################################################################################################
+# MENSAJES
+##################################################################################################################################################
+
+
+    def msg_cerrarVentana(self):
+        '''
+        Mostrara un cuadro de dialogo con el objetivo de: preguntarle el profesor
+        si en realidad desea cerrar la aplicacion
+
+        Returns:
+            True : En caso de que el profesor presione el boton de 'Si'
+            False: En caso de que el profesor presione el boton de 'No'
+        '''
+        
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Question)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = "¿Esta seguro que deseas salir de la aplicacion?"
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            return True
+        return False
+
+
+
+
+
+    def msg_informar(self,idDuda):
+        '''
+        Lo que hace esta funcion es que en funcion del boton de estado que
+        se oprima se mostrara la restriccion de su apartado...
+        '''
+
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Information)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = self.TUPLA_RESOLUCION_DUDAS[idDuda]
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+        btn_ok.setText('Entendido')
+        ventanaDialogo.exec_()
+
+    def msg_exitoCrearTarea(self):
+        
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Information)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje= "Felicidades, tu tarea ha sido registrada correctamente."
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+        btn_ok.setText('Entendido')
+        ventanaDialogo.exec_()
+
+
+
+    def msg_errorCrearTarea(self):
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Critical)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje="El registro no se puede realizar porque:tienes "
+        mensaje+="errores en los datos requeridos. Por favor respeta las "
+        mensaje+="restricciones de  cada campo,si tienes dudas acerca de "
+        mensaje+="cuales son, da click en el boton que tiene forma de tache " 
+        mensaje+=" o paloma, el cual se encuentra al lado derecho de cada campo."
+
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+        btn_ok.setText('Entendido')
+        ventanaDialogo.exec_()
+
+
+
 if __name__ == "__main__":
     # Cambiando de direcciones sus carpetas u archivos...
     app = QtWidgets.QApplication([])
-    application = CreadorTareas(listaNombresTareasYaCreadas=["roni99","jorge","dilan"])
+    application = CreadorTareas()
     application.show()
     sys.exit(app.exec())
 

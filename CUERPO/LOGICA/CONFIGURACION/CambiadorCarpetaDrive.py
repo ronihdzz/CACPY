@@ -24,9 +24,10 @@ class CambiadorCarpetaDrive(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacio
 
     def __init__(self,configuracionCalificador,classRoomControl):
         QtWidgets.QDialog.__init__(self)
-        recursos.HuellaAplicacion.__init__(self)
         Ui_Dialog.__init__(self)
         self.setupUi(self)
+        recursos.HuellaAplicacion.__init__(self)
+        
 
         self.classRoomControl=classRoomControl
         self.configuracionCalificador=configuracionCalificador

@@ -24,9 +24,12 @@ class CambiadorClases_NbGrader(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplica
 
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
-        recursos.HuellaAplicacion.__init__(self)
         Ui_Dialog.__init__(self)
         self.setupUi(self)
+        recursos.HuellaAplicacion.__init__(self)
+        
+
+        
         self.bel_tipoClase.setText("Clase Nb-grader")
 
 

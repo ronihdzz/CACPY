@@ -17,6 +17,7 @@ import recursos
 
 
 class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
+    TOKEN_GENERADO_EXITOSAMENTE=True
 
 
     def __init__(self,classRoomControl):
@@ -27,9 +28,10 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
         self.classRoomControl=classRoomControl
 
         QtWidgets.QMainWindow.__init__(self)
-        recursos.HuellaAplicacion.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
+        recursos.HuellaAplicacion.__init__(self)
+        
 
         self.btn_cargarArchivos.clicked.connect(self.cargarArchivo)
         self.btn_finalizar.clicked.connect(self.generarToken)
@@ -38,6 +40,8 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
         self.nombreArchivoElegido=None
 
         self.ARCHIVO_VALIDO=False
+
+        CargadorCrendencial.TOKEN_GENERADO_EXITOSAMENTE=False
 
 
 
@@ -74,6 +78,7 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
                     self.classRoomControl.obtenerValor_service_classroom_and_drive()
                     self.msg_exitoCargarArchivo()
                     self.ARCHIVO_VALIDO=True
+                    self.close()
 
                 except Exception as e:
                     self.classRoomControl.eliminarArchivoCredenciales()
@@ -94,6 +99,7 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
 
 
         if self.ARCHIVO_VALIDO:
+            CargadorCrendencial.TOKEN_GENERADO_EXITOSAMENTE=True
             event.accept()
         else:
             respuestaAfirmativa = self.msg_cerrarVentana()
@@ -176,9 +182,9 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
         ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
         ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
-        mensaje = "El archivo de credenciales cargado es valido y el token ya se ha generado " \
-                  ",por favor cierra la aplicacion y vuelve a ejecutar el programa, y ya podras " \
-                  "trabajar."
+        mensaje = "Felicidades, el archivo de credenciales cargado es valido y el token ya se ha generado " \
+                  ",a continuacion se cerrara esta ventana y se ejecutara el programa para que ya " \
+                  "puedas comenzar a utilizarlo."
 
 
         mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)

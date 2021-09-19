@@ -24,9 +24,10 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 
     def __init__(self,baseDatosLocalClassRoom,classRoomControl):
         QtWidgets.QDialog.__init__(self)
-        recursos.HuellaAplicacion.__init__(self)
         Ui_Dialog.__init__(self)
         self.setupUi(self)
+        recursos.HuellaAplicacion.__init__(self)
+        
 
         self.baseDatosLocalClassRoom=baseDatosLocalClassRoom
         self.classRoomControl=classRoomControl
@@ -40,31 +41,32 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 
 
 
-    def cargarDatosTopics(self,curso_id):
 
-        # Cuando se crean datos se crea el atributo curso_id
+    def cargarDatosTopics(self,curso_id):
+        '''
+        Para que esto sea habra el apartado de tareas debe tener definido
+        un curso y un topic asi que ya no seran necesarias validaciones
+        en ese tema
+
+        :param curso_id:
+        :return:
+        '''
+
+        # obteniendo los topics cuyos datos ya fueron descargados de la API de classroom,
+        # pero que no han sido seleccionados por el profesor como topics de interes.
         self.curso_id=None
         if curso_id:
             self.curso_id=curso_id
-            tuplaDatosTopics=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=curso_id)
-            print("TUPLA DESDE BASE LOCAL:",tuplaDatosTopics)
 
-            #tuplaDatosClases=self.baseDatosLocalClassRoom.get_tuplaClases()
-            #print("CLASES BASE DE DATOS:",tuplaDatosClases)
+
+            topics_tuplaDatos=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=curso_id)
             self.dictTopics = {}
             self.listWidget_topicsTareasProgramas.clear()
 
-            if tuplaDatosTopics==() or len(tuplaDatosTopics)==0:
-                tuplaDatosTopics=self.classRoomControl.get_listaDatosTopicsCurso(self.curso_id)
-                print("TEMAS DEL CURSO API: ",tuplaDatosTopics)
-                if tuplaDatosTopics !=() and len(tuplaDatosTopics)!= 0:
-                    self.baseDatosLocalClassRoom.agregar_soloNuevosTopics(
-                        tuplaDatos=tuplaDatosTopics,
-                        curso_api_id=self.curso_id
-                    )
 
-            if tuplaDatosTopics != () and len(tuplaDatosTopics) != 0:
-                for topic_api_id,topic_nombre in tuplaDatosTopics:
+
+            if topics_tuplaDatos != () and len(topics_tuplaDatos) != 0:
+                for topic_api_id,topic_nombre in topics_tuplaDatos:
                     self.dictTopics[topic_api_id]=topic_nombre
 
                 self.listWidget_topicsTareasProgramas.addItems(  tuple( self.dictTopics.values() )  )
@@ -78,10 +80,13 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
                 # eliminamos todas los elementos de la base de datos
                 # consultamos y agregamos a la base de datos
 
+
+                # Consultamos los datos en la API
                 tuplaDatosTopics = self.classRoomControl.get_listaDatosTopicsCurso(self.curso_id)
                 print("TDODOS LOS TOPICS API: ", tuplaDatosTopics)
 
                 if tuplaDatosTopics!=() and len(tuplaDatosTopics) != 0:
+                    # Si hay datos vamos a descargarlos en la base de datos local
                     self.baseDatosLocalClassRoom.agregar_soloNuevosTopics(
                         tuplaDatos=tuplaDatosTopics,
                         curso_api_id=self.curso_id
@@ -279,3 +284,42 @@ if __name__ == '__main__':
     application = AgregadorTopics()
     application.show()
     app.exit(app.exec())
+
+
+
+
+"""
+def cargarDatosTopics(self,curso_id):
+    '''
+    Mostrara 
+    
+    
+    '''
+
+    # Cuando se crean datos se crea el atributo curso_id
+    self.curso_id=None
+    if curso_id:
+        self.curso_id=curso_id
+        tuplaDatosTopics=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=curso_id)
+        print("TUPLA DESDE BASE LOCAL:",tuplaDatosTopics)
+
+        #tuplaDatosClases=self.baseDatosLocalClassRoom.get_tuplaClases()
+        #print("CLASES BASE DE DATOS:",tuplaDatosClases)
+        self.dictTopics = {}
+        self.listWidget_topicsTareasProgramas.clear()
+
+        if tuplaDatosTopics==() or len(tuplaDatosTopics)==0:
+            tuplaDatosTopics=self.classRoomControl.get_listaDatosTopicsCurso(self.curso_id)
+            print("TEMAS DEL CURSO API: ",tuplaDatosTopics)
+            if tuplaDatosTopics !=() and len(tuplaDatosTopics)!= 0:
+                self.baseDatosLocalClassRoom.agregar_soloNuevosTopics(
+                    tuplaDatos=tuplaDatosTopics,
+                    curso_api_id=self.curso_id
+                )
+
+        if tuplaDatosTopics != () and len(tuplaDatosTopics) != 0:
+            for topic_api_id,topic_nombre in tuplaDatosTopics:
+                self.dictTopics[topic_api_id]=topic_nombre
+
+            self.listWidget_topicsTareasProgramas.addItems(  tuple( self.dictTopics.values() )  )
+"""

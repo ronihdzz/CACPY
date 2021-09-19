@@ -5,11 +5,13 @@
 # *.db                      ignora todos los archivos con terminacion *.db
 # RECURSOS/NB_GRADER/course_1
 # RECURSOS/PROFESOR_EN_CURSO
-pyqt5/
-RECURSOS
+cacpy-env/
+RECURSOS/API
+RECURSOS/PROFESOR_EN_CURSO
 PAQUETES_NO_SE_PUDIERON_INSTALAR
 fuentesInformacion.txt
 libreriasNecesarias.txt
+nuevasModificaciones
 *.pyc
 token.json
 credentials.json

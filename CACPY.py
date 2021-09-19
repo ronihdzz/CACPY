@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# title: CACPY.py
+# description: Este es el script principal que llama a todos los demas 
+#              scripts que forman parte del programa. 
+# author: David Roni Hernández Beltrán
+# date: Septiembre del 2021
+# ===================== ================================================  ===================== =======
+
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import  Qt
 from PyQt5.QtGui import QPixmap
@@ -30,15 +38,15 @@ if __name__ == '__main__':
     recursos.App_Principal.actualizarUbicaciones(ruta_direccionTotal)
     recursos.App_Principal.serciorarExistenciaCarpetaRecursos()
 
-
-    exiteArchivoCredenciales=os.path.isfile(recursos.App_Principal.NOMBRE_COMPLETO_CREDENCIALES)
+    existeArchivoToken=os.path.isfile(recursos.App_Principal.NOMBRE_COMPLETO_TOKEN)
+    existeArchivoCredenciales=os.path.isfile(recursos.App_Principal.NOMBRE_COMPLETO_CREDENCIALES)
 
     # Se obtiene un objeto que podra hacer consultas al classroom del profesor
     # que abrio la aplicacion
     elClassRoomControl=ClassRoomControl()
 
 
-    if not exiteArchivoCredenciales:
+    if existeArchivoToken==False and existeArchivoCredenciales==False:
         app = QApplication(sys.argv)
         splash_pix = QPixmap(recursos.App_Principal.IMAGEN_SPLASH_SCREEN)
         splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
@@ -55,8 +63,14 @@ if __name__ == '__main__':
         splash.finish(form)
         app.exec_()
 
+        
 
-    else:
+    print(CargadorCrendencial.TOKEN_GENERADO_EXITOSAMENTE)
+    print(CargadorCrendencial.TOKEN_GENERADO_EXITOSAMENTE)
+    print(CargadorCrendencial.TOKEN_GENERADO_EXITOSAMENTE)
+    print(CargadorCrendencial.TOKEN_GENERADO_EXITOSAMENTE)
+
+    if CargadorCrendencial.TOKEN_GENERADO_EXITOSAMENTE:
 
         ejecutarPrograma=True
 
@@ -90,6 +104,21 @@ if __name__ == '__main__':
             baseDatosLocalClassRoomProgramas.crearBaseDatos()
 
 
+            # Obteniendo el nombre de la clase de classroom seleccionada, si 
+            # su id esta definido
+            if configuracionCalificador.getIdApi_cursoClassroom()!=None:
+                configuracionCalificador.curso_nombre=baseDatosLocalClassRoomProgramas.getNombre_curso(
+                    curso_id=configuracionCalificador.getIdApi_cursoClassroom()
+                )
+
+                # Obteniendo el nombre del topic seleccionado, si su id esta definido
+                if configuracionCalificador.getIdApi_topicClassroom()!=None:
+                    configuracionCalificador.topic_nombre =baseDatosLocalClassRoomProgramas.getNombre_topic(
+                        curso_id=configuracionCalificador.getIdApi_cursoClassroom(),
+                        topic_id=configuracionCalificador.getIdApi_topicClassroom()
+                    )
+
+
             # Si no hay datos registrados del profesor entonces se pediran
             if configuracionCalificador.getNombreProfesor()==None:
                 correo,nombre= elClassRoomControl.get_datosProfesor(
@@ -100,21 +129,37 @@ if __name__ == '__main__':
                     correo=correo
                 )
 
-            app = QApplication(sys.argv)
-            splash_pix = QPixmap(recursos.App_Principal.IMAGEN_SPLASH_SCREEN)
-            splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
-            splash.setMask(splash_pix.mask())
-            splash.show()
-            app.processEvents()
+            print("HOLIWWIIIIIIISSSSSSSSSSSS!!!")
 
-            # Simulate something that takes time
-            time.sleep(1)
-            form = Main(
-                classRoomControl=elClassRoomControl,
-                baseDatosLocalClassRoom=baseDatosLocalClassRoomProgramas,
-                configuracionCalificador=configuracionCalificador
-            )
-            form.show()
-            splash.finish(form)
-            app.exec_()
+            if existeArchivoToken==False and existeArchivoCredenciales==False:
+                #app = QApplication(sys.argv)
+                time.sleep(1)
+                form = Main(
+                    classRoomControl=elClassRoomControl,
+                    baseDatosLocalClassRoom=baseDatosLocalClassRoomProgramas,
+                    configuracionCalificador=configuracionCalificador
+                )
+                form.show()
+                app.exec_()
+
+            else:
+                app = QApplication(sys.argv)
+                splash_pix = QPixmap(recursos.App_Principal.IMAGEN_SPLASH_SCREEN)
+                splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
+                splash.setMask(splash_pix.mask())
+                splash.show()
+                app.processEvents()
+
+                # Simulate something that takes time
+                time.sleep(1)
+                form = Main(
+                    classRoomControl=elClassRoomControl,
+                    baseDatosLocalClassRoom=baseDatosLocalClassRoomProgramas,
+                    configuracionCalificador=configuracionCalificador
+                )
+                form.show()
+                splash.finish(form)
+                app.exec_()
+
+
 

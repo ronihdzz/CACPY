@@ -156,6 +156,21 @@ class CalificadorConfiguracion:
             return False
 
 
+
+    def datosListosApartadoAlumnos(self):
+
+        datosListos= self.curso_idApi != None and self.nombreCarpetaRetro!=None \
+                     and self.idCarpetaRetro!=None
+
+        if datosListos:
+            return True
+        else:
+            return False
+
+
+
+
+
     def cargarDatosUltimaSesion(self,archivoDatos):
         '''
         Cargara los datos del archivo que contiene las ultimas configuraciones
@@ -175,6 +190,8 @@ class CalificadorConfiguracion:
             self.idCarpetaRetro=idCarpetaRetro
             self.nombreCarpetaRetro=nombreCarpetaRetro
             self.claseNbGrader_nombre=claseNbGrader_nombre
+
+            
 
 
     def cargarDatosProfesor(self,archivoDatos):

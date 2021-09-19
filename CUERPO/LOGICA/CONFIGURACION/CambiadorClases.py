@@ -23,9 +23,9 @@ class CambiadorClases(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 
     def __init__(self,baseDatosLocalClassRoom,classRoomControl):
         QtWidgets.QDialog.__init__(self)
-        recursos.HuellaAplicacion.__init__(self)
         Ui_Dialog.__init__(self)
         self.setupUi(self)
+        recursos.HuellaAplicacion.__init__(self)
 
 
         self.baseDatosLocalClassRoom=baseDatosLocalClassRoom
@@ -98,6 +98,9 @@ class CambiadorClases(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 
             self.comboBox_clases.clear()
             self.comboBox_clases.addItems( tuple( self.dictCursos.values() ) )
+            self.msg_exitoDescargarClasesClassroom()
+
+
 
 
     def realizarCambioClase(self):
@@ -148,6 +151,23 @@ class CambiadorClases(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         return False
 
 
+    def msg_exitoDescargarClasesClassroom(self):
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Information)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = "Ya se descargaron las clases de classroom que faltaban por mostrar, sin embargo "
+        mensaje+="es importante recalcar que si no vez ningun cambio es por que no  "
+        mensaje+="se encountraron clases de classroom  nuevas"
+
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+        btn_ok.setText('Entendido')
+        ventanaDialogo.exec_()
 
 
 

@@ -24,9 +24,9 @@ class AgregadorCourseWorks(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion
 
     def __init__(self,administradorProgramasClassRoom):
         QtWidgets.QDialog.__init__(self)
-        recursos.HuellaAplicacion.__init__(self)
         Ui_Dialog.__init__(self)
         self.setupUi(self)
+        recursos.HuellaAplicacion.__init__(self)
 
         self.administradorProgramasClassRoom=administradorProgramasClassRoom
 

@@ -14,8 +14,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(380, 440)
-        Dialog.setMinimumSize(QtCore.QSize(380, 440))
+        Dialog.resize(400, 500)
+        Dialog.setMinimumSize(QtCore.QSize(400, 500))
         Dialog.setMaximumSize(QtCore.QSize(16777215, 16777215))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/SISTEMA_CONTROL/IMAGENES/SISTEMA_CONTROL/RoniHernandez99_IoT_domotica_128px.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -144,7 +144,7 @@ class Ui_Dialog(object):
         spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_4.addItem(spacerItem6)
         self.textBrowser_repositorio = QtWidgets.QTextBrowser(Dialog)
-        self.textBrowser_repositorio.setMinimumSize(QtCore.QSize(340, 30))
+        self.textBrowser_repositorio.setMinimumSize(QtCore.QSize(340, 60))
         self.textBrowser_repositorio.setMaximumSize(QtCore.QSize(16777215, 30))
         self.textBrowser_repositorio.setStyleSheet("font-family: TamilSangamMN;\n"
 "border: 1px solid #d8d8d8;\n"
@@ -190,5 +190,5 @@ class Ui_Dialog(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'TamilSangamMN\'; font-size:13px; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:13px;\">Repositorio de todo el proyecto </span><a href=\"{repositorio_link}\"><span style=\" font-size:13px; font-weight:600; text-decoration: underline; color:#000000;\">IoT Domotica </span></a></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:13px;\">Repositorio de todo el proyecto </span><a href=\"{repositorio_link}\"><span style=\" font-size:13px; font-weight:600; text-decoration: underline; color:#000000;\">CACPY </span></a></p></body></html>"))
 import img_rc

@@ -10,7 +10,7 @@ class App_Principal():
     # curso_id, topic_id
     ARCHIVO_TRABAJO_PROFESOR="RECURSOS/PROFESOR_EN_CURSO/archivo_trabajo_profesor.txt"
 
-    FOTO_PERFIL_PROFESOR="RECURSOS/PROFESOR_EN_CURSO/fotoProfesor.png"
+    FOTO_PERFIL_PROFESOR="RECURSOS/PROFESOR_EN_CURSO/fotoProfesor.jpg"
 
     NOMBRE_COMPLETO_BASE_DATOS='RECURSOS/baseDatos.db'
 
@@ -34,9 +34,9 @@ class App_Principal():
     #self.COLOR_BUENO = "#1CE285"
     COLOR_EXCELENTE = "#0DDEFF"
 
-    ICONO_APLICACION =":/main/IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_64.png"
-    NOMBRE_APLICACION ="RoniHernandez99/CalificadorAutomatico"
-    IMAGEN_SPLASH_SCREEN =":/main/IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_512.png"
+    ICONO_APLICACION =":/main/IMAGENES/ICONO/RoniHernandez_CACPY_64.png"
+    NOMBRE_APLICACION ="RoniHernandez99/CACPY"
+    IMAGEN_SPLASH_SCREEN =":/main/IMAGENES/ICONO/RoniHernandez_CACPY_512.png"
 
 
 
@@ -96,13 +96,13 @@ class App_datosCreador():
     GITHUB_NOMBRE ="RoniHernandez99"
     GITHUB_LINK ="https://github.com/RoniHernandez99"
 
-    REPOSITORIO_PROYECTO_NOMBRE ="CalificadorAutomatico"
-    REPOSITORIO_PROYECTO_LINK ="https://github.com/RoniHernandez99"
+    REPOSITORIO_PROYECTO_NOMBRE ="CACPY"
+    REPOSITORIO_PROYECTO_LINK ="https://github.com/RoniHernandez99/CACPY"
 
     FOTO_PROGRAMADOR=":/main/IMAGENES/ICONO/programador.jpg"
 
     # Datos del mensaje que se mandaria al programador
-    GMAILS=["ronaldo.runing.r@gmail.com","ronaldo.runing_@hotmail.com"]
+    GMAILS=["roni.hernandez.1999@gmail.com"]
     GMAIL_SUBJECT=f"Comentarios acerca de: {REPOSITORIO_PROYECTO_NOMBRE}"
     GMAIL_CUERPO=f"Hola {NOMBRE_PROGRAMADOR} espero tengas un buen dia, el motivo del mensaje es:"
 
@@ -116,6 +116,7 @@ class HuellaAplicacion(QtCore.QObject):
     NOMBRE_APLICACION = App_Principal.NOMBRE_APLICACION
     ICONO_APLICACION = App_Principal.ICONO_APLICACION
     LONGITUD_ESTANDAR_MENSAJES_EMERGENTES=len('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+
 
     def __init__(self):
         # NO USAMOS EL CONSTRUCTOR DEL PADRE POR LO TANTO NO HACEMOS SUS CONFIGURACIONES DEFAULT

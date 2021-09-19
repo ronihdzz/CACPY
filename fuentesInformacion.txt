@@ -6,3 +6,6 @@
 # para generar un solo archivo: pyinstaller cli.py --onefile
 # pyinstaller --onefile --icon=./ICONO.ico analizadorSenales.py
 
+
+
+# https://www.metachris.com/2016/03/how-to-install-qt56-pyqt5-virtualenv-python3/

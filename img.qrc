@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="main">
+    <file>IMAGENES/calificar_off.png</file>
+    <file>IMAGENES/calificar_on.png</file>
     <file>IMAGENES/subir_off.png</file>
     <file>IMAGENES/subir_on.png</file>
     <file>IMAGENES/crear_off.png</file>
@@ -12,12 +14,12 @@
     <file>IMAGENES/gmail.png</file>
     <file>IMAGENES/profesor.png</file>
     <file>IMAGENES/guardar_off.png</file>
-    <file>IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_64.png</file>
-    <file>IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_128.png</file>
     <file>IMAGENES/guardar_on.png</file>
-    <file>IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_256.png</file>
-    <file>IMAGENES/ICONO/RoniHernandez_CalificadorAutomatico_512.png</file>
     <file>IMAGENES/configuraciones.png</file>
+    <file>IMAGENES/ICONO/RoniHernandez_CACPY_64.png</file>
+    <file>IMAGENES/ICONO/RoniHernandez_CACPY_128.png</file>
+    <file>IMAGENES/ICONO/RoniHernandez_CACPY_256.png</file>
+    <file>IMAGENES/ICONO/RoniHernandez_CACPY_512.png</file>
     <file>IMAGENES/cuenta.png</file>
     <file>IMAGENES/estudiantes.png</file>
     <file>IMAGENES/tareas.png</file>
