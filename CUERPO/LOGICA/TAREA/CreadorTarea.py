@@ -174,11 +174,8 @@ class CreadorTareas(QtWidgets.QDialog, Ui_Dialog,recursos.HuellaAplicacion):
                 print(f"{x} = {self.dict_datosPediremos[x][1]}")
 
             if datosCorrectos:
-                resultado = QMessageBox.question(self,'BLA BLA BLA ',
-                                                 "¿Seguro que los datos proporcionados\n"
-                                                 "son los datos correctos?",
-                                                 QMessageBox.Yes | QMessageBox.No)
-                if resultado == QMessageBox.Yes:
+                resultado=self.msg_confirmacionDatosTarea()
+                if resultado == True:
                     #################################################################
                     # CREANDO TRABAJO
                     ################################################################
@@ -233,6 +230,26 @@ class CreadorTareas(QtWidgets.QDialog, Ui_Dialog,recursos.HuellaAplicacion):
 ##################################################################################################################################################
 # MENSAJES
 ##################################################################################################################################################
+
+    def msg_confirmacionDatosTarea(self):
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Question)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = "¿Seguro que los datos proporcionados son los datos correctos?"
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            return True
+        return False
 
 
     def msg_cerrarVentana(self):

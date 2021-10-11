@@ -249,9 +249,12 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
             # cargar los topic agregados de esa clase..
             self.senal_eligioUnCurso.emit(True)
-            self.bel_clase_nombreNbGrader.setText(
-                "Ninguna clase NbGrader seleccionada"
-            )
+            
+
+            # Ahorita descomentar....
+            #self.bel_clase_nombreNbGrader.setText(
+            #    "Ninguna clase NbGrader seleccionada"
+            #)
 
 
     def procesoCambiarClase(self):

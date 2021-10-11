@@ -178,6 +178,9 @@ class HiloCalificadorTarea(QThread):
                                 try:
                                     correoAlumno, nombreAlumno = self.classroom_control.get_datosAlumno(
                                         idAlumno=user_id)
+                                    print(f"Calificando a: {nombreAlumno} cuyo correo es: {correoAlumno} la tarea: {courseWork_name}")
+                                    print("id estudiante:",user_id)
+                                
                                 except Exception as e:
                                     self.HILO_ACTIVO = False
                                     self.senal_errorRed.emit((self.LISTA_ERRORES_RED[2], e))
@@ -344,6 +347,8 @@ class HiloCalificadorTarea(QThread):
                                                 calificacionFinal=puntosObtenidos
                                                 if puntosObtenidos > 100:
                                                     calificacionFinal = 100.0
+                                                
+                                                print("Calificacion obtenida:",calificacionFinal)
 
                                                 # Si hubo exito al calificar la tarea entonces se puede crear la reotroalimentacion
                                                 # estatus_retroalimentacion=self.nbGrader_control.generate_feedback(assignment_id=courseWork_name,student_id=user_id,force=True)
@@ -498,9 +503,10 @@ class HiloCalificadorTarea(QThread):
                                                             courseId=self.configuracionCalificador.curso_idApi,
                                                             courseWorkId=courseWork_id,
                                                             id=idAsignacion,
-                                                            updateMask='assignedGrade,draftGrade',
+                                                            updateMask='draftGrade,assignedGrade',
                                                             body=studentSubmission).execute()
                                                     except Exception as e:
+                                                        print(e)
                                                         self.senal_errorRed.emit((self.LISTA_ERRORES_RED[9], e))
                                                         self.HILO_ACTIVO=False
                                                         break
@@ -532,6 +538,7 @@ class HiloCalificadorTarea(QThread):
                                                             id=idAsignacion,
                                                             body=request).execute()
                                                     except Exception as e:
+                                                        print(e)
                                                         self.senal_errorRed.emit((self.LISTA_ERRORES_RED[10], e))
                                                         self.HILO_ACTIVO=False
                                                         break

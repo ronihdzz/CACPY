@@ -2,6 +2,8 @@ pyqt5
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
+nbconvert==5.6.1
+jupyter-client==6.1.2
 nbgrader
 rfc3339
 iso8601
