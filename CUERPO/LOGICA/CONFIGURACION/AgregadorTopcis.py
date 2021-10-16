@@ -1,28 +1,65 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QInputDialog, QMessageBox,QHeaderView
-from PyQt5.QtGui import QStandardItemModel,QStandardItem
-from PyQt5.QtWidgets import  QMessageBox,QAction,QActionGroup,QWidget,QVBoxLayout,QTabWidget,QLabel
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog,QCompleter
-#from PyQt5.QtGui import Qt
 
-from PyQt5 import QtCore,QtGui
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
+'''
+AgregadorTopcis.py :    Contine una sola  clase, la clase 'AgregarTopics', la cual  es una clase
+                        que a grosso modo se encarga de hacer posible que el usuario pueda agregar
+                        a la tabla de topics seleccionables el topic que desee de los topics de la
+                        clase de classroom que se selecciono.
+'''
 
+__author__      = "David Roni Hernández Beltrán"
+__email__ = "roni.hernandez.1999@gmail.com"
+
+###########################################################################################################################################
+# Paquetes de terceros
+###########################################################################################################################################
+
+from PyQt5.QtWidgets import QApplication,QMessageBox
+from PyQt5 import QtGui,QtWidgets
+from PyQt5.QtCore import pyqtSignal
+
+###########################################################################################################################################
+# fuente local
+###########################################################################################################################################
 
 from CUERPO.DISENO.CONFIGURACION.AgregadorTopics_d import Ui_Dialog
 import recursos
 
 
 class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
+    '''
+    Se encarga de hacer posible que el usuario pueda agregar a la tabla de topics seleccionables
+    los topics de la clase de classrom que se selecciono, por ello le muestra al usuario los
+    topics que pertenecen a la clase de classroom seleccionada y que aun no han sido agregados
+    a la tabla de topics seleccionables.Tambien permite al usuario actualizar los topics mostrados
+    ya que puede que recien haya creado un topic en su clase de classroom pero este aun no se haya
+    visto reflejado en la ventana.
+    Si el usuario decide agregar un topic esta clase emitira la señal respectiva.
 
-    senal_ventanaFueCerrada= pyqtSignal(bool)  # id de tarea
-    senal_operacionImportante=pyqtSignal(bool)
-    senal_agregoUnTopic=pyqtSignal(tuple) # curso_api_id,  curso_nombre
+    '''
 
 
-    def __init__(self,baseDatosLocalClassRoom,classRoomControl):
+    senal_agregoUnTopic=pyqtSignal(tuple)  # (idApi_topicAgregara,nombre_topicAgregara)
+
+
+    def __init__(self,configuracionCalificador,baseDatosLocalClassRoom,classRoomControl):
+        '''
+        Parámetros:
+            - configuracionCalificador (objeto de la clase: CalificadorConfiguracion): dicho objeto
+            contiene ordenados los datos de configuracion que necesitara el programa, asi como tambien
+            contiene metodos que serviran para obtener o editar dichos datos
+
+
+            - baseDatosLocalClassRoom (objeto de la clase: BaseDatos_ClassRoomProgramas): dicho
+            objeto permitira acceder a la base de datos local, la cual almacena los datos de
+            los 'CourseWork' asi como los 'Topics' y 'Clases' del ClassRoom del profesor que ha
+            iniciado sesión
+
+            - classRoomControl (objeto de la clase: ClassRoomControl): dicho objeto es una capa
+            de abstracción para poder hacer algunas peticiones al ClassRoom del profesor, asi
+            como al GoogleDrive del profesor
+        '''
+
+
         QtWidgets.QDialog.__init__(self)
         Ui_Dialog.__init__(self)
         self.setupUi(self)
@@ -31,156 +68,181 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 
         self.baseDatosLocalClassRoom=baseDatosLocalClassRoom
         self.classRoomControl=classRoomControl
+        self.configuracionCalificador=configuracionCalificador
 
 
-        self.dictTopics = {}
+        self.dictTopics = {} # keys: las id que le asigna la API a cada topic
+                             # values: los nombres de cada topic
 
 
         self.btn_agregar.clicked.connect(self.agregarTopics)
-        self.btn_actualizarTopcis.clicked.connect(self.refrescarClases)
+        self.btn_actualizarTopcis.clicked.connect(self.refrescarTopics)
 
 
-
-
-    def cargarDatosTopics(self,curso_id):
+    def prepararParaMostrar(self):
         '''
-        Para que esto sea habra el apartado de tareas debe tener definido
-        un curso y un topic asi que ya no seran necesarias validaciones
-        en ese tema
-
-        :param curso_id:
-        :return:
+        Cargara los topics que estan almacenados en la base de datos local y
+        que no hayan sido importados a la tabla de topics seleccionables.
         '''
 
-        # obteniendo los topics cuyos datos ya fueron descargados de la API de classroom,
-        # pero que no han sido seleccionados por el profesor como topics de interes.
-        self.curso_id=None
-        if curso_id:
-            self.curso_id=curso_id
 
+        cursoClassroom_id, _ = self.configuracionCalificador.get_id_nombre_cursoClassroom()
 
-            topics_tuplaDatos=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=curso_id)
+        # si hay un curso de classroom seleccionado se mostraran los topic almacenados en la
+        # base de datos local y que no hayan sido importados a la tabla de topics seleccionables.
+        if cursoClassroom_id:
+
+            # la base de datos local retornara una tupla con el siguiente formato:
+            # (   (idApi_topic_1,nombre_topic_1), (idApi_topic_2,nombre_topic_2) ...  )
+            topics_tuplaDatos=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=cursoClassroom_id)
+
             self.dictTopics = {}
             self.listWidget_topicsTareasProgramas.clear()
 
-
-
+            # ¿la base de datos local retorno por lo menos los datos de un topic?
             if topics_tuplaDatos != () and len(topics_tuplaDatos) != 0:
-                for topic_api_id,topic_nombre in topics_tuplaDatos:
-                    self.dictTopics[topic_api_id]=topic_nombre
+                # keys: las id que le asigna la API a cada topic
+                # values: los nombres de cada topic
+                self.dictTopics=dict(topics_tuplaDatos)
 
+                # agregando los nombres de los topics en la 'listWidget'
                 self.listWidget_topicsTareasProgramas.addItems(  tuple( self.dictTopics.values() )  )
 
 
-    def refrescarClases(self):
+    def refrescarTopics(self):
+        '''
+        El objetivo de este metodo es actualizar su contenido con respecto a los topics
+        de la clase de classroom seleccionada.
 
-        if self.curso_id!=None:
+        Consultara a la API de google classroom para obtener todos los nombres y ids de los
+        topics de la clase de classroom seleccionada, posteriormente solo guardara los datos
+        de los topics que no esten en la base de datos local, y finalmente mostrara la lista
+        de los topics que el aun no se agregan a la tabla de topics seleccionables.
+        '''
+
+        cursoClassroom_id, _ = self.configuracionCalificador.get_id_nombre_cursoClassroom()
+
+        # si hay un curso de classroom seleccionado se mostraran los topic almacenados en la
+        # base de datos local y que no hayan sido importados a la tabla de topics seleccionables.
+        if cursoClassroom_id!=None:
+
             respuestaAfirmativa=self.msg_preguntarAcercaRefrescarTopics()
+
             if respuestaAfirmativa:
+
                 # eliminamos todas los elementos de la base de datos
                 # consultamos y agregamos a la base de datos
 
+                # Le pedimos a la API de google classroom que nos retorne todos los topics de la
+                # clase de classroom seleccionada.En caso de existir topics en la clase de classroom
+                # los datos los retornara de los topics los retornara en el siguiente formato:
+                # (   (idApi_topic_1,nombre_topic_1), (idApi_topic_2,nombre_topic_2) ...  )
 
-                # Consultamos los datos en la API
-                tuplaDatosTopics = self.classRoomControl.get_listaDatosTopicsCurso(self.curso_id)
-                print("TDODOS LOS TOPICS API: ", tuplaDatosTopics)
+                tuplaDatosTopics = self.classRoomControl.get_listaDatosTopicsCurso(cursoClassroom_id)
 
+                # ¿habia tan siquiera un topic en la clase de classroom seleccionada?
                 if tuplaDatosTopics!=() and len(tuplaDatosTopics) != 0:
-                    # Si hay datos vamos a descargarlos en la base de datos local
+                    # guardando los datos de todos los topics de la clase de classroom seleccionada,
+                    # sin embargo solo se guardaran los datos de los topics nuevos que no esten ya
+                    # almacenados dentro de la base de datos local.
                     self.baseDatosLocalClassRoom.agregar_soloNuevosTopics(
                         tuplaDatos=tuplaDatosTopics,
-                        curso_api_id=self.curso_id
+                        curso_api_id=cursoClassroom_id
                     )
 
-
-                # keys= api_id de cada curso  values= nombre de cada curso
-                self.dictCursos={}
                 self.listWidget_topicsTareasProgramas.clear()
 
+                # obteniendo de la base de datos local los datos de los topics que no
+                # hayan sido importados a la tabla de topics seleccionables.La base de
+                # datos local retornara una tupla con el siguiente formato:
+                # (   (idApi_topic_1,nombre_topic_1), (idApi_topic_2,nombre_topic_2) ...  )
+                tuplaDatosTopics=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=cursoClassroom_id)
 
-                tuplaDatosTopics=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=self.curso_id)
-                self.dictTopics={}
+                self.dictTopics={} # keys: las id que le asigna la API a cada topic
+                                   # values: los nombres de cada topic
 
+                # ¿hay almenos un topic que  no hayan sido importados a la tabla
+                # de topics seleccionables?
                 if tuplaDatosTopics!=() and len(tuplaDatosTopics)!=0:
                     for topic_api_id,topic_nombre in tuplaDatosTopics:
                         self.dictTopics[topic_api_id]=topic_nombre
 
+                    # agregando los nombres de los topics en la 'listWidget'
                     self.listWidget_topicsTareasProgramas.addItems(  tuple( self.dictTopics.values() )  )
 
                 self.msg_exitoDescargarTopics()
 
 
-
-
     def agregarTopics(self):
+        '''
+        Cuando el usuario haya seleccionado el topic que desea agregar a la tabla de
+        topics seleccionables y posteriormente le de en el boton de agregar, se llamara
+        a este metodo, y lo que hara este metodo es:
+            - Preguntarle al usuario si en realidad ese es el topic que desea agregar, y
+            de ser afirmativa la respuesta:
+                - obtendra los datos del topic que se desea agregar
+                - registrara en la base de datos local que ese topic se configuro como
+                topic perteneciente a la tabla de topics seleccionables
+                - mandara una señal a la otra parte del programa para que este
+                actue en consecuente del que el usuario haya decidido agregar un
+                topic a la tabla de topics seleccionables.
+        '''
+
+
         if len(self.dictTopics)>0:
-            #programas_topic,retroalimentacion_topic
 
-            programa_topic_index=self.listWidget_topicsTareasProgramas.currentRow()
-
-            programa_topic_nombre = self.listWidget_topicsTareasProgramas.currentItem().text()
+            # datos del topic que se selecciono por que se desea agregar a la tabla
+            # de topics seleccionables
+            indice_topicSeDeseaAgregar=self.listWidget_topicsTareasProgramas.currentRow()
+            nombre_topicSeDeseaAgregar = self.listWidget_topicsTareasProgramas.currentItem().text()
 
 
             respuestaAfirmativa=self.msg_preguntarConfirmacionEleccionTopics(
-                programas_topic=programa_topic_nombre
+                nombreTopicSeDeseaAgregar=nombre_topicSeDeseaAgregar
             )
 
             if respuestaAfirmativa:
-                programa_topic_api_id=tuple( self.dictTopics.keys() )[programa_topic_index]
+                idApi_topicSeDeseaAgregar=tuple( self.dictTopics.keys() )[indice_topicSeDeseaAgregar]
 
-                tupla_topic_programas=(programa_topic_api_id,programa_topic_nombre)
+                tuplaDatosTopicAgregara=(idApi_topicSeDeseaAgregar,nombre_topicSeDeseaAgregar)
+
+                cursoClassroom_id, _ = self.configuracionCalificador.get_id_nombre_cursoClassroom()
 
                 self.baseDatosLocalClassRoom.registrarSelecciono_topic(
-                    curso_id=self.curso_id,
-                    topic_id=programa_topic_api_id
+                    curso_id=cursoClassroom_id,
+                    topic_id=idApi_topicSeDeseaAgregar
                 )
 
-                self.senal_agregoUnTopic.emit(  tupla_topic_programas  )
+                self.senal_agregoUnTopic.emit(  tuplaDatosTopicAgregara  )
                 self.limpiarDeDatos()
                 self.close()
 
         else:
-            # no se pueden elegir los mismos topics
             self.msg_noPuedesElegirTopics_siNoHay()
+
 
     def  limpiarDeDatos(self):
         '''
-        Vacia las list widget para que no tengan datos que cargar
-        :return:
+        Vacia las list widget en donde se visualizan todos los topics que se pueden
+        agregar a la tabla de topics seleccionablees
         '''
 
         self.dictTopics={}
         self.listWidget_topicsTareasProgramas.clear()
 
 
-
 ####################################################################################################################################
 # M E N S A J E S     E M E R G E N T E S :
 ####################################################################################################################################
 
-    def msg_preguntarConfirmacionEleccionTopics(self,programas_topic):
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
-        mensaje = f"¿Los ejercicios de programacion que asignes se adjuntaran en el topic:<<{programas_topic}>> "
-        mensaje+="¿eso es correcto?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
-
 
     def msg_exitoDescargarTopics(self):
+        '''
+        Mostrara un cuadro de dialogo al usuario con la finalidad de  informarle que se
+        han actualizado y descargado con exito los topics de la clase de classroom
+        '''
+
+
         ventanaDialogo = QMessageBox()
         ventanaDialogo.setIcon(QMessageBox.Information)
         ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
@@ -199,33 +261,21 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         ventanaDialogo.exec_()
 
 
-    def msg_noPuedesElegirTopics_iguales(self):
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
-        mensaje = "El topic donde se adjuntaran los ejercicios de programacion "
-        mensaje+="no puede ser el mismo topic en donde se adjuntaran las retroalimentaciones "
-        mensaje+="de los ejercicios de programacion"
-
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
-
     def msg_noPuedesElegirTopics_siNoHay(self):
+        '''
+        Mostrara un cuadro de dialogo al usuario con la finalidad de informarle
+        que no puede agregar ningun topic por que no hay ningun topic registrado
+        que se pueda agregar.
+        '''
+
+
         ventanaDialogo = QMessageBox()
         ventanaDialogo.setIcon(QMessageBox.Warning)
         ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
         ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
-        mensaje = "No hay ningun conjunto de topics que seleccionar, sin embargo la solucion "
-        mensaje += "consiste en que vayas a ClassRoom y crees dos topics y despues regreses  "
+        mensaje = "No hay ningun  de topic que seleccionar, sin embargo la solucion "
+        mensaje += "consiste en que vayas a ClassRoom y crees  topics y despues regreses  "
         mensaje += "al programa y le des clic sobre el boton con la leyenda igual a refrescar  "
 
         mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
@@ -236,47 +286,75 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         btn_ok.setText('Entendido')
         ventanaDialogo.exec_()
 
+    def msg_preguntarConfirmacionEleccionTopics(self, nombreTopicSeDeseaAgregar):
+        '''
+        Mostrara un cuadro emergente de dialogo con la finalidad de preguntarle
+        al usuario si en realidad esta seguro de querer elegir ese topic
+
+        Parámetros:
+            - nombreTopicSeDeseaAgregar (str) : Nombre del topic que se desea
+            agregar
+
+        Returns:
+            - True (bool) : Si el usuario confirmo positivamente que si es el
+            topic que desea agregar
+            - False (bool): Si el usuario dijo que NO es el topic que desea
+            agregar
+        '''
+
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Question)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = f"¿Estas seguro de querer agregar al topic cuyo nombre es: <<{nombreTopicSeDeseaAgregar}>> "
+        mensaje += "a la tabla de topics seleccionables? "
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            return True
+        return False
+
 
     def msg_preguntarAcercaRefrescarTopics(self):
-            ventanaDialogo = QMessageBox()
-            ventanaDialogo.setIcon(QMessageBox.Question)
-            ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-            ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+        '''
+        Mostrara un cuadro de dialogo al usuario para preguntarle si
+        en realidad desea refrescar.
 
-            mensaje = "Solo es recomendable refrescar cuando no vez los topics que deseas "
-            mensaje+="¿en verdad los topcis que deseas seleccionar no se encuentra en la lista? "
-            mensaje+="¿en verdad necesitas refrescar?"
-            mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-            ventanaDialogo.setText(mensaje)
-            ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-            btn_yes.setText('Si')
-            btn_no = ventanaDialogo.button(QMessageBox.No)
-            btn_no.setText('No')
-            ventanaDialogo.exec_()
-            if ventanaDialogo.clickedButton() == btn_yes:
-                return True
-            return False
+        Returns:
+            - True (bool) : Si el usuario confirmo positivamente que si
+            desea  refrescar
+            - False (bool): Si el usuario dijo que NO desea refrescar
+        '''
 
 
-    def msg_ningunaClaseRegistrada(self):
-            ventanaDialogo = QMessageBox()
-            ventanaDialogo.setIcon(QMessageBox.Warning)
-            ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-            ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Question)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
-            mensaje = "No tienes ninguna clase asignada, por favor crear una clase "
-            mensaje+=" en classroom y despues da nuevamente da clic sobre el icono "
-            mensaje+=" de refrescar "
+        mensaje = "Solo es recomendable refrescar cuando no vez los topics que deseas "
+        mensaje+="¿en verdad los topcis que deseas seleccionar no se encuentra en la lista? "
+        mensaje+="¿en verdad necesitas refrescar?"
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-            mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-            ventanaDialogo.setText(mensaje)
-            ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-            btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-            btn_ok.setText('Entendido')
-            ventanaDialogo.exec_()
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            return True
+        return False
 
 
 if __name__ == '__main__':
@@ -284,42 +362,3 @@ if __name__ == '__main__':
     application = AgregadorTopics()
     application.show()
     app.exit(app.exec())
-
-
-
-
-"""
-def cargarDatosTopics(self,curso_id):
-    '''
-    Mostrara 
-    
-    
-    '''
-
-    # Cuando se crean datos se crea el atributo curso_id
-    self.curso_id=None
-    if curso_id:
-        self.curso_id=curso_id
-        tuplaDatosTopics=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=curso_id)
-        print("TUPLA DESDE BASE LOCAL:",tuplaDatosTopics)
-
-        #tuplaDatosClases=self.baseDatosLocalClassRoom.get_tuplaClases()
-        #print("CLASES BASE DE DATOS:",tuplaDatosClases)
-        self.dictTopics = {}
-        self.listWidget_topicsTareasProgramas.clear()
-
-        if tuplaDatosTopics==() or len(tuplaDatosTopics)==0:
-            tuplaDatosTopics=self.classRoomControl.get_listaDatosTopicsCurso(self.curso_id)
-            print("TEMAS DEL CURSO API: ",tuplaDatosTopics)
-            if tuplaDatosTopics !=() and len(tuplaDatosTopics)!= 0:
-                self.baseDatosLocalClassRoom.agregar_soloNuevosTopics(
-                    tuplaDatos=tuplaDatosTopics,
-                    curso_api_id=self.curso_id
-                )
-
-        if tuplaDatosTopics != () and len(tuplaDatosTopics) != 0:
-            for topic_api_id,topic_nombre in tuplaDatosTopics:
-                self.dictTopics[topic_api_id]=topic_nombre
-
-            self.listWidget_topicsTareasProgramas.addItems(  tuple( self.dictTopics.values() )  )
-"""

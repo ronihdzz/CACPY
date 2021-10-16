@@ -111,9 +111,7 @@ class CalificadorConfiguracion:
         self.curso_idApi = None
         self.topic_nombre = None
         self.topic_idApi=None
-
-        # ahorita descomentar
-        #self.claseNbGrader_nombre=None
+        self.claseNbGrader_nombre=None
 
     def cargarDatosClaseClassroom_seleccionada(self, clase_idApi, clase_nombre):
         '''

@@ -175,7 +175,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
 
         # Mostrando de forma default el el perfil del apartado del programa
         self.accion_verApartadoPerfil.trigger()
-        self.ventana_aplicacionConfiguracion.cargarDatos()
+        self.ventana_aplicacionConfiguracion.cargarDatos_objetoConfigurador()
 
 
         # variable de bandera que servira para que el programa sepa cuando
