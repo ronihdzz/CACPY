@@ -1,27 +1,27 @@
-from PyQt5.QtWidgets import  QDialog,QApplication
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QMessageBox,QButtonGroup,QDialog)
-from PyQt5.QtCore import Qt, pyqtSignal,QObject
-from PyQt5.QtGui import QIcon
 
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
-from PyQt5.QtWidgets import QApplication
-from PyQt5 import  Qt
+'''
+DatosCreador.py :   Contiene una sola  clase, la clase 'Dialog_datosCreador', la cual a grosso
+                    modo se encarga de que el usuario vea y tenga acceso a los principales
+                    contactos de información del programador de la aplicacion.
+'''
+
+__author__      = "David Roni Hernández Beltrán"
+__email__ = "roni.hernandez.1999@gmail.com"
+
+
+###########################################################################################################################################
+# Paquetes de terceros
+###########################################################################################################################################
+
+from PyQt5 import QtWidgets, Qt
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
 
-from PyQt5.QtWidgets import  QFileDialog
-from PyQt5.QtCore import Qt, pyqtSignal,QObject
+###########################################################################################################################################
+# fuente local
+###########################################################################################################################################
 
-
-###############################################################
-#  IMPORTACION DEL DISEÑO...
-##############################################################
 from  CUERPO.DISENO.MAIN.DatosCreador_d import Ui_Dialog
-###############################################################
-#  MIS LIBRERIAS...
-##############################################################
 from recursos import HuellaAplicacion,App_datosCreador
 
 
@@ -29,6 +29,8 @@ class Dialog_datosCreador(QtWidgets.QDialog, Ui_Dialog,HuellaAplicacion):
     '''
     La finalidad de esta clase es proporcionar los contactos del programador
     asi como los accesos directos a sus redes sociales.
+    Es importante mencionar que esta clase obtiene los datos del programador
+    de la clase: 'App_datosCreador'
     '''
 
 
@@ -40,34 +42,40 @@ class Dialog_datosCreador(QtWidgets.QDialog, Ui_Dialog,HuellaAplicacion):
         self.setWindowModality(Qt.ApplicationModal)
         HuellaAplicacion.__init__(self)
 
+        # nombre de la aplicacion del programa
         nombre=App_datosCreador.NOMBRE_PROGRAMADOR
 
+        # likedin del programador
         likedin=App_datosCreador.LIKEDIN_NOMBRE
         likedin_link=App_datosCreador.LIKEDIN_LINK
 
+        # github del programador
         github=App_datosCreador.GITHUB_NOMBRE
         github_link=App_datosCreador.GITHUB_LINK
 
+        # repositorio de este proyecto en especifico
         repositorio=App_datosCreador.REPOSITORIO_PROYECTO_NOMBRE
         repositorio_link=App_datosCreador.REPOSITORIO_PROYECTO_LINK
 
+        # foto del programador
         fotoProgramador=App_datosCreador.FOTO_PROGRAMADOR
 
+        # lista de gmails de contacto del progrmador
         gmails=App_datosCreador.GMAILS
+
+        # asunto del mensaje que se le adjuntara al programador cuando el usuario decida mandarle mensaje
         subject=App_datosCreador.GMAIL_SUBJECT
+
+        # sugerencia de como iniciar el mensaje que se de le desea adjuntar al programador
         body=App_datosCreador.GMAIL_CUERPO
         
-
+        # como los datos del programador se muestran en formato de html, entonces a continuacion
+        # se procede a hacer el codigo respectivo en html de cada seccion de contacto del programador
         gmail_html=f'<span style=" font-size:13px;font-family:TamilSangamMN;"><a href="mailto:{",".join(gmails)}?subject={subject}&body={body}" style="color:black;text-decoration:none;">{gmails[0]}</a></span>'
         likedin_html=f'<span style=" font-size:13px;font-family:TamilSangamMN;"><a href="{likedin_link}" style="color:black;text-decoration:none;">{likedin}</a></span>'
         github_html=f'<span style=" font-size:13px;font-family:TamilSangamMN;"><a href="{github_link}" style="color:black;text-decoration:none;">{github}</a></span>'
 
-        self.textBrowser_repositorio.setOpenLinks(True)
-        self.textBrowser_repositorio.setOpenExternalLinks(True)
-
-        # hace que el texto pueda ser seleccionado
-        #self.bel_gmail.setTextInteractionFlags(Qt.TextSelectableByMouse)
-
+        # adjuntando el texto a cada repectivo apartado de la ventana
         self.textBrowser_repositorio.setHtml(f"""
             <span style=" font-size:13px;font-family: TamilSangamMN;">Repositorio de todo el proyecto</span></p>
             <span style=" font-size:13px;font-family: TamilSangamMN;"><a href="{repositorio_link}"  style="color:black;"> <b>{repositorio}<\b> </a></span>
@@ -84,16 +92,34 @@ class Dialog_datosCreador(QtWidgets.QDialog, Ui_Dialog,HuellaAplicacion):
                     border-image: url({fotoProgramador});
                     border-radius:87%;""")
 
-
-        self.bel_likedin.setOpenExternalLinks(True)
-        self.bel_github.setOpenExternalLinks(True)
-        self.bel_gmail.setOpenExternalLinks(True)
-
         self.bel_likedin.setText(likedin_html)
         self.bel_github.setText(github_html)
         self.bel_gmail.setText(gmail_html)
 
+        # permitiendo que se puedan abrirs link a partir de dar click izqueirdo sobre los links que contengan
+        # los objetos siguientes
+
+        self.bel_likedin.setOpenExternalLinks(True)
+        self.bel_github.setOpenExternalLinks(True)
+        self.bel_gmail.setOpenExternalLinks(True)
+        self.textBrowser_repositorio.setOpenLinks(True)
+        self.textBrowser_repositorio.setOpenExternalLinks(True)
+
+        # hace que el texto pueda ser seleccionado
+        #self.bel_gmail.setTextInteractionFlags(Qt.TextSelectableByMouse)
+
+
+
     def cargarImagen_programador(self,imagen):
+        '''
+        Este metodo fue diseñado para cargar una imagen del programador que se encuentre en una ruta
+        en particular.
+
+        Parámetros:
+            imagen (str) : Nombre completo de la imagen que se quiere adjuntar como
+            foto de programador, cabe mencionar que por nombre completo me refiero
+            que el nombre debe incluir tambien la ruta del archivo completa.
+        '''
 
         # Cargando la imagen
         ancho=self.bel_fotoProgramador.width()

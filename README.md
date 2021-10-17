@@ -11,32 +11,31 @@
     * [1.1) Instalación de paquetes de python](#11-instalación-de-paquetes-de-python)
     * [1.2) Creando un proyecto en Google Cloud Platform, habilitando las APIs requeridas y obteniendo las credecnciasles para la aplicación de escritorio](#12-creando-un-proyecto-en-google-cloud-platform-habilitando-las-apis-requeridas-y-obteniendo-las-credenciales-para-la-aplicación-de-escritorio)
     * [1.3) Sistemas operativos](#13-sistemas-operativos)
-* [2) ¿Como usar el programa?](#2-¿como-usar-el-programa)
+* [2) ¿Como usar el programa?](#2-como-usar-el-programa)
     * [2.1) La primera vez](#21-la-primera-vez)
     * [2.2) Apartados del programa](#22-apartados-del-programa)
         * [2.2.1) Informacion del programador](#221-informacion-del-programador)
         * [2.2.2) Mi Perfil](#222-mi-perfil)
         * [2.2.3) Mis configuraciones](#223-mis-configuraciones)
             * [2.2.3.1) Seleccionando la clase de classroom](#2231-seleccionando-la-clase-de-classroom)
-                * [2.2.3.1.1) ¿Que hacer si no aparece la clase de classroom que quiero seleccionar?](#22311-¿que-hacer-si-no-aparece-la-clase-de-classroom-que-quiero-seleccionar)
+                * [2.2.3.1.1) ¿Que hacer si no aparece la clase de classroom que quiero seleccionar?](#22311-que-hacer-si-no-aparece-la-clase-de-classroom-que-quiero-seleccionar)
             * [2.2.3.2) Seleccionando la clase de NbGrader](#2232-seleccionando-la-clase-de-nbgrader) 
-                * [2.2.3.2.1) ¿Que hacer si no aparece la clase de NbGrader que quiero seleccionar?](#22321-¿que-hacer-si-no-aparece-la-clase-de-nbgrader-que-quiero-seleccionar)
-                * [2.2.3.2.2) ¿Donde se encuentran las clases de NbGrader que puedo seleccionar en el programa?](#22322-¿donde-se-encuentran-las-clases-de-nbgrader-que-puedo-seleccionar-en-el-programa)
-                * [2.2.3.2.3) ¿Como crear clases NbGrader?](#22323-¿como-crear-clases-nbgrader)
+                * [2.2.3.2.1) ¿Que hacer si no aparece la clase de NbGrader que quiero seleccionar?](#22321-que-hacer-si-no-aparece-la-clase-de-nbgrader-que-quiero-seleccionar)
+                * [2.2.3.2.2) ¿Donde se encuentran las clases de NbGrader que puedo seleccionar en el programa?](#22322-donde-se-encuentran-las-clases-de-nbgrader-que-puedo-seleccionar-en-el-programa)
+                * [2.2.3.2.3) ¿Como crear clases NbGrader?](#22323-como-crear-clases-nbgrader)
             * [2.2.3.3) Seleccionando la carpeta de google drive de retroalimentaciones](#2233-seleccionando-la-carpeta-de-google-drive-de-retroalimentaciones)
-                * [2.2.3.3.1) ¿Como se guardan las retroalimentaciones en la carpeta de drive seleccionada?](#22331-¿como-se-guardan-las-retroalimentaciones-en-la-carpeta-de-drive-seleccionada)
+                * [2.2.3.3.1) ¿Como se guardan las retroalimentaciones en la carpeta de drive seleccionada?](#22331-como-se-guardan-las-retroalimentaciones-en-la-carpeta-de-drive-seleccionada)
             * [2.2.3.2) Seleccionando el topic de google classroom](#2232-seleccionando-el-topic-de-google-classroom)
         * [2.2.4) Mis tareas](#224-mis-tareas)
-            * [ 2.2.4.1) ¿Para que sirve el apartado de: 'Mis tareas'?](#2241-¿para-que-sirve-el-apartado-de-mis-tareas)
-            * [2.2.4.2) ¿Como importar una tarea a la tabla de tareas calificables?](#2242-¿como-importar-una-tarea-a-la-tabla-de-tareas-calificables)
-            * [2.2.4.3) ¿Como eliminar una tarea a la tabla de tareas calificables?](#2243-¿como-eliminar-una-tarea-a-la-tabla-de-tareas-calificables)
-            * [2.2.4.4) ¿Como calificar una tarea?](#2244-¿como-calificar-una-tarea)
-            * [2.2.4.5) ¿Como asignar una tarea?](#2245-¿como-asignar-una-tarea)
-        * [2.2.5) Mis alumnos](#225-mis-alumnos)
-            * [2.2.4.1) ¿Para que sirve el apartado de: 'Mis alumnos'?](#2241-¿para-que-sirve-el-apartado-de:-mis-alumnos)
-            * [2.2.4.2) ¿Como ver la lista de nombres y correos electronicos de los alumnos inscritos?](#2242-¿como-ver-la-lista-de-nombres-y-correos-electronicos-de-los-alumnos-inscritos)
-            * [2.2.4.3) ¿Como ver las calificaciones y retroalimentaciones de cada alumno?](#2243-¿como-ver-las-calificaciones-y-retroalimentaciones-de-cada-alumno)
-
+            * [ 2.2.4.1) ¿Para que sirve el apartado de: 'Mis tareas'?](#2241-para-que-sirve-el-apartado-de-mis-tareas)
+            * [2.2.4.2) ¿Como importar una tarea a la tabla de tareas calificables?](#2242-como-importar-una-tarea-a-la-tabla-de-tareas-calificables)
+            * [2.2.4.3) ¿Como eliminar una tarea a la tabla de tareas calificables?](#2243-como-eliminar-una-tarea-a-la-tabla-de-tareas-calificables)
+            * [2.2.4.4) ¿Como calificar una tarea?](#2244-como-calificar-una-tarea)
+            * [2.2.4.5) ¿Como asignar una tarea?](#2245-como-asignar-una-tarea)
+        * [2.2.5) Mis alumnos](#225-mis-alumnos)  
+            * [2.2.4.1) ¿Para que sirve el apartado de: 'Mis alumnos'?](#2241-para-que-sirve-el-apartado-de-mis-alumnos)
+            * [2.2.4.2) ¿Como ver la lista de nombres y correos electronicos de los alumnos inscritos?](#2242-como-ver-la-lista-de-nombres-y-correos-electronicos-de-los-alumnos-inscritos)
+            * [2.2.4.3) ¿Como ver las calificaciones y retroalimentaciones de cada alumno?](#2243-como-ver-las-calificaciones-y-retroalimentaciones-de-cada-alumno)
 * [3) Errores presentandos en la ejecucion del  programa](#3-errores-presentandos-en-la-ejecucion-del-programa)
     * [3.1) Errores con las versiones de los paquetes instalados](#31-errores-con-las-versiones-de-los-paquetes-instalados)
     * [3.2) Errores de permisos denegados al subir calificación de tarea a classroom](#32-errores-de-permisos-denegados-al-subir-calificación-de-tarea-a-classroom)
@@ -173,18 +172,33 @@ aplicación de escritorio, y para obtener dichas credenciales deberas crear un p
 de programación.
 
 
+<!--
 <div style="text-align: center;">
 <img  src="recursos_readme/otros/1_accederAGoogleConsole.gif" style="width:70%;"  />
 </div>
+-->
+
+<div class="myWrapper" markdown="1" align="center">
+<img  src="recursos_readme/otros/1_accederAGoogleConsole.gif" style="width:70%;"  />
+</div>
+
+
 
 
 
 * **Paso 2:** Crear un proyecto con el nombre de tu eleccion, para este ejemplo al proyecto que creare le llamare: CACPY (Calificador Automatico Classroom Python)
 
 
+    <div class="myWrapper" markdown="1" align="center">
+    <img  src="recursos_readme/otros/1_creandoProyecto.gif" style="width:70%;"  />
+    </div>
+
+
+    <!--
     <div style="text-align: center;">
     <img  src="recursos_readme/otros/1_creandoProyecto.gif" style="width:70%;"  />
     </div>
+    -->
 
 
     En el siguiente link enseñan como crear un proyecto de una forma mas detallada: https://developers.google.com/workspace/guides/create-project
@@ -281,7 +295,7 @@ Sin embargo por cuestiones de disponibilidad de equipo no  ha podido ser probada
 
 <hr>
 
-## **2) ¿Como usar el programa?**
+## **2) Como usar el programa**
 <div class="myWrapper" markdown="1" align="center">
 
 [Regresar al menu principal](#menu)
@@ -490,7 +504,7 @@ Para este ejemplo se seleccionara la clase: **Python para principiantes** desde 
 <img  src="recursos_readme/2_configuraciones/1_configuraciones.gif" style="width:50%;"  />
 </div>
 
-### **2.2.3.1.1] ¿Que hacer si no aparece la clase de classroom que quiero seleccionar?**
+### **2.2.3.1.1] Que hacer si no aparece la clase de classroom que quiero seleccionar**
 <div class="myWrapper" markdown="1" align="center">
 
 [Regresar al menu principal](#menu)
@@ -526,7 +540,7 @@ En el siguiente ejemplo se elegira la clase de NbGrader cuyo nombre es: **'curso
 </div>
 
 
-### **2.2.3.2.1) ¿Que hacer si no aparece la clase de NbGrader que quiero seleccionar?**
+### **2.2.3.2.1) Que hacer si no aparece la clase de NbGrader que quiero seleccionar**
 <div class="myWrapper" markdown="1" align="center">
 
 [Regresar al menu principal](#menu)
@@ -544,7 +558,7 @@ Si a la hora de querer seleccionar una clase de NbGrader no se encuentra entre l
 
 
 
-### **2.2.3.2.2) ¿Donde se encuentran las clases de NbGrader que puedo seleccionar en el programa?**
+### **2.2.3.2.2) Donde se encuentran las clases de NbGrader que puedo seleccionar en el programa**
 <div class="myWrapper" markdown="1" align="center">
 
 [Regresar al menu principal](#menu)
@@ -585,7 +599,7 @@ Por tal motivo cuando se abre el programa y se desea editar la clase seleccionad
 
 
 
-### **2.2.3.2.3) ¿Como crear clases NbGrader?**
+### **2.2.3.2.3) Como crear clases NbGrader**
 <div class="myWrapper" markdown="1" align="left">
 
 [Regresar al menu principal](#menu)
@@ -648,7 +662,7 @@ Una vez que se haya comprobado de que el **id** que se ingreso  si es el de la c
 </div>
 
 
-### **2.2.3.3.1) ¿Como se guardan las retroalimentaciones en la carpeta de drive seleccionada?**
+### **2.2.3.3.1) Como se guardan las retroalimentaciones en la carpeta de drive seleccionada**
 <div class="myWrapper" markdown="1" align="center">
 
 [Regresar al menu principal](#menu)
@@ -759,7 +773,7 @@ El programa  unicamente  permitira el acceso a este apartado hasta que se haya s
 * La clase de NbGrader en donde se encuentran las tareas que se dejaron a los alumnos y que se desean calificar
 * La carpeta de drive en donde se almacenaran todas las retroalimentaciones.
 
-### **2.2.4.1) ¿Para que sirve el apartado de: 'Mis tareas'?**
+### **2.2.4.1) Para que sirve el apartado de: 'Mis tareas'**
 <div class="myWrapper" markdown="1" align="left">
 
 [Regresar al menu principal](#menu)
@@ -772,7 +786,7 @@ El apartado de: **Mis tareas** a grosso modo sirve para dos cosas especificament
 * Calificar las tareas de programación
 
 
-### **2.2.4.2) ¿Como importar una tarea a la tabla de tareas calificables?**
+### **2.2.4.2) Como importar una tarea a la tabla de tareas calificables**
 <div class="myWrapper" markdown="1" align="center">
 
 [Regresar al menu principal](#menu)
@@ -845,7 +859,7 @@ la tarea cuyo nombre es:'**tarea_3**' y por ultimo se importara la tarea cuyo no
 
 El objetivo de que se importen la tareas a la **'tabla de tareas calificables'**  para que estas puedan ser calificadas es por que en una clase de classroom en un topic en particular no solo contendran tareas de programación, es decir no todas las tareas que contenga el topic seran de programación asi que no todas esas tareas desearan ser calificadas por CACPY, por eso se hace que se importen las tareas que si son de programación y desean ser calificadas con CACPY.
 
-### **2.2.4.3) ¿Como eliminar una tarea a la tabla de tareas calificables?**
+### **2.2.4.3) Como eliminar una tarea a la tabla de tareas calificables**
 <div class="myWrapper" markdown="1" align="center">
 
 [Regresar al menu principal](#menu)
@@ -860,7 +874,7 @@ En el siguiente ejemplo se eliminara la tarea con el nombre de: **Tarea_3** y de
 </div>
 
 
-### **2.2.4.4) ¿Como calificar una tarea?**
+### **2.2.4.4) Como calificar una tarea**
 <div class="myWrapper" markdown="1" align="left">
 
 [Regresar al menu principal](#menu)
@@ -972,7 +986,7 @@ se debera dar clic izquierdo sobre el boton: **'Calificar mas tareas'**
 * Si se desea detener la calificación de las entregas unicamente debera darse clic izquierdo sobre el boton: **'Detener'**
 
 
-### **2.2.4.5) ¿Como asignar una tarea?**
+### **2.2.4.5) Como asignar una tarea**
 <div class="myWrapper" markdown="1" align="left">
 
 [Regresar al menu principal](#menu)
@@ -1026,7 +1040,7 @@ El programa  unicamente  permitira el acceso a este apartado hasta que se haya s
 * La clase de classroom en donde se encuentran la o las tareas que se desean calificar
 * La carpeta de drive en donde se almacenaran todas las retroalimentaciones.
 
-### **2.2.4.1) ¿Para que sirve el apartado de: 'Mis alumnos'?**
+### **2.2.4.1) Para que sirve el apartado de: 'Mis alumnos'**
 <div class="myWrapper" markdown="1" align="left">
 
 [Regresar al menu principal](#menu)
@@ -1040,7 +1054,7 @@ classroom que se selecciono en el apartado: **'Mis configuraciones'**
 * Ver todas las retroalimentaciones de todas las tareas de programación de cada alumno inscrito a tu clase de google classroom
 
 
-### **2.2.4.2) ¿Como ver la lista de nombres y correos electronicos de los alumnos inscritos?**
+### **2.2.4.2) Como ver la lista de nombres y correos electronicos de los alumnos inscritos**
 <div class="myWrapper" markdown="1" align="center">
 
 [Regresar al menu principal](#menu)
@@ -1062,7 +1076,7 @@ Es importante mencionar que tambien se pueden eliminar alumnos de la lista de al
 
 **Aclaración:** Es importante mencionar que cada vez que se cierre el programa y se vuelva a abrir, en el apartado de: **'Mis alumnos'** volvera a aparecer que se tienen  cero alumnos inscritos a pesar de que si haya alumnos inscritos, esto es debido a que el programa no realiza ningun respaldo en la base de datos local de quienes son los alumnos inscritos y a que clase pertenencen, por tal motivo existe el boton de refrescar, para que el programa solicite los datos de los alumnos inscritos y los muestre.
 
-### **2.2.4.3) ¿Como ver las calificaciones y retroalimentaciones de cada alumno?**
+### **2.2.4.3) Como ver las calificaciones y retroalimentaciones de cada alumno**
 <div class="myWrapper" markdown="1" align="center">
 
 [Regresar al menu principal](#menu)

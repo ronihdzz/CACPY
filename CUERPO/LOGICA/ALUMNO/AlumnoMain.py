@@ -1,28 +1,62 @@
+'''
+AlumnoMain.py :
+                    Contiene una sola  clase, la clase 'Alumno',  la cual a grosso
+                    modo sirve para mostrar las lista de correos y nombres de los
+                    alumnos inscritos a la clase de classroom seleccionada,y tambien
+                    sirve para poder las califaciones de todas las tareas de cada
+                    estudiantes asi como tambien sirve para ver todas las
+                    retroalimentaciones de los ejercicios de programacion de cada alumno.
+'''
+
+__author__      = "David Roni Hernández Beltrán"
+__email__ = "roni.hernandez.1999@gmail.com"
 
 
+###########################################################################################################################################
+# Paquetes de terceros
+###########################################################################################################################################
 
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import  QMessageBox
-from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5 import QtWidgets,QtCore,QtGui
 from PyQt5.QtCore import Qt
-from PyQt5 import QtCore,QtGui
+
+###########################################################################################################################################
+# fuente local
+###########################################################################################################################################
+
 import recursos
 from CUERPO.LOGICA.API import FuncionesDrive
-
-
-
-###############################################################
-#  IMPORTACION DEL DISEÑO...
-##############################################################
 from CUERPO.DISENO.ALUMNO.AlumnoMain_d import Ui_Form
 
 
-
-
 class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
-    NO_COLUMNAS=2
+    '''
+    Sirve para mostrar las lista de correos y nombres de los
+    alumnos inscritos a la clase de classroom seleccionada,y tambien
+    sirve para poder ver las califaciones de todas las tareas de cada
+    estudiante asi como tambien sirve para ver todas las
+    retroalimentaciones de los ejercicios de programacion de cada alumno.
+    '''
+
+
 
     def __init__(self,baseDatosLocalClassRoom,classRoomControl,configuracionCalificador):
+        '''
+        Parámetros:
+        baseDatosLocalClassRoom (objeto de la clase: BaseDatos_ClassRoomProgramas): dicho
+        objeto permitira acceder a la base de datos local, la cual almacena los datos de
+        los 'CourseWork' asi como los 'Topics' y 'Clases' del ClassRoom del profesor que ha
+        iniciado sesión
+
+        classRoomControl (objeto de la clase: ClassRoomControl): dicho objeto es una capa
+        de abstracción para poder hacer algunas peticiones al ClassRoom del profesor, asi
+        como al GoogleDrive del profesor
+
+        configuracionCalificador (objeto de la clase: CalificadorConfiguracion): dicho objeto
+        contiene ordenados los datos de configuracion que necesitara el programa, asi como tambien
+        contiene metodos que serviran para obtener o editar dichos datos
+        '''
+
         Ui_Form.__init__(self)
         QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
@@ -32,10 +66,10 @@ class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.classRoomControl=classRoomControl
         self.configuracionCalificador=configuracionCalificador
 
-        self.btn_refrescarListaAlumnos.clicked.connect(self.cargarEstudiantes)
+        self.btn_refrescarListaAlumnos.clicked.connect(self.cargarEstudiantes_claseClassroomSelec)
         self.tableWidget_alumnos.installEventFilter(self)
 
-        self.configurarTabla()
+        self.configurarTablasApartadoMisAlumnos()
 
         self.tableWidget_alumnos.itemDoubleClicked.connect(self.verDetallesEstudiante)
         self.btn_regresar.clicked.connect(lambda : self.listWidget.setCurrentIndex(0) )
@@ -49,10 +83,280 @@ class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         self.textBrowser_datosEstudiante.setOpenLinks(True)
         self.textBrowser_datosEstudiante.setReadOnly(True)
 
+##################################################################################################################################################
+# ESTUDIANTE SELECCIONADO
+##################################################################################################################################################
+
+    def actuarAnteCambio_claseClassroom(self):
+        '''
+        Por cada clase de classroom hay diferentes alumnos inscritos a estas, por tal
+        motivo cuando el usuario cambia de clase de classroom se debe llamar a este
+        metodo ya que lo que hace este metodo es:
+            - Si tenia cargados en la tabla los nombres y correos de los alumnos
+             de la clase de classroom que antes estaba seleccionada, los borrara
+            - Mostrara el nombre de la clase de classroom nueva seleccionada en la
+            label respectiva de la GUI
+        '''
+
+        self.borrarListaAlumnos()
+        self.mostrarDatosCurso()
+
+    def borrarListaAlumnos(self):
+        '''
+        Borrara todos los datos contenidos en la tabla en donde se muestran los nombres y correos
+        electronicos de los alumnos de la clase de classroom seleccionada.
+        '''
+
+        self.tableWidget_alumnos.setRowCount(0)
+        self.listaIdsEstudiantes = []
+
+    def mostrarDatosCurso(self):
+        '''
+        Mostrara el nombre de la clase de classroom selecciona en la label respectiva
+        de la GUI.
+        '''
+
+        nombreCurso=self.configuracionCalificador.getNombre_cursoClassroom()
+        self.bel_numeroAlumnos.setText("0")
+
+        if nombreCurso!=None:
+            self.bel_nombreCurso.setText(nombreCurso)
+
+
+    def cargarEstudiantes_claseClassroomSelec(self):
+        '''
+        Hara una consulta a la API de google classroom para saber cuales son los datos
+        de los alumnos inscritos a la clase de classroom seleccionada, posteriormente
+        mostrara en una tabla los nombres y correos electronicos de los alumnos inscritos
+        a la clase de classroom seleccionada.
+        '''
+
+
+        seDeseaCargarListaAlumnos=self.msg_preguntarAcercaRefrescarListaEstudiantes()
+
+        if seDeseaCargarListaAlumnos:
+            claseClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
+
+            # el metodo 'get_listaAlumnos' retorna los datos de cada alumno de la siguiente
+            # forma:
+            # (   (idEstudiante_1,nombreCompleto_1,correoElectronico_1),
+            #     (idEstudiante_2,nombreCompleto_2,correoElectronico_2),
+            #                           .
+            #                           .
+            #                           .
+            #  )
+            datosAlumnosInscritosClase=self.classRoomControl.get_listaAlumnos(claseClassroom_id)
+            self.listaIdsEstudiantes=[]
+            numeroAlumnosInscritos=len(datosAlumnosInscritosClase)
+
+            if numeroAlumnosInscritos>0:
+                self.tableWidget_alumnos.setRowCount(numeroAlumnosInscritos)
+                self.bel_numeroAlumnos.setText(str(numeroAlumnosInscritos))
+
+            for r,datosAlumno in enumerate(datosAlumnosInscritosClase):
+
+                idAlumno,nombreAlumno,correoAlumno=datosAlumno
+                self.listaIdsEstudiantes.append(idAlumno)
+
+                # nombre del alumno
+                a = QtWidgets.QTableWidgetItem(nombreAlumno)
+                a.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                self.tableWidget_alumnos.setItem(r, 0, a)
+
+                # correo electronico del alumno
+                a = QtWidgets.QTableWidgetItem(correoAlumno)
+                a.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                self.tableWidget_alumnos.setItem(r, 1, a)
+
+            self.msg_exitoAlRefrescar()
+
+    def eventFilter(self, source, event):
+        """
+        Este metodo se encarga de mostrar un menu  con la leyenda: 'eliminar',
+        cuando  el usuario le de clic derecho a algun renglon de la tabla de
+        la lista de alumnos inscritos a la clase de classroom seleccionada.
+        Si el usuario da clic izquierdo sobre la leyenda 'eliminar' este metodo
+        se encargara de iniciar el proceso de eliminacion del alumno que se encuentra
+        en el renglon en donde el usuario dio clic derecho.
+        """
+
+
+        if event.type() == QtCore.QEvent.ContextMenu and source is self.tableWidget_alumnos:
+
+            try:
+                # La excepccion se adjunta por que si el usuario da clic derecho sobre cualquier parte
+                # de la tabla que no se es un renglon, entonces la variable: 'item' tomara el valor
+                # de: 'None', y cuando se realice: 'item.row()' habra un error por que el
+                # valor None no tiene el metodo 'row()', por tal motivo se coloca la excepccion
+
+                item = source.itemAt(event.pos())
+                indiceEliminar = item.row()
+
+                menu = QtWidgets.QMenu()
+                menu.addAction("eliminar")  # menu.addAction("eliminar",metodoA_llamar)
+
+                if menu.exec_(event.globalPos()):
+                    self.eliminarEstudiante(indiceEliminar)
+
+            except Exception as e:
+                pass
+
+            return True
+        return super().eventFilter(source, event)
+
+    def eliminarEstudiante(self,numeroRenglon):
+        '''
+        Se encargara de eliminar el estudiante que se encuentra en la posicion: 'numeroRenglon'
+        de la tabla de estudiantes inscritos a la clase de classroom seleccionada.
+
+        Al eliminar al estudiante que se encuentra en la posicion: 'numeroRenglon' de la tabla
+        de estudiantes inscritos a la clase de classroom seleccionada.
+            * Se eliminara eliminara unicamente de la tabla, por tal motivo si se diera clic en
+            el boton de refrescar volverian a aparecer los estudiantes eliminados
+        '''
+
+        # primero se pregunta si en realidad se desea eliminar al estudiante seleccionado
+        respuestaPositiva=self.msg_preguntarEleccionBorrarEstudiante(
+            estudianteEliminar=self.tableWidget_alumnos.item(numeroRenglon, 0).text()
+        )
+
+        if respuestaPositiva:
+            self.tableWidget_alumnos.removeRow(numeroRenglon)
+            self.listaIdsEstudiantes.pop(numeroRenglon)
+
+
+##################################################################################################################################################
+# ESTUDIANTE SELECCIONADO
+##################################################################################################################################################
+
+    def verDetallesEstudiante(self,index):
+        '''
+        Este metodo se llamara cuando el usuario haya dado doble clic izquierdo sobre el renglon
+        en donde se encuentran almacenados los datos de un alumno en especifico.
+        Lo que hara este metodo es mostrar los datos del alumno seleccionado, es decir mostrara:
+            * El nombre del alumno
+            * El correo del alumno
+            * El link para acceder a la carpeta de retroalimentaciones del alumno
+            * Las calificaciones de todas las tareas del alumno seleccionado
+        '''
+
+        # obteniendo el numero de renglon en el cual se encuentra
+        # almacenado el nombre del alumno seleccionado
+        index = index.row()
+
+
+        # obteniendo el nombre del alumno seleccionado
+        nombre = self.tableWidget_alumnos.item(index,0).text()
+
+        # obteniendo el correo del alumno seleccionado
+        correo=self.tableWidget_alumnos.item(index, 1).text()
+
+        # obteniendo el ID del alumno seleccionado
+        idEstudiante = self.listaIdsEstudiantes[index]
+
+        # obteniendo el link de acceso a la carpeta de google drive
+        # en donde se almacenan todas las retroalimentaciones del alumno
+        # seleccionado
+        linkCarpetaRetroalimentacion=self.getLinkCarpetaRetroAlumno(
+            user_id=idEstudiante
+        )
+
+        # agrupando los datos del alumno en un formato de html
+        htmlEstudiante=self.generarHtmlEstudianteMostrar(
+            nombre=nombre,
+            correo=correo,
+            linkCarpetaRetroalimentacion=linkCarpetaRetroalimentacion,
+        )
+
+        # mostrando los datos del alumno
+        self.textBrowser_datosEstudiante.setHtml(htmlEstudiante)
+
+        # cargando en una  tabla las calificaciones de las tareas del alumno
+        # seleccionado
+        self.cargarCalificacionesAlumnoSelec(idEstudiante=idEstudiante)
+
+
+        # cambiando a la ventana en donde se mostraran los datos del alumno seleccionado
+        self.listWidget.setCurrentIndex(1)
+
+    def getLinkCarpetaRetroAlumno(self,user_id):
+        '''
+        Este metodo retornara el link de acceso a la carpeta de google drive en donde
+        se suben todas las retroaliemntaciones del estudiante cuyo ID es igual al valor
+        que almacena el parametro: 'user_id'
+
+        Returns:
+            Dato de tipo: 'str' que representa el link de acceso a la carpeta de google drive en donde
+            se suben todas las retroaliemntaciones del estudiante cuyo ID es igual al valor
+            que almacena el parametro: 'user_id'
+        '''
 
 
 
-    def generarHtmlEstudianteMostrar(self,nombre,correo,linkCarpetaRetroalimentacion):
+        ID_carpetaAlmacenadoraRetro = self.configuracionCalificador.getIdApiCarpetaRetro()
+        ID_claseClassroom, nombre_claseClassroom = self.configuracionCalificador.get_id_nombre_cursoClassroom()
+
+        # obteniendo el nombre de la carpeta en donde se almacenan todas las retroalimentaciones de todos los alumnos
+        # de la clase de classroom seleccionada
+        nombre_carpetaAlmacenaRetro_cursoClassroom = "{}_{}".format(nombre_claseClassroom,ID_claseClassroom)
+
+        # obteniendo el ID de la carpeta que almacena donde se almacenan todas las retroalimentaciones de todos los alumnos
+        # de la clase de classroom seleccionada, en caso de que la carpeta no existe entonces se creara y despues se retornara
+        # el ID
+        respuesta = FuncionesDrive.getId_carpeta(nombre=nombre_carpetaAlmacenaRetro_cursoClassroom,
+                                                 idCarpetaAlmacena=ID_carpetaAlmacenadoraRetro,
+                                                 intermediarioAPI_drive=self.classRoomControl.service_drive)
+
+        if respuesta['exito'] is False:
+            errorPresentado = respuesta['resultado']
+            print(errorPresentado)
+
+        else:
+            ID_carpetaAlmacenaRetro_cursoClassroom = respuesta['resultado']['id']
+
+            #   Buscando o creando la carpeta que contiene todas retroalimentaciones de todas las tareas de  un alumno en especifico
+            # Buscando si ya existe una carpeta con el id del estudiante la cual es donde
+            # se almacenan todas las retroalimentaciones de sus tareas entragadas
+            respuesta = FuncionesDrive.getId_carpeta(
+                nombre=user_id,
+                idCarpetaAlmacena=ID_carpetaAlmacenaRetro_cursoClassroom,
+                intermediarioAPI_drive=self.classRoomControl.service_drive
+            )
+
+            if respuesta['exito'] is False:
+                errorPresentado = respuesta['resultado']
+                print(errorPresentado)
+            else:
+                # obteniendo el link de acceso a la carpeta de google drive en donde estan todas
+                # las retroalimentaciones del estuiante seleccionao
+                link_carpetaEstudiante=respuesta['resultado']['webViewLink']
+                return link_carpetaEstudiante
+
+        return None
+
+    def generarHtmlEstudianteMostrar(self, nombre, correo, linkCarpetaRetroalimentacion):
+        '''
+        Este metodo generara el html que agrupa los datos del alumno que el usuario quiere
+        ver, es decir agrupa en formato html:
+            * El nombre del alumno
+            * El correo del alumno
+            * Y el link para acceder a la carpeta de retroalimentaciones del alumno
+
+        Una vez creada el html con dichos datos, proseguira a retornar dicho html
+
+        Parámetros:
+            - nombre (str) : Nombre del alumno que el usuario selecciono para ver
+            - correo (str) : Correo electronico del alumno que el usuario selecciono
+            para ver
+            - linkRetroalimentacion (str): Link que da acceso a la carpeta de google
+            drive en donde se almacenan todas las retroalimentaciones de todas las
+            tareas de programacion que ha entregado el alumno que el usuario selecciono
+
+        Returns:
+            - Este metodo retorna un dato de tipo 'str' el cual representa el codigo
+            que contiene agrupados todos los datos mencionados anteriormente
+        '''
+
         htmlEstudiante = f'''
         <p>
             <span style=" font-size:16px;font-family: TamilSangamMN;"> 
@@ -60,7 +364,7 @@ class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             </span>
             <br>
             <br>
-            
+
             <span style=" font-size:12px;font-family: TamilSangamMN;"> 
             Correo: {correo}
             </span>
@@ -82,321 +386,107 @@ class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         return htmlEstudiante
 
 
+    def cargarCalificacionesAlumnoSelec(self, idEstudiante):
+        '''
+        Cargara las calificaciones de todas las tareas del alumno seleccionado
+        en una tabla
 
-    def actuarCambioCurso(self):
-        self.borrarListaAlumnos()
-        self.mostrarDatosCurso()
-
-
-    def getLinkCarpetaRetroAlumno(self,user_id):
-
-        # DATOS DE LA CARPETA EN DONDE SE ADJUNTARAN LAS RETROALIMENTACIONES
-        folder_id = self.configuracionCalificador.getIdApiCarpetaRetro()
-        idClase, nombreClase = self.configuracionCalificador.get_id_nombre_cursoClassroom()
-
-        nombreCarpetaCurso = "{}_{}".format(nombreClase, idClase)  # sera el id del curso
-        drive_service = self.classRoomControl.service_drive
-
-        ############################################################################################################################################
-        #   POSIBLE ERROR POR CONEXION DE RED 1:
-        #   ¿EXISTE EN DRIVE LA CARPETA DE LA CLASE DE CLASSROOM EN DONDE SE SUBIRAN LAS RETROALIMENTACIONES?
-        ############################################################################################################################################
-
-        print("*" * 100)
-        print("PASO 1: ¿EXISTE EN DRIVE LA CARPETA DE LA CLASE DE CLASSROOM EN DONDE SE SUBIRAN LAS RETROALIMENTACIONES?")
-
-        # obteniendo el id o creando la carpeta donde se guardara las retroalimentaciones
-        # de la clase de classroom
-        respuesta = FuncionesDrive.getId_carpeta(nombre=nombreCarpetaCurso,
-                                                 idCarpetaAlmacena=folder_id,
-                                                 intermediarioAPI_drive=drive_service)
-
-        if respuesta['exito'] is False:
-            errorPresentado = respuesta['resultado']
-            print(errorPresentado)
-            #self.HILO_ACTIVO = False
-            #self.senal_errorRed.emit((self.LISTA_ERRORES_RED[0], errorPresentado))
-
-
-        else:
-            id_carpetaRetroClase = respuesta['resultado']['id']
-
-            ############################################################################################################################################
-            #   POSIBLE ERROR POR CONEXION DE RED 4
-            #   Buscando o creando la carpeta que contiene todas retroalimentaciones de todas las tareas de  un alumno en especifico
-            ############################################################################################################################################
-
-            print("*" * 100)
-            print("PASO 4: Buscando o creando la carpeta que contiene todas retroalimentaciones de todas las "
-                  "tareas de  un alumno en especifico")
-
-            # Buscando si ya existe una carpeta con el id del estudiante la cual es donde
-            # se almacenan todas las retroalimentaciones de sus tareas entragadas
-            respuesta = FuncionesDrive.getId_carpeta(
-                nombre=user_id,
-                idCarpetaAlmacena=id_carpetaRetroClase,
-                intermediarioAPI_drive=drive_service
-            )
-
-            if respuesta['exito'] is False:
-                errorPresentado = respuesta['resultado']
-                print(errorPresentado)
-            else:
-                link_carpetaEstudiante=respuesta['resultado']['webViewLink']
-                return link_carpetaEstudiante
-
-        return None
-
-
-    def borrarListaAlumnos(self):
-
-        print("BORRANDO TODOS LOS DATOS DE LA TABLA")
-        self.tableWidget_alumnos.setRowCount(0)
-        self.listaIdsEstudiantes = []
-
-
-
-    def cargarEstudiantes(self,cargarAutomaticamente=False):
-
-        seDeseaCargarListaAlumnos=True
-        if cargarAutomaticamente is False:
-            seDeseaCargarListaAlumnos=self.msg_preguntarAcercaRefrescarListaEstudiantes()
-
-        if seDeseaCargarListaAlumnos:
-
-            claseClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
-            alumnos=self.classRoomControl.get_listaAlumnos(claseClassroom_id)
-            listaEstudiantes=[]
-            self.listaIdsEstudiantes=[]
-
-            for id,nombre,correo in alumnos:
-                print(id,'-',nombre,'-',correo)
-                listaEstudiantes.append( (nombre,correo) )
-                self.listaIdsEstudiantes.append(id)
-                # [idEstudiante] = nombreCompleto
-
-
-            self.bel_numeroAlumnos.setText(str(len(self.listaIdsEstudiantes)))
-
-            self.cargarDatosEnTabla(listaEstudiantes)
-
-
-    def verDetallesEstudiante(self,index):
-        index = index.row()
-
-        # Cargando los datos del coursework
-        nombre = self.tableWidget_alumnos.item(index, 0).text()
-        correo=self.tableWidget_alumnos.item(index, 1).text()
-        idEstudiante = self.listaIdsEstudiantes[index]
-
-        linkCarpetaRetroalimentacion=self.getLinkCarpetaRetroAlumno(
-            user_id=idEstudiante
-        )
-
-        htmlEstudiante=self.generarHtmlEstudianteMostrar(
-            nombre=nombre,
-            correo=correo,
-            linkCarpetaRetroalimentacion=linkCarpetaRetroalimentacion,
-        )
-
-        self.textBrowser_datosEstudiante.setHtml(htmlEstudiante)
+        Parámetros:
+            idEstudiante (str) : Representa el ID del alumno que el usuario
+            selecciono para poder ver sus datos respectivos
+        '''
 
 
         claseClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
-        datosDict=self.classRoomControl.list_todasEntregasEstudiante(
+
+
+        # obteniendo la lista de calificaciones de todas las tareas del alumno seleccionado
+        # el dict obtenido retornara los datos agrupados de la siguiente forma:
+        #   {
+        #   'topic_1': (  (nombre_tarea1,calif_tarea1), (nombre_tarea2,calif_tarea2) ...  )
+        #   'topic_2': (  (nombre_tarea1,calif_tarea1), (nombre_tarea2,calif_tarea2) ...  )
+        #                                      .
+        #                                      .
+        #                                      .
+        #   }
+        dict_califAlumnoSelec=self.classRoomControl.list_todasEntregasEstudiante(
             course_id=claseClassroom_id,
             user_id=idEstudiante
         )
 
-        self.listWidget.setCurrentIndex(1)
+        self.tableWidget_tareasAlumno.setRowCount(0)
+        numeroRenglones=0
 
-        print(datosDict)
+        for cadaLlave in dict_califAlumnoSelec.keys():
+            nombreTopic=cadaLlave
 
-        self.cargarDatosAlumnoDeseaVer(idAlumno=idEstudiante,datosAlumnoDict=datosDict)
+            for nombreCourseWork,calificacion in dict_califAlumnoSelec[nombreTopic]:
+                self.tableWidget_tareasAlumno.insertRow(numeroRenglones)
 
+                print(nombreCourseWork,nombreTopic,calificacion)
 
-    def mostrarDatosCurso(self):
-        nombreCurso=self.configuracionCalificador.getNombre_cursoClassroom()
-        self.bel_numeroAlumnos.setText("0")
+                # nombre coursework...
+                a = QtWidgets.QTableWidgetItem(nombreCourseWork)
+                a.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # change the alignment
+                self.tableWidget_tareasAlumno.setItem(numeroRenglones,0, a)
 
-        if nombreCurso!=None:
-            self.bel_nombreCurso.setText(nombreCurso)
+                # nombre topic...
+                b = QtWidgets.QTableWidgetItem(nombreTopic)
+                b.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # change the alignment
+                self.tableWidget_tareasAlumno.setItem(numeroRenglones,1,b)
 
+                # calificacion...
+                c = QtWidgets.QTableWidgetItem(str(calificacion))
+                c.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # change the alignment
+                self.tableWidget_tareasAlumno.setItem(numeroRenglones,2, c)
 
-
-
-    def cargarDatosAlumnoDeseaVer(self,idAlumno,datosAlumnoDict):
-
-            self.tableWidget_tareasAlumno.setRowCount(0)
-
-            # cargando los datos de correo electronico
-
-            #self.bel_nombreAlumno_selec.setText(idAlumno)
-            #self.bel_correoAlumnoSelec.setText(idAlumno)
-
-
-            # cada topic tiene n elementos { 'llave_1':[()], 'llave_2':[()] ...  }
-
-
-            #self.tableWidget_alumnos.clear()
-            numeroRenglones=0
-
-            for llave in datosAlumnoDict.keys():
-                nombreTopic=llave
-
-
-
-                for nombreCourseWork,calificacion in datosAlumnoDict[nombreTopic]:
-                    self.tableWidget_tareasAlumno.insertRow(numeroRenglones)
-
-                    print(nombreCourseWork,nombreTopic,calificacion)
-
-                    # nombre coursework...
-                    a = QtWidgets.QTableWidgetItem(nombreCourseWork)
-                    a.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # change the alignment
-                    self.tableWidget_tareasAlumno.setItem(numeroRenglones,0, a)
-
-                    # nombre topic...
-                    b = QtWidgets.QTableWidgetItem(nombreTopic)
-                    b.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # change the alignment
-                    self.tableWidget_tareasAlumno.setItem(numeroRenglones,1,b)
-
-                    # calificacion...
-                    c = QtWidgets.QTableWidgetItem(str(calificacion))
-                    c.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # change the alignment
-                    self.tableWidget_tareasAlumno.setItem(numeroRenglones,2, c)
-
-                    numeroRenglones += 1
-
-
-
-
-
-    def eventFilter(self, source, event):
-        """
-        Cada vez que alguien haga click derecho sobre algun item de la
-        'listWid_soniMio' significara que probablemente quiera borrar
-        esa canción asi que debe  mostrar la opcion de borrar, y en caso
-        de ser seleccionada dicha opcion se mandara a borrar a dicha cancion
-        """
-
-        if event.type() == QtCore.QEvent.ContextMenu and source is self.tableWidget_alumnos:
-
-            try:
-                item = source.itemAt(event.pos())
-                print("objeto=", item)
-                print("indice a eliminar:", item.row())
-                indiceEliminar = item.row()
-
-                menu = QtWidgets.QMenu()
-                menu.addAction("eliminar")  # menu.addAction("eliminar",metodoA_llamar)
-                print("Clic derecho")
-
-                # indice=self.listWid_soniMio.currentIndex().row()
-                # cancionEliminar=self.listWid_soniMio.item(indice).text()
-                # print(f"Indice {indice} indice{event.pos()}  cancionEliminar{cancionEliminar}")
-
-                if menu.exec_(event.globalPos()):
-                    self.eliminarEstudiante(indiceEliminar)
-
-                    # if self.indice_topic_sele!=indiceEliminar:
-                    #    print("DEBEMOS ELIMINAR")
-                    #    self.eliminarRenglonTopic(indiceEliminar)
-                    # else:
-                    #    print("NO DEBEMOS ELIMINAR")
-                    # self.eliminarCancion()
-            except Exception as e:
-                print(e)
-
-            return True
-        return super().eventFilter(source, event)
-
-
+                numeroRenglones += 1
 
 ##################################################################################################################################################
 # OTRAS COSAS
 ##################################################################################################################################################
 
-    def eliminarEstudiante(self,numeroRenglon):
-        respuestaPositiva=self.msg_preguntarEleccionBorrarEstudiante(
-            estudianteEliminar=self.tableWidget_alumnos.item(numeroRenglon, 0).text()
-        )
+    def configurarTablasApartadoMisAlumnos(self):
+        '''
+        Se encargara de darle un formato a las tablas del apartado 'Mis Alumnos',
+        es decir:
+         - Se encargara de definir el numero de columnas de cada tabla
+         - Se encargara de definirla interaccion que se tendra con cada tabla
+         - Se encargara de definir el diseño de cada tabla(color de tabla, color de renglones,etc)
+        '''
 
-        if respuestaPositiva:
-            #cursoClassroom_id,_=self.configuracionCalificador.get_id_nombre_cursoClassroom()
-            #self.baseDatosLocalClassRoom.eliminarTopic(curso_id=cursoClassroom_id,
-            #                                           topicProgramas_id=self.listaIds_topicsClaseClassroom[numeroRenglon])
-            self.tableWidget_alumnos.removeRow(numeroRenglon)
-            self.listaIdsEstudiantes.pop(numeroRenglon)
-
-            #self.listaIds_topicsClaseClassroom.pop(numeroRenglon)
-
-
-    def configurarTabla(self):
+        # Configuracion de la tabla en donde se muestra la lista de los nombres y correos
+        # de los alumnos inscritos a la clase de classroom seleccionada.
 
         self.tableWidget_alumnos.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.tableWidget_alumnos.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.tableWidget_alumnos.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
-        #self.tableWidget_alumnos.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
-
-        header = self.tableWidget_alumnos.horizontalHeader()
-
         self.COLOR_TABLA = "#EEF2F3"
         self.COLOR_RESPUESTA = "#9AE5E0"
         stylesheet = f"""
         QTableView{{selection-background-color:{recursos.App_Principal.COLOR_TOPIC_SELECCIONADO};
         background-color:{recursos.App_Principal.COLOR_TABLA_TOPICS}; }};
         """
-
-        #stylesheet = f"""QTableView{{ background-color:{recursos.App_Principal.COLOR_TABLA_TOPICS}; }}; """
-
-        # stylesheet += "background-color:" + self.COLOR_TABLA + ";}"
         self.tableWidget_alumnos.setStyleSheet(stylesheet)
-
         self.tableWidget_alumnos.verticalHeader().setDefaultSectionSize(70)
 
-        # la tabla tiene 3 columnas
-        # ("NOMBRE","DATA_TIME", "PREGUNTAS")
+        # la tabla tiene 2 columnas: Nombre, Correo
         header = self.tableWidget_alumnos.horizontalHeader()
-        for columna in range(0, self.NO_COLUMNAS):
+        for columna in range(0, 2):
             header.setSectionResizeMode(columna, QtWidgets.QHeaderView.Stretch)
-            # header.setSectionResizeMode(columna, QtWidgets.QHeaderView.ResizeToContents)
-        # header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
 
 
-        # Configuracion de la tabla de alumnos...
+        # Configuracion de la tabla en donde se muestran las calificaciones del alumno seleccionado
 
         self.tableWidget_tareasAlumno.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.tableWidget_tareasAlumno.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.tableWidget_tareasAlumno.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
         self.tableWidget_tareasAlumno.setStyleSheet(stylesheet)
 
+        # la tabla tiene 3 columnas: Topic,Nombre tarea, calificacion
         header = self.tableWidget_tareasAlumno.horizontalHeader()
         for columna in range(0,3):
             header.setSectionResizeMode(columna, QtWidgets.QHeaderView.Stretch)
-
-
-
-    def cargarDatosEnTabla(self,tuplaDatos):
-        '''
-        Cargara los nombre de los topcis que vienen inmerso en el valor que tomara el
-        parametro con nombre de: 'tuplaDatos'
-
-        Parametros:
-            tuplaDatos (tuple): Es una tupla de n elementos donde cada elemento de ellas
-            representa el nombre de un topic de la clase de classroom seleccionada.
-        '''
-
-        if len(tuplaDatos)>0:
-            FILAS = len(tuplaDatos)
-            self.tableWidget_alumnos.setRowCount(FILAS)
-
-            for f in range(FILAS):
-                for c in range(self.NO_COLUMNAS):
-                    dato_celda_string = str(tuplaDatos[f][c])
-                    a = QtWidgets.QTableWidgetItem(dato_celda_string)
-                    a.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # change the alignment
-                    self.tableWidget_alumnos.setItem(f,c, a)
 
 
 ####################################################################################################################################
@@ -405,6 +495,22 @@ class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
     def msg_preguntarEleccionBorrarEstudiante(self,estudianteEliminar):
+        '''
+        Ventana emergente que se le mostrara al usuario en la cual  se le preguntara si en realidad
+        esta seguro de querer eliminar al estudiante  cuyo nombre es el valor que almacena el
+        parametro: 'estudianteEliminar'
+
+        Parámetros:
+            - estudianteEliminarr (str) : Nombre del estudiante que se desea eliminar de la tabla
+            donde se muestran los datos de tdos los estudiantes inscritos a la clase de classroom
+            seleccionada
+
+        Returns:
+            - True (bool) : Si el usuario confirmo positivamente de querer eliminar
+            - False (bool): Si el usuario respondio que NO desea eliminar
+        '''
+
+
         ventanaDialogo = QMessageBox()
         ventanaDialogo.setIcon(QMessageBox.Critical)
         ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
@@ -428,107 +534,61 @@ class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
     def msg_preguntarAcercaRefrescarListaEstudiantes(self):
-            ventanaDialogo = QMessageBox()
-            ventanaDialogo.setIcon(QMessageBox.Question)
-            ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-            ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
-            mensaje = "Solo es recomendable refrescar la lista de estudiantes " \
-                      "si eliminaste a un estudiante por accidente o si no vez " \
-                      "la lista de nombres de tus estudiantes"
-
-            mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-            ventanaDialogo.setText(mensaje)
-            ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-            btn_yes.setText('Si')
-            btn_no = ventanaDialogo.button(QMessageBox.No)
-            btn_no.setText('No')
-            ventanaDialogo.exec_()
-            if ventanaDialogo.clickedButton() == btn_yes:
-                return True
-            return False
-
-
-
-###############################################################################################################################################################################
-# METODOS POR IMPLEMENTAR
-################################################################################################################################################################################
-
-
-    def cargarAlumnos(self,curso_id):
         '''
-        # Cuando se crean datos se crea el atributo curso_id
-        self.curso_id=None
-        if curso_id:
-            self.curso_id=curso_id
-            tuplaDatosTopics=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=curso_id)
-            print("TUPLA DESDE BASE LOCAL:",tuplaDatosTopics)
+        Mostrara un cuadro de dialogo al usuario para preguntarle si
+        en realidad desea refrescar.
 
-            #tuplaDatosClases=self.baseDatosLocalClassRoom.get_tuplaClases()
-            #print("CLASES BASE DE DATOS:",tuplaDatosClases)
-            self.dictTopics = {}
-            self.listWidget_topicsTareasProgramas.clear()
-
-            if tuplaDatosTopics==() or len(tuplaDatosTopics)==0:
-                tuplaDatosTopics=self.classRoomControl.get_listaDatosTopicsCurso(self.curso_id)
-                print("TEMAS DEL CURSO API: ",tuplaDatosTopics)
-                if tuplaDatosTopics !=() and len(tuplaDatosTopics)!= 0:
-                    self.baseDatosLocalClassRoom.agregar_soloNuevosTopics(
-                        tuplaDatos=tuplaDatosTopics,
-                        curso_api_id=self.curso_id
-                    )
-
-            if tuplaDatosTopics != () and len(tuplaDatosTopics) != 0:
-                for topic_api_id,topic_nombre in tuplaDatosTopics:
-                    self.dictTopics[topic_api_id]=topic_nombre
-
-                self.listWidget_topicsTareasProgramas.addItems(  tuple( self.dictTopics.values() )  )
+        Returns:
+            - True (bool) : Si el usuario confirmo positivamente que si
+            desea  refrescar
+            - False (bool): Si el usuario dijo que NO desea refrescar
         '''
-        pass
 
-    def refrescarAlumnos(self):
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Question)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = "Solo es recomendable refrescar la lista de estudiantes " \
+                  "si eliminaste a un estudiante por accidente o si no vez " \
+                  "la lista de nombres de tus estudiantes"
+
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            return True
+        return False
+
+
+    def msg_exitoAlRefrescar(self):
         '''
-        Agregara todos los alumnos no agregados a la base de datos....
-        Posteriormente comenzara a agregar con la tecnica de join a los alumnos-curso que no existan...
-        if self.curso_id!=None:
-            respuestaAfirmativa=self.msg_preguntarAcercaRefrescarTopics()
-            if respuestaAfirmativa:
-                # eliminamos todas los elementos de la base de datos
-                # consultamos y agregamos a la base de datos
-
-                tuplaDatosTopics = self.classRoomControl.get_listaDatosTopicsCurso(self.curso_id)
-                print("TDODOS LOS TOPICS API: ", tuplaDatosTopics)
-
-                if tuplaDatosTopics!=() and len(tuplaDatosTopics) != 0:
-                    self.baseDatosLocalClassRoom.agregar_soloNuevosTopics(
-                        tuplaDatos=tuplaDatosTopics,
-                        curso_api_id=self.curso_id
-                    )
-
-
-                # keys= api_id de cada curso  values= nombre de cada curso
-                self.dictCursos={}
-                self.listWidget_topicsTareasProgramas.clear()
-
-
-                tuplaDatosTopics=self.baseDatosLocalClassRoom.get_topicsLibres(course_id_api=self.curso_id)
-                self.dictTopics={}
-
-                if tuplaDatosTopics!=() and len(tuplaDatosTopics)!=0:
-                    for topic_api_id,topic_nombre in tuplaDatosTopics:
-                        self.dictTopics[topic_api_id]=topic_nombre
-
-                    self.listWidget_topicsTareasProgramas.addItems(  tuple( self.dictTopics.values() )  )
-
-                self.msg_exitoDescargarTopics()
+        Mostrara un cuadro de dialogo al usuario con la finalidad de  informarle que se
+        ha refrescado exitosamente.
         '''
-        pass
 
 
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Information)
+        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
+        mensaje = "Se ha refrescado con exito la lista de estudiantes inscritos en la clase de  "
+        mensaje+= "classroom seleccionada"
 
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+        btn_ok.setText('Entendido')
+        ventanaDialogo.exec_()
 
 
 

@@ -14,27 +14,22 @@ Main.py :   Contine una sola  clase, la clase 'Main', la cual  es la clase princ
 __author__      = "David Roni Hernández Beltrán"
 __email__ = "roni.hernandez.1999@gmail.com"
 
-###########################################################################################################################################
-# librerias estandar
-###########################################################################################################################################
-
-
 
 ###########################################################################################################################################
 # Paquetes de terceros
 ###########################################################################################################################################
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets,QtCore
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtCore
 from PyQt5.Qt import QSizePolicy, Qt
-from PyQt5.QtWidgets import (QAction,QActionGroup,QLabel,QWidget,QMessageBox)
+from PyQt5.QtWidgets import QAction,QActionGroup,QLabel,QWidget,QMessageBox
 
 ###########################################################################################################################################
 # fuente local
 ###########################################################################################################################################
-import recursos
+
 # diseño de este apartado de la aplicación
-from CUERPO.DISENO.MAIN.Main_d import Ui_MainWindow 
+from CUERPO.DISENO.MAIN.Main_d import Ui_MainWindow
+import recursos
 from CUERPO.LOGICA.TAREA.TareaMain import TareaMain
 from CUERPO.LOGICA.PERFIL.PerfilMain import PerfilMain
 from CUERPO.LOGICA.CONFIGURACION.ConfiguracionMain import ConfiguracionMain
@@ -49,7 +44,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
     de python que realice para dar vida a esta  aplicacion, es decir 
     junta todos los diferentes apartados del programa en una seccion 
     respectiva de la aplicación.
-    
     '''
 
 
@@ -100,7 +94,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         )
 
 
-
         # Creando los diferentes apartados del programa:
 
         # el apartado de 'Mi perfil' permitira al profesor ver su informacion personal asi como
@@ -119,8 +112,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
             classRoomControl=self.elClassRoom_control,
             configuracionCalificador=self.configuracionCalificador
         )
-
-
 
         # el apartado de 'Mis tareas' permitira al profesor seleccionar las tareas que quiere
         # calificar, asi como tambien permitira calificar las entregas correspondientes a una
@@ -151,7 +142,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         self.listWidget.addWidget(self.ventana_aplicacionConfiguracion)
 
 
-
         # Creando la barra de navegacion
         self.crear_barraNavegacion()
 
@@ -166,17 +156,18 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
 
 
         # Contanto las señales de los diferentes apartados del programa
-        self.ventana_aplicacionConfiguracion.senal_eligioTopic.connect(self.actuarAnteCambioTopic)
-        self.ventana_aplicacionConfiguracion.senal_eligioUnCurso.connect(self.actuarAnteCambioCurso)
-        self.ventana_aplicacionConfiguracion.senal_claseNbGrader_cambio.connect(self.actuarAnte_cambio_claseNbGrader)
+        self.ventana_aplicacionConfiguracion.senal_eligioTopic.connect(self.actuarAnteCambio_topicClassroom)
+        self.ventana_aplicacionConfiguracion.senal_eligioUnCurso.connect(self.actuarAnteCambio_claseClassroom)
+        self.ventana_aplicacionConfiguracion.senal_claseNbGrader_cambio.connect(self.actuarAnteCambio_claseNbGrader)
         self.ventana_aplicacionTareas.senal_operacionCompleja.connect(self.actuarAnteEstado_operacionCompleja)
         self.ventana_aplicacionPerfil.senal_cerrarAplicacion.connect(self.cerrarPrograma_sinConsultar)
 
 
-        # Mostrando de forma default el el perfil del apartado del programa
-        self.accion_verApartadoPerfil.trigger()
+        # Se cargan las configuraciones que el usuario realizo la ultima vez que cerro el programa
         self.ventana_aplicacionConfiguracion.cargarDatos_objetoConfigurador()
 
+        # Mostrando de forma default el el perfil del apartado del programa
+        self.accion_verApartadoPerfil.trigger()
 
         # variable de bandera que servira para que el programa sepa cuando
         # preguntar acerca de cerrar o no.
@@ -218,7 +209,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         else:
             self.setEnabled(True)
 
-    def actuarAnte_cambio_claseNbGrader(self):
+    def actuarAnteCambio_claseNbGrader(self):
         '''
         Cada vez que el profesor efectue un cambio en el apartado de:  'Mis configuraciones' 
         y dicho cambio haya sido un cambio en la seleccion de la clase NbGrader, es 
@@ -235,7 +226,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         self.ventana_aplicacionTareas.regresarMenu()
 
 
-    def actuarAnteCambioCurso(self):
+    def actuarAnteCambio_claseClassroom(self):
         '''
         Cada vez que el profesor efectue un cambio en el apartado de:  'Mis configuraciones' 
         y dicho cambio haya sido un cambio en la seleccion de la clase de Classroom, es 
@@ -250,10 +241,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         '''
 
         self.ventana_aplicacionTareas.actuarCambioCurso()
-        self.ventana_aplicacionAlumnos.actuarCambioCurso()
+        self.ventana_aplicacionAlumnos.actuarAnteCambio_claseClassroom()
 
 
-    def actuarAnteCambioTopic(self):
+    def actuarAnteCambio_topicClassroom(self):
         '''
         Cada vez que el profesor efectue un cambio en el apartado de:  'Mis configuraciones' 
         y dicho cambio haya sido un cambio en la seleccion de la clase de Topic, es 
@@ -496,9 +487,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         toolbar.addAction(self.accion_verApartadoConfiguracion)
         toolbar.addSeparator()
         toolbar.addWidget(self.get_separadorQAction())
-
         toolbar.addWidget(self.get_expansorWidget())
-
 
 
 

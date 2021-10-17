@@ -2,18 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="82b61526-a303-459d-8079-6e9425a39115" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/calificadorRoni.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/calificadorRoni.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/CONFIGURACION/ConfiguracionMain_d.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/CONFIGURACION/ConfiguracionMain_d.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/CalificadorConfiguracion.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/CalificadorConfiguracion.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/respaldo" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/AgregadorTopcis.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/AgregadorTopcis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/CambiadorCarpetaDrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/CambiadorCarpetaDrive.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/CambiadorClases.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/CambiadorClases.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/CambiadorClasesNbGrader.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/CambiadorClasesNbGrader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/ConfiguracionMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/ConfiguracionMain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/MAIN/CargadorCrendencial_d.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/MAIN/CargadorCrendencial_d.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/ALUMNO/AlumnoMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/ALUMNO/AlumnoMain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/CargadorCredencial.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/CargadorCredencial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/DatosCreador.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/DatosCreador.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/PERFIL/ConfirmadorAccion.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/PERFIL/ConfirmadorAccion.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/PERFIL/PerfilMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/PERFIL/PerfilMain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

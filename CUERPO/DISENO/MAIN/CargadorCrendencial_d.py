@@ -55,12 +55,12 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.btn_cargarArchivos = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_cargarArchivos.setMinimumSize(QtCore.QSize(35, 35))
-        self.btn_cargarArchivos.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_cargarArchivos.setSizeIncrement(QtCore.QSize(0, 0))
-        self.btn_cargarArchivos.setBaseSize(QtCore.QSize(30, 30))
-        self.btn_cargarArchivos.setStyleSheet("QPushButton {\n"
+        self.btn_abrirExploradorArchivos = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_abrirExploradorArchivos.setMinimumSize(QtCore.QSize(35, 35))
+        self.btn_abrirExploradorArchivos.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_abrirExploradorArchivos.setSizeIncrement(QtCore.QSize(0, 0))
+        self.btn_abrirExploradorArchivos.setBaseSize(QtCore.QSize(30, 30))
+        self.btn_abrirExploradorArchivos.setStyleSheet("QPushButton {\n"
 "\n"
 "border-image: url(:/main/IMAGENES/subir_off.png);\n"
 " }\n"
@@ -73,9 +73,9 @@ class Ui_MainWindow(object):
 "border-image: url(:/main/IMAGENES/subir_off.png);\n"
 "}\n"
 "")
-        self.btn_cargarArchivos.setText("")
-        self.btn_cargarArchivos.setObjectName("btn_cargarArchivos")
-        self.verticalLayout_2.addWidget(self.btn_cargarArchivos)
+        self.btn_abrirExploradorArchivos.setText("")
+        self.btn_abrirExploradorArchivos.setObjectName("btn_cargarArchivos")
+        self.verticalLayout_2.addWidget(self.btn_abrirExploradorArchivos)
         self.label_11 = QtWidgets.QLabel(self.centralwidget)
         self.label_11.setMinimumSize(QtCore.QSize(35, 35))
         self.label_11.setMaximumSize(QtCore.QSize(30, 30))
