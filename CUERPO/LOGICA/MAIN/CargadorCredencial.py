@@ -179,27 +179,10 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
             - False (bool): Si el usuario respondio que NO desea
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "¿Esta seguro que quieres cerrar la ventana, recuerda que aun no has elegido un " \
                   "archivo de credenciales valido?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
-
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
+        return resultado
 
 
 
@@ -218,26 +201,10 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
             - False (bool): Si el usuario respondio que NO desea
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = f"¿Esta seguro que el archivo cuyo nombre es: <<{nombreArchivoElegido}>> es el archivo " \
                   f"que contiene las credenciales?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
+        return resultado
 
     def msg_debesCargarUnArchivo(self):
         '''
@@ -246,20 +213,8 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
         elegido por el.
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Debes cargar un archivo"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
-
+        self.ventanaEmergenteDe_error(mensaje)
 
     def msg_exitoCargarArchivo(self):
         '''
@@ -268,24 +223,10 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
         principal
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Felicidades, el archivo de credenciales cargado es valido y el token ya se ha generado " \
                   ",a continuacion se cerrara esta ventana y se ejecutara el programa para que ya " \
                   "puedas comenzar a utilizarlo."
-
-
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-        ventanaDialogo.setText(mensaje)
-
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_informacion(mensaje)
 
     def msg_errorEnArchivoElegido(self,nombreArchivoElegido,exception_presentada):
         '''
@@ -301,22 +242,12 @@ class CargadorCrendencial(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaA
             de credenciales
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = f"El nombre del archivo: <<{nombreArchivoElegido}>> el cual fue el que elegiste " \
                   f"NO es correcto, por favor "
         mensaje+=f" elige un archivo valido ya que al cargar dicho archivo ocurrio el siguiente error: << " \
                  f"{exception_presentada}>>"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-        ventanaDialogo.setText(mensaje)
 
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_error(mensaje)
 
 
 if __name__ == "__main__":

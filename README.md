@@ -178,18 +178,15 @@ de programación.
 </div>
 -->
 
-<div class="myWrapper" markdown="1" align="center">
+<div class="myWrapper"  align="center">
 <img  src="recursos_readme/otros/1_accederAGoogleConsole.gif" style="width:70%;"  />
 </div>
-
-
-
 
 
 * **Paso 2:** Crear un proyecto con el nombre de tu eleccion, para este ejemplo al proyecto que creare le llamare: CACPY (Calificador Automatico Classroom Python)
 
 
-    <div class="myWrapper" markdown="1" align="center">
+    <div align="center">
     <img  src="recursos_readme/otros/1_creandoProyecto.gif" style="width:70%;"  />
     </div>
 
@@ -208,7 +205,7 @@ de programación.
 
 * **Paso 3:** Habilitar la API de Google Classroom y la API Google Drive
 
-    <div style="text-align: center;">
+    <div align="center">
     <img  src="recursos_readme/otros/3_habilitarApis.gif" style="width:70%;"  />
     </div>
 
@@ -229,7 +226,7 @@ de programación.
     * Paso 7: Clic izquierdo sobre **Guardar y continuar**
     * Paso 8: Clic izquierdo sobre **volver al panel**
 
-    <div style="text-align: center;">
+    <div align="center">
     <img  src="recursos_readme/otros/2_creandoAplicacion.gif" style="width:70%;"  />
     </div>
 
@@ -246,7 +243,7 @@ de programación.
 
     * Paso 5: Dar clic sobre: **GUARDAR**
 
-    <div style="text-align: center;">
+    <div align="center">
     <img  src="recursos_readme/otros/3_agregandoUsuariosPrueba.gif" style="width:70%;"  />
     </div>
 
@@ -267,7 +264,7 @@ de programación.
     * Paso 7: Finalmente hay que dirigirse a la tabla que dice **ID de clientes OAuth 2.0** y en la columna que dice: **Acciones** dar clic izquierdo sobre el simbolo de descargar
 
 
-    <div style="text-align: center;">
+    <div align="center">
     <img  src="recursos_readme/otros/4_descargandoCredenciales.gif" style="width:70%;"  />
     </div>
 
@@ -316,7 +313,7 @@ Cuando es la primera vez que inicias el programa, deberas cargar el archivo de
 credenciales(en el apartado anterior se menciona como obtenerlo), una vez cargado
 dicho archivo deberas seleccionar la cuenta de Gmail con la que deseas trabajar y finalmente conceder todos los permisos requeridos, al realizar todo lo mencionado anteriormente se abrira el programa y estara listo para ser usado.A continuación se explica de una forma grafica de como hacer lo anterior mencionado.
 
-<div style="text-align: center;">
+<div align="center">
 <img  src="recursos_readme/otros/5_cargandoCredencialesCACPY.gif" style="width:70%;"/>
 </div>
 
@@ -357,7 +354,7 @@ En dicho apartado podras visualizar:
 * El likedin del desarrollador(mi likedin)
 * El github del desarrollador(mi github)
 
-<div style="text-align: center;">
+<div align="center">
 <img  src="recursos_readme/1_datosProgramador/1_ventanaDatosProgramador.gif" style="width:70%;"/>
 </div>
 
@@ -366,31 +363,31 @@ Es importante mencionar que:
  * Si deseas mandarme un correo electronico  bastara con
 dar clic izquierdo sobre el nombre de mi electronico.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/1_datosProgramador/2_mandandoCorreo.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/1_datosProgramador/2_mandandoCorreo.gif" style="width:70%;"  />
 </div>
 
 
 *  Si deseas ver mi likedin  bastara con
 dar clic izquierdo sobre el nombre de mi likedin.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/1_datosProgramador/3_viendoLikedIn.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/1_datosProgramador/3_viendoLikedIn.gif" style="width:70%;"  />
 </div>
 
 *  Si deseas ver mi repositorio de github  bastara con
 dar clic izquierdo sobre el nombre de mi repositorio
 
-<div style="text-align: center;">
-<img  src="recursos_readme/1_datosProgramador/4_viendoMisRepositorios.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/1_datosProgramador/4_viendoMisRepositorios.gif" style="width:70%;"  />
 </div>
 
 
 * Y finalmente si deseas ver todo el repositorio de este proyecto
 bastara con dar clic izquierdo sobre el nombre del proyecto 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/1_datosProgramador/5_viendoRepositorioProyecto.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/1_datosProgramador/5_viendoRepositorioProyecto.gif" style="width:70%;"  />
 </div>
 
 
@@ -411,8 +408,8 @@ dentro de mi programa, es decir:
 En el siguiente ejemplo se pueden apreciar los datos de la cuenta con la que inicie sesión:
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/0_perfil/1_viendoApartoMiPerfil.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/0_perfil/1_viendoApartoMiPerfil.gif" style="width:70%;"  />
 </div>
 
 
@@ -437,8 +434,8 @@ que inicio sesión en el programa, no se borraran, es decir los siguientes archi
     * Se guardaran las configuraciones que el profesor haya hecho la ultima vez que inicio sesión dentro del programa.
     * No se volveran a pedir los permisos para que se vuelva a generar el token.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/0_perfil/2_cerrandoPrograma.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/0_perfil/2_cerrandoPrograma.gif" style="width:70%;"  />
 </div>
 
 
@@ -456,8 +453,8 @@ que inicio sesión en el programa, no se borraran, es decir los siguientes archi
     que el programa solo permite ser accedido por una sesión a la vez.
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/0_perfil/7_cerrarSesion.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/0_perfil/7_cerrarSesion.gif" style="width:70%;"  />
 </div>
 
 
@@ -494,14 +491,14 @@ Para seleccionar una clase de classroom bastara con dar clic izquierdo sobre el 
 
 La cuenta con la que se entro al programa para este ejemplo tiene 2 clases de classroom
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/1_clasesClassroom.png" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/1_clasesClassroom.png" style="width:70%;"  />
 </div>
 
 Para este ejemplo se seleccionara la clase: **Python para principiantes** desde el programa:
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/1_configuraciones.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/1_configuraciones.gif" style="width:70%;"  />
 </div>
 
 ### **2.2.3.1.1] Que hacer si no aparece la clase de classroom que quiero seleccionar**
@@ -514,8 +511,8 @@ Para este ejemplo se seleccionara la clase: **Python para principiantes** desde 
 
 Si a la hora de querer seleccionar una clase de classroom no se encuentra entre las opcciones la clase de classroom  que deseas seleccionar, se debera dar clic izquierdo sobre el boton 'refrescar', posteriormente se abrira un cuadro emergente de dialogo, debera darse clic sobre la opccion 'si', en la siguiente gif se ilustra lo anteriormente mencionado:
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/7_refrescarClases.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/7_refrescarClases.gif" style="width:70%;"  />
 </div>
 
 
@@ -535,8 +532,8 @@ Ejemplo:
 
 En el siguiente ejemplo se elegira la clase de NbGrader cuyo nombre es: **'curso_pythonBasico'**
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/6_eligiendoClaseNbGrader.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/6_eligiendoClaseNbGrader.gif" style="width:70%;"  />
 </div>
 
 
@@ -551,8 +548,8 @@ En el siguiente ejemplo se elegira la clase de NbGrader cuyo nombre es: **'curso
 
 Si a la hora de querer seleccionar una clase de NbGrader no se encuentra entre las opcciones la clase de NbGrader  que deseas seleccionar, unicamente debera dar clic izquierdo sobre el boton 'refrescar',en la siguiente gif se ilustra lo anteriormente mencionado:
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/8_refrescarClasesNbGrader.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/8_refrescarClasesNbGrader.gif" style="width:70%;"  />
 </div>
 
 
@@ -571,8 +568,8 @@ Ejemplo:
 
 Imaginemos que  se descarga por primera vez el codigo fuente del programa. Al abrir la  carpeta que contiene el codigo fuente se observara lo siguiente:
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/3_contenidoCodigoFuente.png" style="width:30%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/3_contenidoCodigoFuente.png" style="width:70%;"  />
 </div>
 
 Las clases de NbGrader que se podran seleccionar en el programa se encuentran la ruta: **'/RECURSOS/NB_GRADER/'**, por tal motivo cuando se desea crear una clase de NbGrader, debera crearse  en dicha ruta.
@@ -582,8 +579,8 @@ Para este ejemplo si nos dirigimos a dicha ruta se podra observar que hay 2 clas
 * curso_pythonBasico
 * python_bien
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/4_clasesHechasNbGrader.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/4_clasesHechasNbGrader.gif" style="width:70%;"  />
 </div>
 
 
@@ -593,8 +590,8 @@ Por tal motivo cuando se abre el programa y se desea editar la clase seleccionad
 * python_bien
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/5_clasesNbGraderSeleccionar2.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/5_clasesNbGraderSeleccionar2.gif" style="width:70%;"  />
 </div>
 
 
@@ -631,34 +628,34 @@ Para seleccionar la carpeta de google drive en donde se almacenaran todas las re
 que se realicen de los alumnos, se debera dar clic sobre  el boton con  imagen de lapiz que se encuentra al extremo derecho del apartado que dice **Drive dir**, una vez hecho lo anterior se desplegara un cuadro emergente, se le debera que dar clic sobre la opccion 'si', despues de hacer lo anterior se abrira una ventana en donde se  pedira que se ingrese el **'id'** de la carpeta de google drive en donde se desea que se almacenen todas las retroalimentaciones de los alumnos
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/9_abrirVentanaCarpetaDrive.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/9_abrirVentanaCarpetaDrive.gif" style="width:70%;"  />
 </div>
 
 Para este ejemplo se creara una carpeta en google drive con el nombre de: **'CACPY_retroalimentaciones'**
 posteriormente se adjuntara el id de dicha carpeta en el apartado que nos  piden el **id**
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/10_adjuntandoID_carpeta2.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/10_adjuntandoID_carpeta2.gif" style="width:70%;"  />
 </div>
 
 
 Una vez adjuntado el id, se debera dar clic izquierdo sobre el boton: **'Realizar cambio'**, despues de hacer lo anterior se desplegara una ventana que  mostrara el nombre y el link de acceso  de la carpeta del **id** que se ingreso, todo esto con el fin de que se pueda corraborar de si efectivamente el **id** de la carpeta que se ingreso es el de la carpeta que en realidad se desea.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/11_presentandoLink.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/11_presentandoLink.gif" style="width:70%;"  />
 </div>
 
 Si se desea acceder a la carpeta del **id** que se ingreso,para poder comprobar que si es la carpeta que se desea, bastara con dar clic izquierdo sobre el nombre de la carpeta que se encuentra en letras negras y subrayado con una linea de color negro.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/12_accediendoPorLinkCarpeta.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/12_accediendoPorLinkCarpeta.gif" style="width:70%;"  />
 </div>
 
 Una vez que se haya comprobado de que el **id** que se ingreso  si es el de la carpeta que se desea, se debera repetir la frase que se pide en la ventana, para darle a entender al programa de que si es la carpeta correcta, una vez repetida la frase debera darse clic sobre el boton **'Aceptar'**, posteriormente se abrira un cuadro de dialogo, debera darse clic izquierdo sobre la opcción **'Si'**, al hacer lo mencionado anteriormente quedara guardada la carpeta que se eligio y ya podran cerrarse las ventanas que aun sigan abiertas.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/13_guardandoCambiosCarpeta.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/13_guardandoCambiosCarpeta.gif" style="width:70%;"  />
 </div>
 
 
@@ -705,8 +702,8 @@ Supongamos que hay un alumno cuyo id es: **'114283316418743255552'**,dicho alumn
 
 Los topcis de classroom que se pueden seleccionar son los que aparecen en la **'tabla de topics seleccionables'**, sin embargo es importante mencionar si no hay ninguno en la tabla  significa que no se a importado ninguno, en la siguiente imagen se podrar apreciar claramente cual es la **'tabla de topics seleccionables'** y como se ve cuando se encuentra vacia.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/14_tablaTopics.png" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/14_tablaTopics.png" style="width:70%;"  />
 </div>
 
 Para importar topics a la **'tabla de topics seleccionables'**  se debera dar clic sobre el boton: **'Importar apartado'** al hacer lo anterior se abrira una ventana que mostrara todos los topics que no se encuentran en  la **'tabla de topics seleccionables'** y que pertencen a la clase de classroom seleccionada, sin embargo es importante recalcar de que si al abrir la ventana no se encuentra  el topic que se desea agregar a la  **'tabla de topics seleccionables'**, entonces deberar darse clic sobre el botón **'refrescar'**  y despues clic sobre la opcción '**Si**' todo ello con la finalidad de que  el sofware revise si le falta algun topic por mostrar.
@@ -716,38 +713,38 @@ En la siguiente gif que se mostrara a continuación se podra apreciar claramente
 * Apuntes
 * Tarea de clase
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/17_topicsClaseClassroomSeleccionada.png" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/17_topicsClaseClassroomSeleccionada.png" style="width:70%;"  />
 </div>
 
 Por tal motivo en la  gif que se mostrara a continuación se procedio a dar clic sobre el boton **'refrescar'**, despues de hacer eso ve claramente como aparecen los topics de la clase de classroom seleccionada
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/15_recargandoTopics.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/15_recargandoTopics.gif" style="width:70%;"  />
 </div>
 
 Para importar un topic a la **'tabla de topics seleccionables'** se debera dar clic sobre el topic, y posteriormente clic sobre el boton **'Agregar'**
 
 Para el siguiente ejemplo se importara el topic cuyo nombre es: '**Tarea de clase**'  
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/16_agregandoUnTopic.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/16_agregandoUnTopic.gif" style="width:70%;"  />
 </div>
 
 Si se desea importar otro topic se debera repetir el mismo procedimiento mencionado previamente
 
 Para el siguiente ejemplo se importara ahora el topic cuyo  nombre es: '**Apuntes**'  
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/18_agregandoOtroTopic.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/18_agregandoOtroTopic.gif" style="width:70%;"  />
 </div>
 
 Si se desea eliminar un topic de la **'tabla de topics seleccionables'** se debera dar clic derecho sobre el nombre del topic eliminado, posteriormente clic izquierdo sobre. **'eliminar'** y despues clic izquierdo sobre la opcción **'Si'**
 
 En el siguiente ejemplo se eliminara el topic: **Apuntes**
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/19_eliminandoTopic.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/19_eliminandoTopic.gif" style="width:70%;"  />
 </div>
 
 
@@ -755,8 +752,8 @@ Finalmente para poder seleccionar un topic se debera dar doble clic izquierdo so
 
 En el siguiente ejemplo se seleccionara el topic: **Tarea de clase**
 
-<div style="text-align: center;">
-<img  src="recursos_readme/2_configuraciones/20_seleccionandoTopic.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/2_configuraciones/20_seleccionandoTopic.gif" style="width:70%;"  />
 </div>
 
 
@@ -803,7 +800,7 @@ Cuando se abre por primera vez el apartado mis tareas se podran observar  basica
 * El boton para poder asignar tareas de programación en google classroom
 
 
-<div style="text-align: center;">
+<div align="center">
 <img  src="recursos_readme/3_tareas/22_apartadoTareas.png" style="width:100%;"  />
 </div>
 
@@ -811,8 +808,8 @@ La **'tabla de tareas calificables'** contendra las tareas que se pueden calific
 
 En el siguiente gif se podra apreciar que la **'tabla de tareas calificables'** se encuentra vacia, por tal motivo se procede a dar clic sobre  el boton: **'Importar apartado'** con el objetivo de agregar una tarea a la **'tabla de tareas calificables'**
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/28_importandoTarea.gif" style="width:40%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/28_importandoTarea.gif" style="width:70%;"  />
 </div>
 
 Sin embargo es importante recalcar de que si en la ventana que se abrio al dar clic sobre el boton: **'Importar apartado'**, se encuentra vacia o no contiene la tarea que se desea agregar a la: **'tabla de tareas calificables'**, entonces se debera clic sobre el botón **'refrescar'**, posteriormente se abrira una ventana en la cual se debera dar  clic sobre la opcción '**Si**' todo ello con la finalidad de hacer que el sofware revise si le falta alguna tarea que mostrar y que pueda ser agregada a la **'tabla de tareas calificables'** 
@@ -825,15 +822,15 @@ En la siguiente gif que se mostrara a continuación se podra apreciar claramente
 * tarea_3
 * tarea_4
 
-<div style="text-align: center;">
+<div align="center">
 <img  src="recursos_readme/3_tareas/23_tareasAdjuntas.png" style="width:100%;"  />
 </div>
 
 
 Por tal motivo al dar dar clic sobre el boton: **'Importar apartado'** en la ventana que se abre debieron aparecer dichas tareas, pero como no aparecieron se procedio a dar clic sobre el boton **'refrescar'**, despues de hacer eso  se ve claramente como aparecen las tareas.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/24_refrescandoTareas.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/24_refrescandoTareas.gif" style="width:70%;"  />
 </div>
 
 
@@ -844,8 +841,8 @@ Para importar un topic a la **'tabla de tareas calificables'**  se debera dar do
 Para el siguiente ejemplo se importara la tarea  cuyo nombre es: '**tarea_1**'  
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/25_importandoTareaATabla.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/25_importandoTareaATabla.gif" style="width:70%;"  />
 </div>
 
 Si se desea importar otro topic se debera repetir el mismo procedimiento mencionado previamente
@@ -853,8 +850,8 @@ Si se desea importar otro topic se debera repetir el mismo procedimiento mencion
 Para el siguiente ejemplo se importara ahora la tarea cuyo nombre es: '**tarea_2**', despues 
 la tarea cuyo nombre es:'**tarea_3**' y por ultimo se importara la tarea cuyo nombre es '**ejercicio_repaso_1**'  
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/26_importandoMasTareas.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/26_importandoMasTareas.gif" style="width:70%;"  />
 </div>
 
 El objetivo de que se importen la tareas a la **'tabla de tareas calificables'**  para que estas puedan ser calificadas es por que en una clase de classroom en un topic en particular no solo contendran tareas de programación, es decir no todas las tareas que contenga el topic seran de programación asi que no todas esas tareas desearan ser calificadas por CACPY, por eso se hace que se importen las tareas que si son de programación y desean ser calificadas con CACPY.
@@ -869,8 +866,8 @@ Supongamos que ya no se desea  calificar una tarea por que todos los alumnos ya 
 
 En el siguiente ejemplo se eliminara la tarea con el nombre de: **Tarea_3** y despues se eliminara la tarea con el nombre de: **Tarea_2**
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/27_eliminandoTareas.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/27_eliminandoTareas.gif" style="width:70%;"  />
 </div>
 
 
@@ -899,21 +896,21 @@ Ejemplo:
 * Ya no falta ningun alumno por entregar dicha tarea.
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/29_seleccionandoTareaParaCalificar.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/29_seleccionandoTareaParaCalificar.gif" style="width:70%;"  />
 </div>
 
 
 Como se menciono anteriormente  el apartado que se abrio contiene un boton con imagen de un icono de notas, el cual debera se presionado cuando se deseen calificar las entregas de la tarea, al dar clic sobre dicho boton se desplegara una ventana nueva que mostrara los mismo datos ya mostrados de la tarea que se desea calificar y aparte mostrara mas cosas
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/30_abriendoVentanaCalificadora.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/30_abriendoVentanaCalificadora.gif" style="width:70%;"  />
 </div>
 
 La ventana que se abrio al dar clic sobre el  boton con imagen de un icono de notas sirve para calificar las entregas de los estudiantes de la tarea que se desea calificar, para calificar las entregas bastara con especificarle al programa el numero de entregas que se desean calificar y posterior a ello dar clic izquierdo sobre el boton: **'Calificar'**, una vez hecho lo anterior los nombres de los alumnos junto con su calificación obtenida estaran apareciendo en la tabla de color rosa:
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/31_calificandoTareas.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/31_calificandoTareas.gif" style="width:70%;"  />
 </div>
 
 Observacion: Por cada alumno que entrego la tarea y que fue califcado el programa le compartira la retroalimentación de su tarea y la calificación respectiva, todo esto  a través de Google classroom, por ende le llegaran las respectivas noficaciones a su correo cuando esto suceda.
@@ -927,14 +924,14 @@ Cuando un alumno que fue calificado  abra su google classroom en la tarea que fu
     * Dicha carpeta de google drive unicamente se comparte en modo de vista con el alumno que realizo la entrega de la tarea, es decir unicamente podra acceder a ella en modo de vista el alumno que realizo la entrega de la tarea.
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/35_viendoCalificacion.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/35_viendoCalificacion.gif" style="width:70%;"  />
 </div>
 
 Para que el alumno pueda ver la retroalimentación, el alumno debera descargarla y abrirla con su navegador favorito:
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/1_viendoRetroalimentaciones.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/1_viendoRetroalimentaciones.gif" style="width:70%;"  />
 </div>
 
 
@@ -943,8 +940,8 @@ Si el alumno deseara volver a entregar una tarea por que saco una mala calificac
 * **Paso 2:** Si la tarea ya fue calificada debera cerrar el link que se le adjunto para acceder a sus retroalimentaciones.
 * **Paso 3:** Corregir la tarea, y posteriormente volverla entregar.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/2_corrigiendoTarea.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/2_corrigiendoTarea.gif" style="width:70%;"  />
 </div>
 
 
@@ -954,8 +951,8 @@ Si el alumno al estar resolviendo la tarea elimino por accidente algun codigo de
 * **Paso 2:** Dirigirse a la publicacion de la tarea y cerrar el archivo adjunto de la tarea para que se elimine
 * **Paso 3:** Dar clic izquierdo sobre **'Crear un copia'**
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/3_restableciendoLaTarea.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/3_restableciendoLaTarea.gif" style="width:70%;"  />
 </div>
 
 
@@ -965,22 +962,22 @@ Es importante mencionar lo siguiente:
 se debera dar clic izquierdo sobre el boton: **'Calificar mas tareas'**
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/32_limpiarCalificaciones.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/32_limpiarCalificaciones.gif" style="width:70%;"  />
 </div>
 
 
 * Es probable que mientras se encontraba calificando, algunos de sus  estudiantes que no habian realizado la entrega de su tarea apenas la  hayan realizado, por tal razon existe el boton: **'refrescar'** pues al dar clic izquierdo sobre el: hara que el programa revise si hay alguna nueva  entrega de esta tarea que pueda ser calificada.
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/33_refrescandoEntregasAlumnos.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/33_refrescandoEntregasAlumnos.gif" style="width:70%;"  />
 </div>
 
 * Cuando se califica una tarea es probable que un alumno haya ingresado una entrega erronea, es decir  un archivo erroneo como tarea o que no haya adjuntado nada como tarea, cuando suceda que un alumno comete un error al entregar la tarea, en la tabla aparecera su nombre de color rojo.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/36_errorCalificar.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/36_errorCalificar.gif" style="width:70%;"  />
 </div>
 
 * Si se desea detener la calificación de las entregas unicamente debera darse clic izquierdo sobre el boton: **'Detener'**
@@ -1002,8 +999,8 @@ Ejemplo:
 
 En el siguiente ejemplo se puede apreciar que fue creada una tarea en NbGrader con el nombre de: **'tarea_5'**, posteriormente se descarga la versión para estudiantes y finalmente su sube a google drive dicho archivo:
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/37_subirTareaDrive.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/37_subirTareaDrive.gif" style="width:70%;"  />
 </div>
 
 
@@ -1017,15 +1014,15 @@ En el siguiente ejemplo se puede apreciar que fue creada una tarea en NbGrader c
 Una vez llenados los apartados debera darse clic sobre el boton: **'Asignar tarea'**, con esto la tarea abra sido asignada exitosamente en google classroom pero en forma de borrador.
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/38_creandoTareaProgramacion.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/38_creandoTareaProgramacion.gif" style="width:70%;"  />
 </div>
 
 
 * **Paso 4-.** Como la tarea fue creada creada en google classroom en forma de borrador ,es decir los alumnos aun no podran verla(esto se hace con la intención de que el maestro pueda verificar que la tarea se haya creado exitosamente al igual que las instrucciones antes de ser publicada y todos los alumnos la vean),el maestro debera ir al classroom en donde se creo la tarea y cambiar la tarea de: estado de  borrador a tarea NO borrador, asi como tambien agregarle cosas extras extras si asi lo desea y finalmente los alumnos podran ver la tarea asignada:
 
-<div style="text-align: center;">
-<img  src="recursos_readme/3_tareas/38_asignandoTareaATodos.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/3_tareas/38_asignandoTareaATodos.gif" style="width:70%;"  />
 </div>
 
 ## **2.2.5) Mis alumnos**
@@ -1068,8 +1065,8 @@ classroom que se selecciono en el apartado: **'Mis configuraciones'** se debera 
 el boton: **'Refrescar'** al hacer lo anterior se vera los nombres y correos electronicos de los alumnos.
 
 
-<div style="text-align: center;">
-<img  src="recursos_readme/4_alumnos/1_viendoListaAlumnos.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/4_alumnos/1_viendoListaAlumnos.gif" style="width:70%;"  />
 </div>
 
 Es importante mencionar que tambien se pueden eliminar alumnos de la lista de alumnos que se muestra en el programa, unicamente  debera darse clic derecho sobre el nombre del alumno que se desea eliminar y confirmar que se desea eliminar.
@@ -1092,8 +1089,8 @@ Para ver las calificaciones y retroalimentaciones de cada alumno, debera darse d
 Lo cual si se da clic izquierdo sobre: <b><u>carpeta de todas las retrolimentaciones</u></b> 
 el programa abrira la carpeta de google drive en donde se almacenan todas las retroalimentaciones de todas las tareas de programación realizadas por dicho alumno.
 
-<div style="text-align: center;">
-<img  src="recursos_readme/4_alumnos/2_viendoCalificacionesAlumno.gif" style="width:50%;"  />
+<div align="center">
+<img  src="recursos_readme/4_alumnos/2_viendoCalificacionesAlumno.gif" style="width:70%;"  />
 </div>
 
 

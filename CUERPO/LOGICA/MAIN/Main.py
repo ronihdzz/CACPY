@@ -353,25 +353,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
             True : En caso de que el profesor presione el boton de 'Si'
             False: En caso de que el profesor presione el boton de 'No'
         '''
-        
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
         mensaje = "¿Esta seguro que deseas salir de la aplicacion?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        respuesta=self.ventanaEmergenteDe_pregunta(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        return respuesta
+
 
     def msg_faltanDatosParaApartadoAlumnos(self):
         '''
@@ -380,21 +367,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         alumnos.
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
         mensaje = "Para acceder al apartado 'Mis alumnos' primero debes seleccionar una de tus clases de classroom "
         mensaje+= "y la carpeta de google drive en donde se almacenaran todas las retroalimentaciones de tus cursos "
         mensaje+=" y todo ello podras hacerlo en el apartado de 'Mis configuraciones' "
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_error(mensaje)
+
 
 
     def msg_faltanDatosParaApartadoTareas(self):
@@ -404,22 +383,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         tareas
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Para ver las tareas asignadas primero debes seleccionar una de tus clases de classroom,"
         mensaje+= "el topic en donde se encuentran las tareas que deseas calificar, la clase de NbGrader "
         mensaje+= "y la carpeta de google drive en donde se almacenaran todas las retroalimentaciones de tus cursos "
         mensaje+=" y todo ello podras hacerlo en el apartado de 'Mis configuraciones' "
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_error(mensaje)
 
 ################################################################################################################################
 #  C R E A D O R E S :

@@ -225,24 +225,11 @@ class CambiadorCarpetaDrive(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacio
         de sus estudiantes.
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "La carpeta que elegiste ha sido guardada correctamente, " \
                   "a continuación se cerraran las ventanas y podras ver "
         mensaje+="nuevamente el apartado de: 'Mis configuraciones' "
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
+        self.ventanaEmergenteDe_informacion(mensaje)
 
 
     def msg_noHayIdsBlancos(self):
@@ -253,23 +240,11 @@ class CambiadorCarpetaDrive(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacio
         en el aparto de ID de la ventana.
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "No puedes dejar el apartado de Id en blanco,debes ingresar el id de " \
                   "la carpeta en donde deseas que se guarden las retroalimentaciones " \
                   "de tus cursos"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
+        self.ventanaEmergenteDe_error(mensaje)
 
     def msg_errorIdCarpeta(self,idCarpeta,excepccion):
         '''
@@ -283,22 +258,12 @@ class CambiadorCarpetaDrive(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacio
             trato de validar el ID que ingreso y que resulto erroneo
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = f"El id: <<{idCarpeta}>> que fue el que  ingresaste como id de la carpeta, " \
                   f"no es valido por que ocaciono, el siguiente error: <<{excepccion}>> " \
                   f"por favor revisa que el id ingresado haya sido el correcto"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        self.ventanaEmergenteDe_error(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
 
     def msg_errorPorNoPonerIdCarpeta(self,idArchivo,nombreArchivo,tipoArchivo):
         '''
@@ -313,23 +278,12 @@ class CambiadorCarpetaDrive(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacio
              el usuario ingreso
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = f"El id: <<{idArchivo}>> que fue el que  ingresaste como id de la carpeta, " \
                   f"NO resulto ser el id de una carpeta de drive, si no resulto ser el id de un " \
                   f"archivo de tipo: <<{tipoArchivo}>> cuyo nombre es: <<{nombreArchivo}>>, por favor " \
                   f"ingresa un id de una carpeta de drive "
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_error(mensaje)
 
 
 if __name__ == '__main__':

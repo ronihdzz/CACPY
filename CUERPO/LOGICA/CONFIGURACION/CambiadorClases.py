@@ -244,25 +244,12 @@ class CambiadorClases(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
             que desea seleccionar
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = f"¿En verdad el curso con el nombre de: <<{nombreCursoSeleccionado}>> "
         mensaje += " es el curso que deseas elegir? "
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
+
+        return resultado
 
 
     def msg_exitoDescargarClasesClassroom(self):
@@ -271,22 +258,11 @@ class CambiadorClases(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         ha refrescado exitosamente.
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Ya se descargaron las clases de classroom que faltaban por mostrar, sin embargo "
         mensaje+="es importante recalcar que si no vez ningun cambio es por que no  "
         mensaje+="se encountraron clases de classroom  nuevas"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_informacion(mensaje)
 
 
     def msg_yaTeniasEseCursoSeleccionado(self):
@@ -295,23 +271,9 @@ class CambiadorClases(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         de classroom que selecciono ya lo tenia seleccionado
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "El curso de classroom que elegiste ya lo tienes seleccionado"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
-
-
+        self.ventanaEmergenteDe_informacion(mensaje)
 
     def msg_noPuedesElegirCurso_siNoHay(self):
         '''
@@ -320,25 +282,12 @@ class CambiadorClases(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         ninguna clase de classroom.
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Warning)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "No puedes seleccionar ningun curso, si no tienes ningun curso registrado, "
         mensaje += "en caso de que si tengas un curso registrado y no se visualice aqui,  "
         mensaje += "por favor da clic sobre el boton refrescar para que aparesca entre los  "
         mensaje += "cursos elegibles "
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
-
+        self.ventanaEmergenteDe_error(mensaje)
 
     def msg_preguntarAcercaRefrescarClases(self):
         '''
@@ -351,26 +300,14 @@ class CambiadorClases(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
             - False (bool): Si el usuario dijo que NO desea refrescar
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
         mensaje = "Solo es recomendable refrescar cuando no vez la clase que deseas "
         mensaje+="¿en verdad la clase que deseas no se encuentra en la lista? de ser "
         mensaje+="¿en verdad necesitas refrescar?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
+
+        return resultado
 
 
     def msg_ningunaClaseRegistrada(self):
@@ -380,22 +317,13 @@ class CambiadorClases(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         clase de classroom en su cuenta de google.
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Warning)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
         mensaje = "No tienes ninguna clase asignada, por favor crear una clase "
         mensaje+=" en classroom y despues da nuevamente da clic sobre el icono "
         mensaje+=" de refrescar "
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        self.ventanaEmergenteDe_advertencia(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
 
 
 if __name__ == '__main__':

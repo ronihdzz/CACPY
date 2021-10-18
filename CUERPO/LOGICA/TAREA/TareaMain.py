@@ -1,13 +1,25 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QInputDialog, QMessageBox,QHeaderView
-from PyQt5.QtGui import QStandardItemModel,QStandardItem
-from PyQt5.QtWidgets import  QMessageBox,QAction,QActionGroup,QWidget,QVBoxLayout,QTabWidget,QLabel
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog,QCompleter
-#from PyQt5.QtGui import Qt
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import pyqtSignal   #mandas senales a la otra ventana
-from PyQt5 import QtCore,QtGui
+'''
+TareaMain.py :
+    Contine una sola  clase, la clase 'TareaMain', la cual  a grosso ...
+'''
+
+__author__      = "David Roni Hernández Beltrán"
+__email__ = "roni.hernandez.1999@gmail.com"
+
+
+###########################################################################################################################################
+# Paquetes de terceros
+###########################################################################################################################################
+
+from PyQt5.QtWidgets import QApplication,QMessageBox,QWidget
+from PyQt5 import QtWidgets,QtCore,QtGui
+from PyQt5.QtCore import Qt,pyqtSignal
+
+###########################################################################################################################################
+# fuente local
+###########################################################################################################################################
+
 
 from CUERPO.DISENO.TAREA.TareaMain_d import  Ui_Form
 from CUERPO.LOGICA.TAREA.AgregadorCourseWork import AgregadorCourseWorks
@@ -107,6 +119,32 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
 
 
     def verDetallesTarea(self, index):
+        '''
+        Este metodo es llamado cuando el usuario haga doble clic izquierdo sobre el nombre de
+        una tarea(courseWork), contenida en la tabla de tareas calificables.
+
+        ¿Que hara este metodo?
+            - Preguntara si  a la que se le dio doble clic izquierdo es la tarea que se deseaba
+            seleccionar para ver sus datos o para calificarla las entregas hechas en esta tarea,
+            si el usuario responde afirmativamente este metodo  mostrara una apartado del programa
+            en donde se prodra apreciar:
+                    - El nombre de la tarea que se selecciono
+                    - La fecha en la cual fue creada dicha tarea
+                    - Cuantas entregas de dicha tarea ya han sido calificadas
+                    - Cuantas entregas de dicha tarea han sido entregadas pero NO calificadas
+                    - Cuantas entregas de dicha tarea faltan por entregar
+                    - Un boton con imagen de un icono de notas el cual debera se presionado
+                    cuando se deseen calificar las entregas de la tarea seleccionada
+
+        Parámetros:
+            item (QTableWidgetItem) : Es un objeto de de PyQt5 y es proveniente de la clase:
+            QTableWidgetItem, este objeto contiene información acerca del item al cual se le
+            dio doble clic izquierdo dentro de la tabla de topics seleccionables
+        '''
+
+
+
+
         index = index.row()
 
         # Cargando los datos del coursework

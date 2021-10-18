@@ -1,4 +1,5 @@
 import os
+from PyQt5.QtWidgets import QMessageBox
 
 class App_Principal():
 
@@ -129,5 +130,76 @@ class HuellaAplicacion(QtCore.QObject):
     def huellaAplicacion_ajustarMensajeEmergente(self,mensaje,extra=0):
         mensaje = textwrap.fill(mensaje, self.LONGITUD_ESTANDAR_MENSAJES_EMERGENTES+extra)
         return mensaje
+
+    def ventanaEmergenteDe_pregunta(self,mensaje):
+
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Question)
+        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
+        btn_yes.setText('Si')
+        btn_no = ventanaDialogo.button(QMessageBox.No)
+        btn_no.setText('No')
+        ventanaDialogo.exec_()
+        if ventanaDialogo.clickedButton() == btn_yes:
+            return True
+        return False
+
+    def ventanaEmergenteDe_informacion(self,mensaje):
+
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Information)
+        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+        btn_ok.setText('Entendido')
+        ventanaDialogo.exec_()
+
+
+    def ventanaEmergenteDe_advertencia(self,mensaje):
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Warning)
+        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+        btn_ok.setText('Entendido')
+        ventanaDialogo.exec_()
+
+    def ventanaEmergenteDe_error(self,mensaje):
+        ventanaDialogo = QMessageBox()
+        ventanaDialogo.setIcon(QMessageBox.Critical)
+        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
+        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+
+        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+
+        ventanaDialogo.setText(mensaje)
+        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
+        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
+        btn_ok.setText('Entendido')
+        ventanaDialogo.exec_()
+
+
+
+
+
+
+
 
 

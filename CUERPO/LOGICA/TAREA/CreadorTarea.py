@@ -1,26 +1,38 @@
-from PyQt5 import QtWidgets
-import sys
-from os import getcwd
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QMessageBox, QInputDialog, QFileDialog, QLineEdit
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import pyqtSignal, QThread  # hilos
 
-from PyQt5.QtWidgets import QDialog, QCompleter
+
+'''
+CreadorTarea.py :
+    Esta clase sirve para calificar las entregas que han realizado los alumnos del usuario
+    y que pertenecen a la tarea seleccionada..
+'''
+
+__author__      = "David Roni Hernández Beltrán"
+__email__ = "roni.hernandez.1999@gmail.com"
+
+
+###########################################################################################################################################
+# librerias estandar
+###########################################################################################################################################
+
+import sys
+
+
+###########################################################################################################################################
+# Paquetes de terceros
+###########################################################################################################################################
+
+from PyQt5 import QtWidgets,QtGui
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import pyqtSignal,QRegExp
+from PyQt5.QtGui import QRegExpValidator
 from functools import partial
 
-from PyQt5.QtCore import QRegExp
-from PyQt5.QtGui import QDoubleValidator,QRegExpValidator
-from PyQt5 import QtCore,QtGui
+###########################################################################################################################################
+# fuente local
+###########################################################################################################################################
 
-###############################################################
-#  IMPORTACION DEL DISEÑO...
-##############################################################
 from CUERPO.DISENO.TAREA.CreadorTarea_d import Ui_Dialog
 import recursos
-###############################################################
-#  IMPORTACIONES DE LAS DEMAS VENTANAS LOGICAS...
-##############################################################
 
 
 class CreadorTareas(QtWidgets.QDialog, Ui_Dialog,recursos.HuellaAplicacion):

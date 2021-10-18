@@ -168,26 +168,12 @@ class CambiadorClases_NbGrader(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplica
             False (bool): En caso de que la respuesta del usuario haya sido negativa
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = f"¿En verdad la clase de NbGrader con el nombre de: <<{nombreClaseNbGraderSelec}>> "
         mensaje += " es la clase de NbGrader que deseas elegir? "
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
+
+        return resultado
 
 
     def msg_noPuedesElegirClase_siNoHay(self):
@@ -197,26 +183,13 @@ class CambiadorClases_NbGrader(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplica
         por que no hay ninguna clase de NbGrader registrada.
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Warning)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "No puedes seleccionar ninguna clase de NbGrader, ya que no tienes "
         mensaje+= "ninguna clase NbGrader registrada, "
         mensaje += "en caso de que si tengas una clase de NbGrader registrada y no se visualice aqui, "
         mensaje += "por favor da clic sobre el boton refrescar para que apare<ca entre las  "
         mensaje += "clases de NbGrader elegibles."
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
+        self.ventanaEmergenteDe_advertencia(mensaje)
 
 
     def msg_preguntarAcercaRefrescarClases(self):
@@ -229,27 +202,13 @@ class CambiadorClases_NbGrader(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplica
             False (bool): En caso de que la respuesta del usuario haya sido negativa
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Solo es recomendable refrescar cuando no vez la clase que deseas "
         mensaje+="¿en verdad la clase que deseas no se encuentra en la lista? "
         mensaje+="¿en verdad necesitas refrescar?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
+
+        return resultado
 
     def msg_exitoAlRefrescar(self):
         '''
@@ -257,24 +216,12 @@ class CambiadorClases_NbGrader(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplica
         ha refrescado exitosamente.
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Ya se reviso en la ruta debida en donde se encuentra las clases de NbGrader creadas "
         mensaje+= "y ya se cargaron  para que usted puede visualizarlas y elegir alguna de ellas, sin embargo "
         mensaje+= "es importante recalcar que si no vez ningun cambio es por que no  "
         mensaje+= "se encontraron clases de NbGrader nuevas registradas."
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_informacion(mensaje)
 
 
 if __name__ == '__main__':

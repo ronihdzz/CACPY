@@ -13,8 +13,8 @@ __email__ = "roni.hernandez.1999@gmail.com"
 # Paquetes de terceros
 ###########################################################################################################################################
 
-from PyQt5.QtWidgets import QApplication,QMessageBox
-from PyQt5 import QtGui,QtWidgets
+from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSignal
 
 ###########################################################################################################################################
@@ -130,14 +130,10 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 
             if respuestaAfirmativa:
 
-                # eliminamos todas los elementos de la base de datos
-                # consultamos y agregamos a la base de datos
-
                 # Le pedimos a la API de google classroom que nos retorne todos los topics de la
                 # clase de classroom seleccionada.En caso de existir topics en la clase de classroom
                 # los datos los retornara de los topics los retornara en el siguiente formato:
                 # (   (idApi_topic_1,nombre_topic_1), (idApi_topic_2,nombre_topic_2) ...  )
-
                 tuplaDatosTopics = self.classRoomControl.get_listaDatosTopicsCurso(cursoClassroom_id)
 
                 # ¿habia tan siquiera un topic en la clase de classroom seleccionada?
@@ -242,23 +238,11 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         han actualizado y descargado con exito los topics de la clase de classroom
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Ya se descargaron los topics que faltaban por mostrar, sin embargo "
         mensaje+="es importante recalcar que si no vez ningun cambio es por que no  "
         mensaje+="se encountraron topics nuevos"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_informacion(mensaje)
 
 
     def msg_noPuedesElegirTopics_siNoHay(self):
@@ -268,23 +252,12 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         que se pueda agregar.
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Warning)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "No hay ningun  de topic que seleccionar, sin embargo la solucion "
         mensaje += "consiste en que vayas a ClassRoom y crees  topics y despues regreses  "
         mensaje += "al programa y le des clic sobre el boton con la leyenda igual a refrescar  "
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        self.ventanaEmergenteDe_error(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
 
     def msg_preguntarConfirmacionEleccionTopics(self, nombreTopicSeDeseaAgregar):
         '''
@@ -302,25 +275,12 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
             agregar
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = f"¿Estas seguro de querer agregar al topic cuyo nombre es: <<{nombreTopicSeDeseaAgregar}>> "
         mensaje += "a la tabla de topics seleccionables? "
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
+
+        return resultado
 
 
     def msg_preguntarAcercaRefrescarTopics(self):
@@ -334,27 +294,13 @@ class AgregadorTopics(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
             - False (bool): Si el usuario dijo que NO desea refrescar
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Solo es recomendable refrescar cuando no vez los topics que deseas "
         mensaje+="¿en verdad los topcis que deseas seleccionar no se encuentra en la lista? "
         mensaje+="¿en verdad necesitas refrescar?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
+
+        return resultado
 
 
 if __name__ == '__main__':

@@ -226,26 +226,12 @@ class ConfirmadorAccion(QDialog, Ui_Dialog,recursos.HuellaAplicacion):
             True : En caso de que el profesor presione el boton de 'Si'
             False: En caso de que el profesor presione el boton de 'No'
         '''
-        
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Warning)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
         mensaje = "¿Estas seguro de lo que haras?¿Leiste correctamente las indicaciones"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
 
+        return resultado
 
     def msg_lasPalabrasNoCoinciden(self):
         '''
@@ -254,20 +240,9 @@ class ConfirmadorAccion(QDialog, Ui_Dialog,recursos.HuellaAplicacion):
         la frase de confirmación
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Las palabras no coinciden"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
+        self.ventanaEmergenteDe_error(mensaje)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

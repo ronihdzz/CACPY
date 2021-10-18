@@ -510,26 +510,11 @@ class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             - False (bool): Si el usuario respondio que NO desea eliminar
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "¿Seguro de querer ELIMINAR al estudiante <<{}>> ?".format(estudianteEliminar)
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        return resultado
 
 
 
@@ -544,28 +529,13 @@ class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             - False (bool): Si el usuario dijo que NO desea refrescar
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Solo es recomendable refrescar la lista de estudiantes " \
                   "si eliminaste a un estudiante por accidente o si no vez " \
                   "la lista de nombres de tus estudiantes"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
-
+        return resultado
 
     def msg_exitoAlRefrescar(self):
         '''
@@ -573,22 +543,10 @@ class AlumnoMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         ha refrescado exitosamente.
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Se ha refrescado con exito la lista de estudiantes inscritos en la clase de  "
         mensaje+= "classroom seleccionada"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_informacion(mensaje)
 
 
 

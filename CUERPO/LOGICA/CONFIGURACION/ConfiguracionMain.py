@@ -16,10 +16,10 @@ __email__ = "roni.hernandez.1999@gmail.com"
 from PyQt5.QtWidgets import QApplication,QMessageBox
 from PyQt5 import QtWidgets,QtCore,QtGui
 from PyQt5.QtCore import Qt,pyqtSignal
+
 ###########################################################################################################################################
 # fuente local
 ###########################################################################################################################################
-
 # diseño de este apartado de la aplicación
 from CUERPO.DISENO.CONFIGURACION.ConfiguracionMain_d import Ui_Form  
 
@@ -652,25 +652,11 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             - False (bool): Si el usuario respondio que NO desea
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "¿Seguro que quieres cambiar de clase?"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        return resultado
 
     def msg_preguntarAcercaCambioClase_NbGrader(self):
         '''
@@ -682,25 +668,12 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             - False (bool): Si el usuario respondio que NO desea
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "¿Seguro que quieres cambiar de la clase NbGrader seleccionada?"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        return resultado
+
 
     def msg_preguntarAcercaCambioCarpetaDrive(self):
         '''
@@ -713,25 +686,13 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             - False (bool): Si el usuario respondio que NO desea
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "¿Seguro que quieres cambiar la carpeta de drive en donde se almacenan todas "
         mensaje += "las retroalimentaciones de tus cursos de programacion?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
+
+        return resultado
+
 
     def msg_preguntarEleccionBorrarTopic(self,nombreTopicA_eliminar):
         '''
@@ -750,26 +711,11 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             la tabla de topics seleccionables
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "¿Seguro de querer ELIMINAR el topic: <<{}>> ?".format(nombreTopicA_eliminar)
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        return resultado
 
 
     def msg_noPuedesEliminarTopicSelec(self):
@@ -779,21 +725,9 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         topics seleccionables.
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "No puedes eliminar los topics seleccionados"
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
-
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        self.ventanaEmergenteDe_informacion(mensaje)
 
 
     def msg_necesitasUnaClaseAntesAgregarTopic(self):
@@ -803,20 +737,9 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
         no ha seleccionado ninguna clase de classroom
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "Para agregar un topic primero debes escoger una clase de classroom"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
+        self.ventanaEmergenteDe_informacion(mensaje)
 
     def msg_preguntarAcercaCambioTopic(self,nombreTopicA_seleccionar):
         '''
@@ -832,26 +755,11 @@ class ConfiguracionMain(QtWidgets.QWidget,Ui_Form,recursos.HuellaAplicacion):
             - False (bool): Si el usuario respondio que NO querer seleccionar el topic
         '''
 
-
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
-
         mensaje = "¿Seguro de querer cambiar al apartado: <<{}>> ?".format(nombreTopicA_seleccionar)
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        return resultado
 
 
 if __name__ == '__main__':
