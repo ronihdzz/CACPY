@@ -31,7 +31,9 @@
             * [2.2.4.2) ¿Como importar una tarea a la tabla de tareas calificables?](#2242-como-importar-una-tarea-a-la-tabla-de-tareas-calificables)
             * [2.2.4.3) ¿Como eliminar una tarea a la tabla de tareas calificables?](#2243-como-eliminar-una-tarea-a-la-tabla-de-tareas-calificables)
             * [2.2.4.4) ¿Como calificar una tarea?](#2244-como-calificar-una-tarea)
-            * [2.2.4.5) ¿Como asignar una tarea?](#2245-como-asignar-una-tarea)
+            * [2.2.4.5) Creacion de tareas](#2245-creacion-de-tareas)
+                * [2.2.4.5.1) La importancia de asignar tareas desde CACPY](#22451-la-importancia-de-asignar-tareas-desde-cacpy)
+                * [2.2.4.5.2) Creando un tarea de programacion](#22452-creando-un-tarea-de-programacion)
         * [2.2.5) Mis alumnos](#225-mis-alumnos)  
             * [2.2.4.1) ¿Para que sirve el apartado de: 'Mis alumnos'?](#2241-para-que-sirve-el-apartado-de-mis-alumnos)
             * [2.2.4.2) ¿Como ver la lista de nombres y correos electronicos de los alumnos inscritos?](#2242-como-ver-la-lista-de-nombres-y-correos-electronicos-de-los-alumnos-inscritos)
@@ -983,11 +985,33 @@ se debera dar clic izquierdo sobre el boton: **'Calificar mas tareas'**
 * Si se desea detener la calificación de las entregas unicamente debera darse clic izquierdo sobre el boton: **'Detener'**
 
 
-### **2.2.4.5) Como asignar una tarea**
+
+
+### **2.2.4.5) Creacion de tareas**
 <div class="myWrapper" markdown="1" align="left">
 
 [Regresar al menu principal](#menu)
 </div>
+
+### **2.2.4.5.1) La importancia de asignar tareas desde CACPY**
+<div class="myWrapper" markdown="1" align="left">
+
+[Regresar al menu principal](#menu)
+</div>
+
+
+Es importante mencionar SOLO SE PODRAN calificar  las entregas de las tareas que realicen los estudiantes,SI Y SOLO SI  dichas tareas fueron creadas desde  CACPY, ya que es una retricción de la API de google classroom( las tareas creadas de forma manual no permite google classroom asignarles calificaciones apartir de programas de terceros, google classroom solo permite asignarles calificacion a las tareas que fueron creadas a partir de programas de terceros).
+
+### **2.2.4.5.2) Creando un tarea de programacion**
+<div class="myWrapper" markdown="1" align="left">
+
+[Regresar al menu principal](#menu)
+</div>
+
+Antes de mencionar los pasos que se deberan seguir para la creación de una tarea de programación es importante aclarar que CACPY **UNICAMENTE CREARA LAS TAREAS EN CLASSROOM EN FORMA DE BORRADOR**, y esto se hace por un razon principal, si CACPY creara la tarea **EN FORMA DE NO BORRADOR**, cuando el usuario creara la tarea desde CACPY, los estudiantes del usuario automaticamente verian en sus notificaciones respectivas de correo el aviso de que fue asignada una tarea, lo cual significa que si el usuario cometio un error con en la creación de la tarea, ya no habria manera de evitar que esas notificaciones se borren del buzon de correo de los estudiantes a pesar de que el usuario elimine dicha tarea desde google classroom, por tal motivo CACPY crea las tareas en forma de borrador, con la finalidad de que el profesor pueda revisar en su classroom respectivo si la tarea que esta en estado de borrador es correcta y si todo es correcta y ya quiera que la vean sus alumnos, el usuario tendra la libertad de asignarla.
+
+Una vez mencionado lo anterior se procede a explicar los pasos a seguir para la creación del borrador de la tarea de google classroom apartir de CACPY:
+
 
 
 * **Paso 1-.** Primero debera crearse la tarea en una clase de NbGrader, sin olvidar que dicha clase de NbGrader debe encontrarse almacenada en la misma ruta en donde se encuentra el codigo fuente del programa CACPY, pero en la ruta especifica: **'/RECURSOS/NB_GRADER/'** (esto ya fue explicado en el apartado: '2.2.3.2.2] ¿Donde se encuentran las clases de NbGrader que puedo seleccionar en el programa?' )
@@ -1005,13 +1029,20 @@ En el siguiente ejemplo se puede apreciar que fue creada una tarea en NbGrader c
 
 
 
-* **Paso 3-.** Finalmente para asignar la tarea debera irse al apartado: **'Mis tareas'** y dar clic izquierdo sobre el boton: **'Crear tarea'** y posteriormente llenar todos los apartados de la ventana que se abre:
+* **Paso 3-.** Finalmente para asignar el borrador de la  tarea en la clase y topic de  google classroom respectivas, debera irse al apartado: **'Mis tareas'** y dar clic izquierdo sobre el boton: **'Crear tarea'** y posteriormente llenar todos los apartados de la ventana que se abre:
+
 * En el apartado de nombre de la tarea, se debera poner el mismo nombre que se le puso a la tarea en NbGrader.
-* El el apartado de **'URL'** se debera adjuntar el link de acceso al archivo de la tarea que se subio a google drive
+
 * En el apartado de **'ID archivo'** se debera adjuntar el id del archivo de la tarea que se subio a google drive
+
 * En el apartado de **'Indicaciones'** se deberan poner las indicaciones de la tarea.
 
-Una vez llenados los apartados debera darse clic sobre el boton: **'Asignar tarea'**, con esto la tarea abra sido asignada exitosamente en google classroom pero en forma de borrador.
+Una vez llenados los apartados debera darse clic sobre el boton: **'Generar borrador de tarea en classroom'**, despues de hacer lo anterior si los datos ingresados son correctos se desplegara un ventana 
+preguntando si se esta seguro de querer hacer el borrador de tarea con los datos adjuntados, se debera dar clic sobre la opccion: 'Si', una vez hecho lo anterior se desplegara una ventana explicando lo que pasara, debera leerse detenidamente y finalmente dar clic sobre el boton 'Entendido', cuando esto pase, se creara el borrador de tarea en el topic y clase respectiva de google classroom y se cerrara automaticamente la ventana en donde se adjuntaron los datos de la tarea y por ultimo CACPY abrira de forma automatica en el navegador web la clase de google classroom que almacena la tarea que se acabo de crear como borrador, todo esto con el objetivo de que se pueda ver si la tarea creada es correcta y actuar en consecuencia:
+ * Asignarla para que los alumnos la puedan ver y responder
+ * Borrarla por que se cometio un error 
+ * Editarla por que faltaron datos que poner o se cometieron faltas de ortografia 
+
 
 
 <div align="center">
@@ -1019,18 +1050,29 @@ Una vez llenados los apartados debera darse clic sobre el boton: **'Asignar tare
 </div>
 
 
-* **Paso 4-.** Como la tarea fue creada creada en google classroom en forma de borrador ,es decir los alumnos aun no podran verla(esto se hace con la intención de que el maestro pueda verificar que la tarea se haya creado exitosamente al igual que las instrucciones antes de ser publicada y todos los alumnos la vean),el maestro debera ir al classroom en donde se creo la tarea y cambiar la tarea de: estado de  borrador a tarea NO borrador, asi como tambien agregarle cosas extras extras si asi lo desea y finalmente los alumnos podran ver la tarea asignada:
+Es importante mencionar lo siguiente:
+
+* Para poder calificar las entregas que realicen los estudiantes de la tarea recien creada, dicha tarea  debera importarse en la tabla de tareas calificables,sin embargo es importante mencionar que como esta tarea fue recien creada, cuando se desee importar dicha tarea a la tabla de tareas calificables no se podra ver el nombre de esta tarea en la ventana agregadora de tareas, por tal motivo debera darse clic sobre el boton 'Refrescar' y **unicamente aparecera SI YA FUE ASIGNADA es decir si su estado de BORRADOR ya fue cambiado a estado de PUBLIC(ya la pueden resolver y ver los estuiantes)**
 
 <div align="center">
-<img  src="recursos_readme/3_tareas/38_asignandoTareaATodos.gif" style="width:70%;"  />
+<img  src="recursos_readme/3_tareas/39_agregandoTareaCreadaATabla.gif" style="width:70%;"  />
 </div>
+
+
+* Si cuando se crea se desea crear una tarea de programación se presentan dudas con lo que se debe ingresar y cuales son sus restricciones de cada apartado del formulario creador de tareas, entonces debera darse clic sobre el boton que se encuentra al extremo derecho de cada apartado del formulario creador de tareas
+
+<div align="center">
+<img  src="recursos_readme/3_tareas/40_consultadoInformacionApartadosCreadorTareas.gif" style="width:70%;"  />
+</div>
+
+
+
 
 ## **2.2.5) Mis alumnos**
 <div class="myWrapper" markdown="1" align="left">
 
 [Regresar al menu principal](#menu)
 </div>
-
 
 El programa  unicamente  permitira el acceso a este apartado hasta que se haya seleccionado en el apartado de configuraciones:
 

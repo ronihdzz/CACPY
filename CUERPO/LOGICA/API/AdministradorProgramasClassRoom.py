@@ -32,6 +32,64 @@ class AdministradorProgramasClassRoom:
         )
 
 
+    def get_LinkAccesoClaseClassroom(self):
+        idCurso = self.configuracionCalificador.getIdApi_cursoClassroom()
+        datosClaseClassroom = self.classroom_control.service_classroom.courses().get(
+            id=idCurso
+        ).execute()
+
+        if datosClaseClassroom != None:
+            linkAcceso = datosClaseClassroom.get("alternateLink")
+            return linkAcceso
+
+    def getErrorEn_idDelColabQueSeDiceSerQueEsUnIdDeUnArchivoValidoDeTarea(self, idDelColab):
+        '''
+        El siguiente
+
+
+        Returns:
+            None: Si no existio ningun error
+            str : Si existion un error
+        '''
+
+        if idDelColab != "":
+            try:
+                # obteniendo el archivo de google drive al que le corresponde
+                # el ID que ingreso el usuario
+                response = self.classroom_control.service_drive.files().get(
+                    fileId=idDelColab,
+                    fields='name,mimeType'
+                ).execute()
+
+                mimeType = response.get('mimeType')
+                nombreArchivo = response.get('name')
+                if type(nombreArchivo) != str:
+                    nombreArchivo = ""
+
+                # ¿el ID ingresado  NO es el ID de un colab?
+                if mimeType != 'application/vnd.google.colaboratory' and mimeType != 'application/json' and nombreArchivo.endswith(
+                        ".ipynb") != True:
+                    mensajeDeError = f"El ID que ingresaste corresponde a un archivo cuyo nombre es: <<{nombreArchivo}>> y cuyo tipo es:" \
+                                     f"<<{mimeType}>>, sin embargo, DICHO ARCHIVO NO CORRESPONDE A UN ARCHIVO VALIDO, ya que no paso las pruebas " \
+                                     f"que validan que es un archivo de un google colab o un jupyter notebook pues su tipo no coincide con: " \
+                                     f"<<application/vnd.google.colaboratory>> y ni tampoco con: <<application/json>> y ni siquiera el archivo " \
+                                     f"tiene la terminacion: <<.ipynb>>"
+                    return mensajeDeError
+
+                # significa que el archivo que correspone al ID cumplio por lo menos con alguna restriccion que se valida en el
+                # anterior condicional
+                else:
+                    return None
+
+            except Exception as e:
+                return str(e)
+
+        else:
+            mensajeDeError = "no se ingreso ningun ID en el colab de la tarea"
+
+            return mensajeDeError
+
+
 
     def get_datosCurso(self):
         return (self.configuracionCalificador.curso_idApi, self.configuracionCalificador.curso_nombre)
@@ -61,12 +119,11 @@ class AdministradorProgramasClassRoom:
         print(listaTareas)
         return listaTareas
 
-    def crearTarea(self,titulo,descripccion,colab_link,colab_id):
+    def crearTarea(self,titulo,descripccion,colab_id):
 
         idTarea= self.classroom_control.create_asignacionPrograma(
                     course_id=self.configuracionCalificador.curso_idApi,
                     topic_programas_id=self.configuracionCalificador.topic_idApi,
-                    colab_link=colab_link,
                     colab_id=colab_id,
                     titulo=titulo,
                     description=descripccion
@@ -80,7 +137,7 @@ class AdministradorProgramasClassRoom:
         )
 
         # registrar como ya agregada
-        self.seleccionarBaseLocal_coursework(idCourseWork=idTarea)
+        #self.seleccionarBaseLocal_coursework(idCourseWork=idTarea)
 
         return idTarea,fechaCreacion
 

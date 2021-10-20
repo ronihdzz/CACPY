@@ -384,14 +384,7 @@ class ClassRoomControl:
             return tuple(tuplaDatos)
 
 
-    def create_asignacionPrograma(self, course_id,topic_programas_id,colab_link,colab_id,titulo,description):
-
-        print("curso",course_id)
-        print("topicProgramas",topic_programas_id)
-        print("colab",colab_link)
-        print("colab_id", colab_id)
-        print("titulo:",titulo)
-        print("descripccion",description)
+    def create_asignacionPrograma(self, course_id,topic_programas_id,colab_id,titulo,description):
 
         """ Creates a coursework. """
         service = self.service_classroom
@@ -401,15 +394,14 @@ class ClassRoomControl:
             'description': description,
             'topicId':topic_programas_id,
             'workType': 'ASSIGNMENT',
-            'state': 'DRAFT',  # 'PUBLISHED'
+            'state': 'DRAFT',  # 'PUBLISHED', 'DRAFT'
             'maxPoints':100, # puntos de esta tarea
             'materials': [
                 {
                     'driveFile': {
                         'driveFile':{
                             'id':colab_id,
-                            'title': titulo,
-                            'alternateLink': colab_link
+                            'title': titulo
                         },
                         'shareMode': 'STUDENT_COPY'
                     },
@@ -421,6 +413,8 @@ class ClassRoomControl:
         coursework = service.courses().courseWork().create(
             courseId=course_id, body=coursework).execute()
         print('Assignment created with ID {%s}' % coursework.get('id'))
+
+        print()
 
         idCoursework=coursework.get('id')
 

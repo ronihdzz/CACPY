@@ -1,8 +1,10 @@
-
 '''
-AgregadorCourseworks.py :
-    Contine una sola  clase, la clase 'TareaMain.py :
-    Contine una sola  clase, la clase 'TareaMain', la cual  a grosso ...
+AgregadorCourseWork.py :
+                    Contiene una sola  clase, la clase 'AgregadorCourseWorks', la cual a grosso
+                    modo sirve agregar tareas a la tabla de tareas calificables, y no se debe
+                    olvidar que las unicas entregas que podran calificar con el programa seran
+                    aquellas entregas que petenescan a las tareas que esten en la tabla de
+                    tareas calificables
 '''
 
 __author__      = "David Roni Hernández Beltrán"
@@ -63,15 +65,23 @@ class AgregadorCourseWorks(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion
 
         self.configurarTabla()
 
+
         self.tableWidget.doubleClicked.connect(self.courseWork_elegido)
         self.btn_refrescarCourseWorks.clicked.connect(self.refrescarCourseWorks)
 
 
-    def cargarDatos_courseWorks(self):
+    def prepararParaMostrar(self):
         '''
         Cargara los datos de los nombres de las tareas(courseworks) que estan almacenadas en la
         base de datos local y que no han sido importados a la tabla de tareas calificables.
         '''
+
+
+        _,nombreCursoClassroom=self.administradorProgramasClassRoom.get_datosCurso()
+        _,nombreTopicClassroom=self.administradorProgramasClassRoom.get_datosTopic()
+
+        self.bel_nombreCurso.setText(nombreCursoClassroom)
+        self.bel_nombreTopic.setText(nombreTopicClassroom)
 
 
         # al obtener los datos de las tareas (courseworks) que estan almacenadas en la
@@ -151,7 +161,7 @@ class AgregadorCourseWorks(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion
                 )
 
             # voviendo a cargar los datos de las tareas desde la base de datos local
-            self.cargarDatos_courseWorks()
+            self.prepararParaMostrar()
 
             self.msg_exitoDescargarCourseWorks()
 

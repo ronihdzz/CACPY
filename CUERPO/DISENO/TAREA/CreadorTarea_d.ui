@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>577</width>
-    <height>539</height>
+    <width>556</width>
+    <height>534</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +69,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QPushButton" name="btn_infoDudas">
+          <widget class="QPushButton" name="btn_infoGeneralCreacionTarea">
            <property name="minimumSize">
             <size>
              <width>20</width>
@@ -198,7 +198,7 @@ QPushButton:pressed {
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_info_nombre">
+        <widget class="QPushButton" name="btn_info_nombreTarea">
          <property name="minimumSize">
           <size>
            <width>30</width>
@@ -236,98 +236,6 @@ QPushButton:pressed{
         <string/>
        </property>
       </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QLabel" name="label_10">
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Berlin Sans FB</family>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>URL solo lectura:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPlainTextEdit" name="plainText_urlSoloLectura">
-         <property name="minimumSize">
-          <size>
-           <width>300</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>100</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="textInteractionFlags">
-          <set>Qt::LinksAccessibleByMouse|Qt::TextEditable|Qt::TextEditorInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btn_info_urlSoloLectura">
-         <property name="minimumSize">
-          <size>
-           <width>30</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>30</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton{
-	border-image: url(:/main/IMAGENES/tache_off.png);
-}
-
-QPushButton:hover{
-		border-image: url(:/main/IMAGENES/tache_on.png);
-}
-QPushButton:pressed{
-		border-image: url(:/main/IMAGENES/tache_off.png);
-}</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item>
       <widget class="QLabel" name="label_16">
@@ -372,32 +280,31 @@ QPushButton:pressed{
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_idArchivo">
+        <widget class="QPlainTextEdit" name="plainText_idColab">
          <property name="minimumSize">
           <size>
            <width>300</width>
-           <height>40</height>
+           <height>30</height>
           </size>
          </property>
-         <property name="baseSize">
+         <property name="maximumSize">
           <size>
-           <width>300</width>
-           <height>40</height>
+           <width>16777215</width>
+           <height>70</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <family>Calibri</family>
-           <pointsize>12</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
-         <property name="maxLength">
-          <number>400</number>
+         <property name="textInteractionFlags">
+          <set>Qt::LinksAccessibleByMouse|Qt::TextEditable|Qt::TextEditorInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_info_id_archivo">
+        <widget class="QPushButton" name="btn_info_idColabDeTarea">
          <property name="minimumSize">
           <size>
            <width>30</width>
@@ -511,7 +418,7 @@ QPushButton:pressed{
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_info_indicaciones">
+        <widget class="QPushButton" name="btn_info_indicacionesTarea">
          <property name="minimumSize">
           <size>
            <width>30</width>
@@ -560,16 +467,16 @@ QPushButton:pressed{
         </widget>
        </item>
        <item>
-        <widget class="QCommandLinkButton" name="btn_asignarTarea">
+        <widget class="QCommandLinkButton" name="btn_crearBorrador">
          <property name="minimumSize">
           <size>
-           <width>170</width>
+           <width>120</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>120</width>
+           <width>16777215</width>
            <height>16777215</height>
           </size>
          </property>
@@ -583,7 +490,7 @@ QPushButton:pressed{
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="text">
-          <string>Asignar tarea</string>
+          <string>Generar borrador de tarea en classroom </string>
          </property>
          <property name="icon">
           <iconset theme="?">

@@ -28,7 +28,7 @@ import recursos
 class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
     '''
     Esta clase sirve para calificar las entregas que han realizado los alumnos del usuario
-    y que pertenecen a la tarea seleccionada.
+    y que pertenecen a la tarea seleccionada por el usuario
     '''
 
 
@@ -42,8 +42,8 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         '''
         - administradorProgramasClassroom (objeto de la clase: AdministradorProgramasClassRoom): dicho
         objeto permite calificar tareas de los estudiantes  del classroom seleccionado por el usuario, este
-        objeto tambien permite obtener informacion de una manera mas sencilla acerca de las tareas del classroom
-        y topic seleccionadas por el usuario
+        objeto tambien permite obtener informacion de una manera mas sencilla acerca de las tareas que se
+        encuentran en la clase de classroom  y topic seleccionadas por el usuario
         '''
 
         QtWidgets.QDialog.__init__(self)
@@ -63,8 +63,6 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 
         self.spinBox_tareasACalificar.valueChanged.connect(self.tareasDeseanCalificar_actualizar)
 
-
-
         self.administradorProgramasClassRoom.hiloCalificadorTarea.senal_unAlumnoCalificado.connect(self.mostrarDatosAlumnoCalificado_enTablaAlumnosCalificados)
         self.administradorProgramasClassRoom.hiloCalificadorTarea.senal_terminoCalificar.connect( self.avisarTerminoCalificar )
         self.administradorProgramasClassRoom.hiloCalificadorTarea.senal_errorRed.connect( self.mostrarErrorRed )
@@ -76,11 +74,29 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         self.tareasLogradasCalificar=0
 
 
-    def cargarDatosTareaCalificar(self,cousework_id,coursework_name,coursework_fechaCreacion,dictDatosEntrega):
+    def prepararParaMostrar(self,cousework_id,coursework_name,coursework_fechaCreacion,dictDatosEntrega):
         '''
-        Cargara los datos de las entregas de la tarea que el usuario selecciono, por tal motivo hara las modificaciones
-        respectivas en las label de la GUI
+        Hace las configuraciones necesarias en la clase  para que el usuario  pueda calificar las entregas realizadas 
+        por sus estudiantes de la tarea que selecciono.Tambien carga los datos de las entregas realizadas por los 
+        estudiantes en las respectivos apartados de la GUI
+
+        Parámetros:
+            coursework_id (str) : Representa el ID de la tarea que el usuario selecciono para calificar las
+            entregas que ha realizado sus alumnos de dicha tarea
+            coursework_name (str) : Nombre de la tarea que el usuario selecciono para  calificar las entregas
+            que han realizado los alumnos de dicha tarea
+            coursework_fechaCreacion (str): Fecha en la cual fue creada la tarea que el usuario selecciono para
+            calificar las entregas  que han realizado los alumnos de dicha tarea
+            dictDatosEntrega (dict) : Diccionario que contiene informacion acerca de las entregas que han realizado
+            los alumnos de la tarea que selecciono el usuario.Dicho diccionario contiene las siguientes llaves:
+                * 'porCalificar' : El value de esta llave sera el numero de alumnos que ya entrego la tarea, pero
+                aun no han sido calificados
+                * 'calificadas' : El value de esta llave sera el numero de alumnos que ya fueron calificados en
+                la tarea que entregaron
+                * 'porEntregar': El value de esta llave representa el numero de alumnos que aun no realizan la
+                entrega de la tarea que el usuario selecciono
         '''
+
 
         self.coursework_id=cousework_id
         self.coursework_name=coursework_name
@@ -92,172 +108,80 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         self.numeroTareasCalificadasTotales=dictDatosEntrega['calificados']
         self.numeroTareasPorEntregar=dictDatosEntrega['porEntregar']
 
-        self.cargarValoresEnElCalificador()
+        self.actualizarLosDatosSeMuestran_deLasEntregas()
+        self.ponerModoCalificando(modoCalificando=False)
 
-    def cargarValoresEnElCalificador(self):
+
+
+    def refrescarDatosCourseWork(self,resfrecarAutomaticamente=False):
         '''
-        Este metodo esta pensado para llamarse despues de que se refrescaron
-        las entregas de las tareas, ya que cuando esto sucede puede que
-        se registren mas entregas de tareas de las que se habian registrado
-        anteriormente y esto puede pasar por que los alumnos pueden subir su
-        tarea en cualquier instante.
+        Este metodo solo podra ser llamado cuando la clase este lista para calificar
+        entregas de tareas, es decir cuando la variable bandera: ' self.LISTA_CALIFICAR'
+        tenga un valor igual a True.
 
-        Lo que hara este metodo es:
-            * Prepara a la clase para calificar tareas por tal motivo cambia
-            el valor de la variable bandera: self.LISTA_CALIFICAR a un valor
-            de True, entre otras cosas mas
-            * Cambia el valor maximo del spinBox al valor de: self.numeroTarreasCalificar,
-            ya que este pudo cambiar al refrescarse los datos que se tenian de las
-            entregas de las tareas.
-            * Actualiza otros valores de la GUI que pudieron cambiar al actualizar los
-            datos que se tenian acerca de las entregas de las tareas
+        El objetivo de este metodo es actualizar la informacion que tiene esta clase
+        de las entregas de la tarea que los alumnos han realizado.
+
+        Este metodo consultara a la API de google classroom para saber:
+            - Cuantas entregas de dicha tarea ya han sido calificadas
+            - Cuantas entregas de dicha tarea han sido entregadas pero NO calificadas
+            - Cuantas entregas de dicha tarea faltan por entregar
+
+        Despues de consultar la información mencionada anteriormente, este metodo
+        actualizara los valores que tenia y los mostrara las label correspondientes
+        de la GUI
+
+        Parámetros:
+            - refrescarAutomaticamente (bool): Si su valor es True, este metodo no le
+            mostrara un cuadro emergente al usuaario para preguntarle si en realidad
+            desea refrescar.Si su valor es False este metodo SI le  mostrara un cuadro
+            emergente al usuario para preguntarle si en realidad desea refrescar.
         '''
 
+        seVaArefrescar=True
+        if resfrecarAutomaticamente is False:
+            seVaArefrescar=self.msg_preguntar_refrescarDatosCourseWork()
 
-        # se limpia la tabla
-        self.tableWidget_alumnosCalif.setRowCount(0)
+
+        if seVaArefrescar:
+            dictDatosEntrega=self.administradorProgramasClassRoom.getDatosCourseWork(
+                courseWork_id=self.coursework_id
+            )
+
+            self.numeroTareasCalificar=dictDatosEntrega['porCalificar']
+            self.numeroTareasCalificadasTotales=dictDatosEntrega['calificados']
+            self.numeroTareasPorEntregar=dictDatosEntrega['porEntregar']
+
+            self.actualizarLosDatosSeMuestran_deLasEntregas()
+            if resfrecarAutomaticamente is False:
+                self.msg_refrescoExitosamente()
 
 
-        self.bel_noTareasCalificadas.setText('0')
-        self.bel_noTareasAcalificar.setText('0')
-
-        self.LISTA_CALIFICAR = True
-        self.btn_calificar.setText('Calificar')
-
-        self.spinBox_tareasACalificar.setEnabled(True)
-        self.btn_detener.setEnabled(False)
+    def actualizarLosDatosSeMuestran_deLasEntregas(self):
+        '''
+        Este metodo esta pensado para llamarse cuando puede que haya registrado
+        un cambio en los siguientes datos:
+            - Numero de alumnos que ya entrego la tarea, pero aun no han sido
+            calificados
+            - Numero de alumnos que ya fueron calificados en  la tarea que
+            entregaron
+            - Numero de alumnos que aun no realizan la entrega de la tarea que el
+            usuario selecciono
+        
+        Lo que hara este metodo es actualizar los valores que se muestran en la GUI
+        que representan a los valores mencionados anteriormente
+        '''
 
         self.spinBox_tareasACalificar.setMaximum(self.numeroTareasCalificar)
-        self.spinBox_tareasACalificar.setValue(self.numeroTareasCalificar)
+
+        # se actualizan los siguiente valores ya que  pudo cambiar el valor de: 'self.numeroTareasCalificar'
+        self.spinBox_tareasACalificar.setValue(0)
+        self.bel_noTareasAcalificar.setText('0') 
 
         self.bel_noTareasPorCalificar.setText( str(self.numeroTareasCalificar) )
-
-
         self.bel_noTareasCalificadasTotales.setText( str(self.numeroTareasCalificadasTotales) )
         self.bel_noTareasPorEntregar.setText( str(self.numeroTareasPorEntregar) )
 
-
-    def mostrarErrorRed(self,tuplaDatos):
-        '''
-        Este metodo se encargar
-
-
-        a de mostrar el error que se presento
-        a la hora de calificar las tareas de programacion
-
-        Parámetros:
-            tuplaDatos (tuple): Es una tupla de dos elementos en donde:
-                * El primer elemento (str) :Es el  titulo del error que
-                se presento
-                * El segundo elemento (str): Es la excepccion que
-                se presento
-        '''
-
-
-        tituloError,error=tuplaDatos
-
-        self.msg_errorRed(
-            tituloError=tituloError,
-            error=error
-        )
-
-    def detenerProcesoCalificar(self):
-        '''
-        Este metodo se encargara de detener el proceso de calificacion
-        de tareas de programación
-        '''
-
-        # preguntando si en realidad se desea detener el proceso de calificacion
-        # de tareas
-        respuestaPositiva=self.msg_detenerCalificador()
-        if respuestaPositiva:
-            self.btn_detener.setEnabled(False)
-            self.administradorProgramasClassRoom.hiloCalificadorTarea.terminarHilo()
-
-
-    def avisarTerminoCalificar(self,terminoNaturalmente):
-        '''
-        Este metodo se llamara cuando se termine de calificar las entregas de
-        la tarea de programacion, y lo que hara este metodo es lo siguiente:
-            * Si no ocurrio ningun error al calificar las entregas de la tarea,o si
-            no se interrumpio la calificacion de las entregas de la tarea, entonces
-            le mostrara un mensaje al usuario para informarle que se termino de
-            calificar exitosamente todas las entregas que se pidieron calificar de
-            la tarea
-            * Restablecera la a la clase en el modo de: YA NO CALIFICANDO, ya que
-            la clase se comporta de diferente forma cuando se esta calificando
-            a cuando no se esta calificando.
-
-        Parámetros:
-            terminoNaturalmente (bool): Si el valor de dicho parametro es igual a
-            False, significa que  se presento un error al calificar las entregas de
-            la tarea o significa que el usuario interrumpio el proceso de calificacion
-            de tareas.Si el valor de dicho parametro es igual a True: significa que se
-            calificaron exitosamente el numero de entregas que el usuario puso.
-        '''
-
-        # Por medio del spinBox el usuario puede elegir la cantidad de tareas
-        # que desea calificar por tal motivo cuando se deja de calificar tareas
-        # se actualiza al valor maximo del 'spinBox' ya que al califcar tareas,
-        # reducio el numero de tareas que restan por calificar.
-        self.spinBox_tareasACalificar.setMaximum(self.numeroTareasCalificar)
-
-        # Haciendo las configuraciones respectivas a la clase, cuando esta esta
-        # en modo de NO CALIFICANDO
-        self.ponerModoCalificando(False)
-
-        # Si no ocurrio a calificar ningun errro al calificar las entregas de la tarea
-        # o si no se detuvo la calificacion de las tareas.
-        if terminoNaturalmente:
-            self.msg_calificadorTerminoCalificar()
-
-
-    def ponerModoCalificando(self,modoCalificando):
-        '''
-        Esta clase tiene dos modos diferentes de actuar, en funcion de
-        si se esta calificando entregas de tareas o no. El parametro:
-        'modoCalificando' si vale True significa que se esta calificando
-        entregas de tareas, si vale False significa que no se esta calificando
-        entregas de tareas.
-
-        * Si se estan calificando entregas de tareas de programacion
-        este metodo:
-            Desabilitara:
-                -  El boton de calificar
-                -  El spinBox  en donde se indican cuantas entregas se
-                desean calificar
-                -  El boton de actualizar entrega de tareas
-            Habilitara: unicamente el boton de detener proceso de
-            calificacion de tareas
-
-        * Si NO SE estan calificando entregas de tareas de programacion
-        este metodo:
-            Habilitara:
-                -  El boton de calificar
-                -  El spinBox  en donde se indican cuantas entregas se
-                desean calificar
-                -  El boton de actualizar entregaS de tareas
-            Desabilitara: unicamente el boton de detener proceso de
-            calificacion de tareas
-
-        Parámetros:
-            modoCalficando (bool):
-                - Si vale True significa que se esta calificando
-                entregas de tareas
-                - Si vale False significa que no se esta calificando
-                entregas de tareas.
-        '''
-
-        if modoCalificando:
-            self.btn_calificar.setEnabled(False)
-            self.btn_detener.setEnabled(True)
-            self.spinBox_tareasACalificar.setEnabled(False)
-            self.btn_actualizarInfoCourseworks.setEnabled(False)
-        else:
-            self.btn_calificar.setEnabled(True)
-            self.spinBox_tareasACalificar.setEnabled(True)
-            self.btn_detener.setEnabled(False)
-            self.btn_actualizarInfoCourseworks.setEnabled(True)
 
 
     def calificarTarea_or_alistarParaCalificar(self):
@@ -269,9 +193,9 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 
         Si self.LISTA_CALIFICAR es igual a True:
             * Significara que la clase esta lista para calificar el numero de entregas
-            que  el usuario indico en spinbox, por lo cual este metodo al ser llamado:
+            que  el usuario indico en el spinbox, por lo cual este metodo al ser llamado:
                 - Primero le preguntara al usuario si en realidad desea calificar
-                esa cantidad de entregas.
+                la cantidad de tareas registrada en el spinBox
                 - Si el usuario responde positivamente lo anterior entonces este
                 metodo iniciara con el proceso de calificacion
 
@@ -281,7 +205,7 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
             lo cual este metodo al ser llamado:
                 - Primero le preguntara al usuario si esta seguro de calificar mas tareas
                 advirtiendole que se borraran de la tabla lo datos que se muestran de las
-                tareas ya fueron calificadas.
+                tareas que acabaron de ser calificadas.
                 - Si el usuario responde positivamente entonces este metodo procedera a
                 limpiar la tabla y a actualizar el valor de la variable bandera:
                 self.LISTA_CALIFICAR para que la proxima vez que sea llamado este metodo
@@ -300,15 +224,8 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
                 # que selecciono
                 respuestaPositiva=self.msg_preguntarAcercaAccionCalificar(noTareasDeseanCalificar)
                 if respuestaPositiva:
-                    # El texto del boton cambia ya que  el usuario acaba de iniciar el proceso
-                    # de calificacion de las entregas de la tarea, y cuando se termine de calificar
-                    # todas las entregas que el usuario indico, se  debera dar clic izquierdo sobre
-                    # este boton para poder volver a calificar mas tareas.
-                    self.btn_calificar.setText('Calificar\nmas tareas')
                     self.ponerModoCalificando(True)
-                    self.LISTA_CALIFICAR=False
                     self.administradorProgramasClassRoom.hiloCalificadorTarea.activarHiloParaCalificar()
-                    self.tareasLogradasCalificar=0
                     # la siguiente funcion ejecuta el hilo que se encarga de obtener  la calificacion
                     # de las entregas de la tarea.
                     self.administradorProgramasClassRoom.calificarEstudiantes(
@@ -326,21 +243,250 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
             respuestaPositiva=self.msg_calificarMasTareas()
 
             if respuestaPositiva:
-                self.LISTA_CALIFICAR=True
+                self.refrescarDatosCourseWork(resfrecarAutomaticamente=True)
 
-                # preparando los datos que se muestran para calificar
-                # nuevamente entregas de taeas.
-                self.tableWidget_alumnosCalif.setRowCount(0)
-                self.btn_calificar.setText('Calificar')
-                self.bel_noTareasCalificadas.setText('0')
-                self.bel_noTareasAcalificar.setText('0')
-                self.spinBox_tareasACalificar.setValue(0)
-                self.spinBox_tareasACalificar.setMaximum(self.numeroTareasCalificar)
-                self.spinBox_tareasACalificar.setEnabled(True)
+                # preparando a la clase para calificar las entregas de los estudiantes
+                # que el usuario indique
+                self.ponerModoCalificando(modoCalificando=False)
 
 
+    def ponerModoCalificando(self,modoCalificando):
+        '''
+        Esta metodo tiene dos modos diferentes de actuar, en funcion de
+        si se desea poner en la clase en el modo: "ESTOY CALIFICANDO,
+        NO MOLESTAR" o en el modo: "YA ESTOY LISTA PARA CALIFICAR NUEVAMENTE"
+
+        El valor que tome el parametro 'modoCalificando' es el que le dira a 
+        este metodo en que modo poner a la clase:
+            - Si su valor es True, el metodo pondra a la clase en el modo: 
+            "ESTOY CALIFICANDO,NO MOLESTAR"
+            - Si su valor es False, el metodo pondra a la clase en el modo:
+            "YA ESTOY LISTA PARA CALIFICAR NUEVAMENTE"
 
 
+        * En el modo "ESTOY CALIFICANDO,NO MOLESTAR" el metodo hara lo siguiente:
+            * Desabilitara:
+                -  El boton de calificar
+                -  El spinBox  en donde se indican cuantas entregas se
+                desean calificar
+                -  El boton de actualizar entrega de tareas
+            * Habilitara: unicamente el boton de detener proceso de
+            calificacion de tareas
+
+            * Cambiara el texto del boton para hacerle  entender al usuario
+            que despues de que se haya finalizado el proceso de calificacion
+            de entregas debera oprimirse este boton si se desea volver a calificar
+            tareas
+
+            * Cambiara el valor de la variable bandera 'self.LISTA_CALIFICAR' a valor
+            igual a False
+
+
+        * En el modo: "YA ESTOY LISTA PARA CALIFICAR NUEVAMENTE", el metodo hara 
+        lo siguiente:
+            * Habilitara:
+                -  El boton de calificar
+                -  El spinBox  en donde se indican cuantas entregas se
+                desean calificar
+                -  El boton de actualizar entregas de tareas
+            * Desabilitara: unicamente el boton de detener proceso de
+            calificacion de tareas
+
+            * Cambiara el texto del boton para hacerle  entender al usuario
+            que ya puede volver a calificar las tareas que indique en el
+            spingBox si da clic izquierdo sobre ese boton
+
+            * Cambiara el valor de la variable bandera 'self.LISTA_CALIFICAR' a valor
+            igual a True
+
+            * Se limpiara la tabla en donde se muestran las calificaciones de las entregas
+            de los alumnos
+
+            * Se limpiaran las label que muestran las entregas que se van calificando en 
+            tiempo real.
+        
+        Parámetros:
+            modoCalficando (bool):
+            - Si su valor es True, el metodo pondra a la clase en el modo: 
+            "ESTOY CALIFICANDO,NO MOLESTAR"
+            - Si su valor es False, el metodo pondra a la clase en el modo:
+            "YA ESTOY LISTA PARA CALIFICAR NUEVAMENTE"
+
+        '''
+
+        if modoCalificando:
+
+            # El texto del boton cambia ya que  el usuario acaba de iniciar el proceso
+            # de calificacion de las entregas de la tarea, y cuando se termine de calificar
+            # todas las entregas que el usuario indico, se  debera dar clic izquierdo sobre
+            # este boton para poder volver a calificar mas tareas.
+            self.btn_calificar.setText('Calificar\nmas tareas')
+
+            self.btn_detener.setEnabled(True)
+
+            self.btn_calificar.setEnabled(False)
+            self.spinBox_tareasACalificar.setEnabled(False)
+            self.btn_actualizarInfoCourseworks.setEnabled(False)
+            self.tareasLogradasCalificar=0
+            self.LISTA_CALIFICAR=False
+        else:
+
+            # El boton cambiara de texto por que ahora cuando se presione
+            # servira para calificar el numero de entregas especificado
+            # en el spinBox
+            self.btn_calificar.setText('Calificar')
+
+            self.btn_detener.setEnabled(False)
+
+            self.btn_calificar.setEnabled(True)
+            self.spinBox_tareasACalificar.setEnabled(True)
+            self.btn_actualizarInfoCourseworks.setEnabled(True)
+
+            # Cuando se pone en modo NO CALIFICANDO
+            # se borraran los datos de la tabla que muestras las califcaciones
+            # que se obtienen al calificar las entregas de los estudiantes de
+            # la tarea
+            self.tableWidget_alumnosCalif.setRowCount(0)
+
+
+            # Como se volvera a calificar tareas, se actualizan los
+            # valores de las siguientes etiquetes y del spinBox
+            self.bel_noTareasCalificadas.setText('0')
+            self.bel_noTareasAcalificar.setText('0')
+            self.spinBox_tareasACalificar.setValue(0)
+
+            # Se actualiza el valor maximo del spinBox
+            self.spinBox_tareasACalificar.setMaximum(self.numeroTareasCalificar)
+
+            self.LISTA_CALIFICAR=True
+
+
+
+    def tareasDeseanCalificar_actualizar(self,numero):
+        '''
+        Este metodo se llamara cada vez que el usuario cambie el valor de numero
+        de tareas que desea calificar atravez del spin box.
+        Lo que hara este metodo es mostrar en la label respectiva de la GUI el
+        numero de tareas que el usuario esta decidiendo calificar.
+
+        Parámetros:
+            - numero (int) : Representa el numero de entregas que el usuario quiere
+            calificar.
+        '''
+
+        if numero!=None:
+            self.bel_noTareasAcalificar.setText(str(numero))
+
+
+    def closeEvent(self, event):
+        '''
+        Cuando el usuario le de clic izquierdo sobre el boton de cerrar de esta clase, el metodo
+        que se llamara es este, el cual le preguntara al usuario si esta seguro de cerrar el
+        programa, en caso de que su respuesta sea afirmativa se cerrara el programa, sin emmbargo
+        como es posible que el usuario al abrir esta ventana haya realizado la calificacion o
+        la actualizacion de los datos de las entregas de la tarea seleccionada, entonces antes
+        de cerrarse esta clase, mandara una señal con los datos que se tienen de las entregas
+        de la tarea seleccionada, con el objetivo de que el receptor de esta señal pueda actualizar
+        su informacion.
+        '''
+
+        respuestaPositiva=self.msf_preguntarSalidaVentana()
+        if respuestaPositiva:
+            dictDatosEntrega={}
+            dictDatosEntrega['porCalificar']=self.numeroTareasCalificar
+            dictDatosEntrega['calificados']=self.numeroTareasCalificadasTotales
+            dictDatosEntrega['porEntregar']=self.numeroTareasPorEntregar
+            self.senal_calificadorTareas_cerro.emit( dictDatosEntrega )
+            event.accept()
+        else:
+            event.ignore()
+
+
+
+####################################################################################################################################
+# METODOS QUE SE PUEDEN LLAMAR CUANDO YA SE ESTA CALIFICANDO ENTREGAS
+####################################################################################################################################
+
+    def mostrarErrorRed(self,tuplaDatos):
+        '''
+        Este metodo se encargara de mostrar el error que se presento
+        a la hora de calificar las entregas realizadas por los estudiantes
+        de la tarea de programación que selecciono el usuario
+
+        Parámetros:
+            tuplaDatos (tuple): Es una tupla de dos elementos en donde:
+                * El primer elemento (str) :Es el  titulo del error que
+                se presento
+                * El segundo elemento (str): Es la excepccion que
+                se presento
+        '''
+
+
+        tituloError,error=tuplaDatos
+
+        self.msg_errorRed(
+            tituloError=tituloError,
+            error=error
+        )
+
+
+    def detenerProcesoCalificar(self):
+        '''
+        Este metodo se encargara de detener el proceso de calificacion
+        las entregas realizadas por los estudiantes de la tarea de programación
+        que selecciono el usuario
+        '''
+
+        # preguntando si en realidad se desea detener el proceso de calificacion
+        respuestaPositiva=self.msg_detenerCalificador()
+        if respuestaPositiva:
+            self.btn_detener.setEnabled(False)
+            self.administradorProgramasClassRoom.hiloCalificadorTarea.terminarHilo()
+
+
+    def avisarTerminoCalificar(self,terminoNaturalmente):
+        '''
+        Este metodo se llamara cuando se termine de calificar las entregas de
+        la tarea de programacion, y lo que hara este metodo es lo siguiente:
+            * Si no ocurrio ningun error al calificar las entregas de la tarea,o si
+            no se interrumpio la calificacion de las entregas de la tarea, entonces
+            le mostrara un mensaje al usuario para informarle que se termino de
+            calificar exitosamente todas las entregas que se pidieron calificar de
+            la tarea
+            * Habilitara el boton  que permitira al usuario volver a calificar
+             mas entregas de la tarea de programacion.
+
+        Parámetros:
+            terminoNaturalmente (bool): Si el valor de dicho parametro es igual a
+            False, significa que  se presento un error al calificar las entregas de
+            la tarea o significa que el usuario interrumpio el proceso de calificacion
+            de tareas.Si el valor de dicho parametro es igual a True: significa que se
+            calificaron exitosamente el numero de entregas que el usuario indico que se
+            calificaran.
+        '''
+
+        # Por medio del spinBox el usuario puede elegir la cantidad de tareas
+        # que desea calificar por tal motivo cuando se deja de calificar tareas
+        # se actualiza al valor maximo del 'spinBox' ya que al califcar tareas,
+        # reducio el numero de tareas que restan por calificar.
+        self.spinBox_tareasACalificar.setMaximum(self.numeroTareasCalificar)
+
+        # Habilitando el boton que permitira al usuario volver a calificar
+        # mas entregas de la tarea de programacion que selecciono
+        self.btn_calificar.setEnabled(True)
+
+        # Si no ocurrio a calificar ningun errro al calificar las entregas de la tarea
+        # o si no se detuvo la calificacion de las tareas.
+        if terminoNaturalmente:
+            self.msg_calificadorTerminoCalificar()
+
+
+
+
+
+####################################################################################################################################
+# TABLA DE TAREAS CALIFICADAS
+####################################################################################################################################
 
     def mostrarDatosAlumnoCalificado_enTablaAlumnosCalificados(self, tuplaDatosAlumnoCalificado):
         '''
@@ -364,7 +510,6 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
                 - el cuarto elemento (str): Representa la calificacion que obtuvo el
                 alumno cuya entrega fue calificada.
         '''
-
 
         noRenglones = self.tableWidget_alumnosCalif.rowCount()
         self.tableWidget_alumnosCalif.insertRow(noRenglones)
@@ -397,53 +542,6 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         self.bel_noTareasCalificadasTotales.setText( str(self.numeroTareasCalificadasTotales) )
 
 
-    def tareasDeseanCalificar_actualizar(self,numero):
-        '''
-        Este metodo se llamara cada vez que el usuario cambie el valor de numero
-        de tareas que desea calificar atravez del spin box.
-        Lo que hara este metodo es mostrar en la label respectiva de la GUI el
-        numero de tareas que el usuario esta decidiendo calificar.
-
-        Parámetros:
-            - numero (int) : Representa el numero de entregas que el usuario quiere
-            calificar.
-        '''
-
-        if numero!=None:
-            self.bel_noTareasAcalificar.setText(str(numero))
-
-
-
-    def refrescarDatosCourseWork(self):
-        '''
-        El objetivo de este metodo es actualizar la informacion que tiene esta clase
-        de las entregas de la tarea que los alumnos han realizado.
-
-        Este metodo consultara a la API de google classroom para saber:
-            - Cuantas entregas de dicha tarea ya han sido calificadas
-            - Cuantas entregas de dicha tarea han sido entregadas pero NO calificadas
-            - Cuantas entregas de dicha tarea faltan por entregar
-
-        Despues de consultar la información mencionada anteriormente, este metodo
-        actualizara los valores que tenia y los mostrara las label correspondiente
-        ee la GUI
-        '''
-
-
-        respuestaPositiva=self.msg_preguntar_refrescarDatosCourseWork()
-        if respuestaPositiva:
-            dictDatosEntrega=self.administradorProgramasClassRoom.getDatosCourseWork(
-                courseWork_id=self.coursework_id
-            )
-
-            self.numeroTareasCalificar=dictDatosEntrega['porCalificar']
-            self.numeroTareasCalificadasTotales=dictDatosEntrega['calificados']
-            self.numeroTareasPorEntregar=dictDatosEntrega['porEntregar']
-
-            self.cargarValoresEnElCalificador()
-            self.msg_refrescoExitosamente()
-
-
 
     def colorearRenglon(self,noRenglon,color):
         '''
@@ -460,6 +558,7 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
 
         for c in range(3):
             self.tableWidget_alumnosCalif.item(noRenglon,c).setBackground(QtGui.QColor(color))
+
 
 
     def configurarTabla(self):
@@ -483,29 +582,6 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         for columna in range(0,3):
             header.setSectionResizeMode(columna, QtWidgets.QHeaderView.Stretch)
 
-
-    def closeEvent(self, event):
-        '''
-        Cuando el usuario le de clic izquierdo sobre el boton de cerrar de esta clase, el metodo
-        que se llamara es este, el cual le preguntara al usuario si esta seguro de cerrar el
-        programa, en caso de que su respuesta sea afirmativa se cerrara el programa, sin emmbargo
-        como es posible que el usuario al abrir esta ventana haya realizado la calificacion o
-        la actualizacion de los datos de las entregas de la tarea seleccionada, entonces antes
-        de cerrarse esta clase, mandara una señal con los datos que se tienen de las entregas
-        de la tarea seleccionada, con el objetivo de que el receptor de esta señal pueda actualizar
-        su informacion.
-        '''
-
-        respuestaPositiva=self.msf_preguntarSalidaVentana()
-        if respuestaPositiva:
-            dictDatosEntrega={}
-            dictDatosEntrega['porCalificar']=self.numeroTareasCalificar
-            dictDatosEntrega['calificados']=self.numeroTareasCalificadasTotales
-            dictDatosEntrega['porEntregar']=self.numeroTareasPorEntregar
-            self.senal_calificadorTareas_cerro.emit( dictDatosEntrega )
-            event.accept()
-        else:
-            event.ignore()
 
 ####################################################################################################################################
 # M E N S A J E S     E M E R G E N T E S :

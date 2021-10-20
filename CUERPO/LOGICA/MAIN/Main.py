@@ -240,7 +240,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
             seleccionada
         '''
 
-        self.ventana_aplicacionTareas.actuarCambioCurso()
+        self.ventana_aplicacionTareas.actuarAnteCambio_claseClassroom()
         self.ventana_aplicacionAlumnos.actuarAnteCambio_claseClassroom()
 
 
@@ -252,7 +252,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow, recursos.HuellaAplicacion):
         de 'Mis tareas' que el Topic seleccionado ahora es una diferente y que actue en consecuencia.
         '''
 
-        self.ventana_aplicacionTareas.actuarCambioTopic()
+        self.ventana_aplicacionTareas.actuarAnteCambio_topicClassroom()
 
 
     def mostrar_apartadoTareas(self):

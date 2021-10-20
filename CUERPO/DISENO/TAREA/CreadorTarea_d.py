@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(577, 539)
+        Dialog.resize(556, 534)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
@@ -45,10 +45,10 @@ class Ui_Dialog(object):
         self.horizontalLayout_2.addWidget(self.label_12)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
-        self.btn_infoDudas = QtWidgets.QPushButton(Dialog)
-        self.btn_infoDudas.setMinimumSize(QtCore.QSize(20, 20))
-        self.btn_infoDudas.setMaximumSize(QtCore.QSize(20, 20))
-        self.btn_infoDudas.setStyleSheet("\n"
+        self.btn_infoGeneralCreacionTarea = QtWidgets.QPushButton(Dialog)
+        self.btn_infoGeneralCreacionTarea.setMinimumSize(QtCore.QSize(20, 20))
+        self.btn_infoGeneralCreacionTarea.setMaximumSize(QtCore.QSize(20, 20))
+        self.btn_infoGeneralCreacionTarea.setStyleSheet("\n"
 "\n"
 "QPushButton {\n"
 "    border-image: url(:/main/IMAGENES/info_off.png);\n"
@@ -59,9 +59,9 @@ class Ui_Dialog(object):
 "QPushButton:pressed {\n"
 "    border-image: url(:/main/IMAGENES/info_off.png);\n"
 "}")
-        self.btn_infoDudas.setText("")
-        self.btn_infoDudas.setObjectName("btn_infoDudas")
-        self.verticalLayout.addWidget(self.btn_infoDudas)
+        self.btn_infoGeneralCreacionTarea.setText("")
+        self.btn_infoGeneralCreacionTarea.setObjectName("btn_infoGeneralCreacionTarea")
+        self.verticalLayout.addWidget(self.btn_infoGeneralCreacionTarea)
         self.label_11 = QtWidgets.QLabel(Dialog)
         self.label_11.setMinimumSize(QtCore.QSize(25, 25))
         self.label_11.setMaximumSize(QtCore.QSize(25, 25))
@@ -103,10 +103,10 @@ class Ui_Dialog(object):
         self.lineEdit_nombreTarea.setMaxLength(400)
         self.lineEdit_nombreTarea.setObjectName("lineEdit_nombreTarea")
         self.horizontalLayout.addWidget(self.lineEdit_nombreTarea)
-        self.btn_info_nombre = QtWidgets.QPushButton(Dialog)
-        self.btn_info_nombre.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_info_nombre.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_info_nombre.setStyleSheet("QPushButton{\n"
+        self.btn_info_nombreTarea = QtWidgets.QPushButton(Dialog)
+        self.btn_info_nombreTarea.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_info_nombreTarea.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_info_nombreTarea.setStyleSheet("QPushButton{\n"
 "    border-image: url(:/main/IMAGENES/tache_off.png);\n"
 "}\n"
 "\n"
@@ -116,55 +116,14 @@ class Ui_Dialog(object):
 "QPushButton:pressed{\n"
 "        border-image: url(:/main/IMAGENES/tache_off.png);\n"
 "}")
-        self.btn_info_nombre.setText("")
-        self.btn_info_nombre.setObjectName("btn_info_nombre")
-        self.horizontalLayout.addWidget(self.btn_info_nombre)
+        self.btn_info_nombreTarea.setText("")
+        self.btn_info_nombreTarea.setObjectName("btn_info_nombreTarea")
+        self.horizontalLayout.addWidget(self.btn_info_nombreTarea)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         self.label_13 = QtWidgets.QLabel(Dialog)
         self.label_13.setText("")
         self.label_13.setObjectName("label_13")
         self.verticalLayout_2.addWidget(self.label_13)
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.label_10 = QtWidgets.QLabel(Dialog)
-        self.label_10.setMinimumSize(QtCore.QSize(150, 0))
-        self.label_10.setMaximumSize(QtCore.QSize(100, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("Berlin Sans FB")
-        font.setPointSize(14)
-        font.setBold(False)
-        font.setWeight(50)
-        self.label_10.setFont(font)
-        self.label_10.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_10.setWordWrap(True)
-        self.label_10.setObjectName("label_10")
-        self.horizontalLayout_4.addWidget(self.label_10)
-        self.plainText_urlSoloLectura = QtWidgets.QPlainTextEdit(Dialog)
-        self.plainText_urlSoloLectura.setMinimumSize(QtCore.QSize(300, 40))
-        self.plainText_urlSoloLectura.setMaximumSize(QtCore.QSize(16777215, 100))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.plainText_urlSoloLectura.setFont(font)
-        self.plainText_urlSoloLectura.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextEditable|QtCore.Qt.TextEditorInteraction|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
-        self.plainText_urlSoloLectura.setObjectName("plainText_urlSoloLectura")
-        self.horizontalLayout_4.addWidget(self.plainText_urlSoloLectura)
-        self.btn_info_urlSoloLectura = QtWidgets.QPushButton(Dialog)
-        self.btn_info_urlSoloLectura.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_info_urlSoloLectura.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_info_urlSoloLectura.setStyleSheet("QPushButton{\n"
-"    border-image: url(:/main/IMAGENES/tache_off.png);\n"
-"}\n"
-"\n"
-"QPushButton:hover{\n"
-"        border-image: url(:/main/IMAGENES/tache_on.png);\n"
-"}\n"
-"QPushButton:pressed{\n"
-"        border-image: url(:/main/IMAGENES/tache_off.png);\n"
-"}")
-        self.btn_info_urlSoloLectura.setText("")
-        self.btn_info_urlSoloLectura.setObjectName("btn_info_urlSoloLectura")
-        self.horizontalLayout_4.addWidget(self.btn_info_urlSoloLectura)
-        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
         self.label_16 = QtWidgets.QLabel(Dialog)
         self.label_16.setText("")
         self.label_16.setObjectName("label_16")
@@ -184,20 +143,19 @@ class Ui_Dialog(object):
         self.label_20.setWordWrap(True)
         self.label_20.setObjectName("label_20")
         self.horizontalLayout_7.addWidget(self.label_20)
-        self.lineEdit_idArchivo = QtWidgets.QLineEdit(Dialog)
-        self.lineEdit_idArchivo.setMinimumSize(QtCore.QSize(300, 40))
-        self.lineEdit_idArchivo.setBaseSize(QtCore.QSize(300, 40))
+        self.plainText_idColab = QtWidgets.QPlainTextEdit(Dialog)
+        self.plainText_idColab.setMinimumSize(QtCore.QSize(300, 30))
+        self.plainText_idColab.setMaximumSize(QtCore.QSize(16777215, 70))
         font = QtGui.QFont()
-        font.setFamily("Calibri")
-        font.setPointSize(12)
-        self.lineEdit_idArchivo.setFont(font)
-        self.lineEdit_idArchivo.setMaxLength(400)
-        self.lineEdit_idArchivo.setObjectName("lineEdit_idArchivo")
-        self.horizontalLayout_7.addWidget(self.lineEdit_idArchivo)
-        self.btn_info_id_archivo = QtWidgets.QPushButton(Dialog)
-        self.btn_info_id_archivo.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_info_id_archivo.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_info_id_archivo.setStyleSheet("QPushButton{\n"
+        font.setPointSize(10)
+        self.plainText_idColab.setFont(font)
+        self.plainText_idColab.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextEditable|QtCore.Qt.TextEditorInteraction|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
+        self.plainText_idColab.setObjectName("plainText_idColab")
+        self.horizontalLayout_7.addWidget(self.plainText_idColab)
+        self.btn_info_idColabDeTarea = QtWidgets.QPushButton(Dialog)
+        self.btn_info_idColabDeTarea.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_info_idColabDeTarea.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_info_idColabDeTarea.setStyleSheet("QPushButton{\n"
 "    border-image: url(:/main/IMAGENES/tache_off.png);\n"
 "}\n"
 "\n"
@@ -207,9 +165,9 @@ class Ui_Dialog(object):
 "QPushButton:pressed{\n"
 "        border-image: url(:/main/IMAGENES/tache_off.png);\n"
 "}")
-        self.btn_info_id_archivo.setText("")
-        self.btn_info_id_archivo.setObjectName("btn_info_id_archivo")
-        self.horizontalLayout_7.addWidget(self.btn_info_id_archivo)
+        self.btn_info_idColabDeTarea.setText("")
+        self.btn_info_idColabDeTarea.setObjectName("btn_info_idColabDeTarea")
+        self.horizontalLayout_7.addWidget(self.btn_info_idColabDeTarea)
         self.verticalLayout_2.addLayout(self.horizontalLayout_7)
         self.label_15 = QtWidgets.QLabel(Dialog)
         self.label_15.setText("")
@@ -241,10 +199,10 @@ class Ui_Dialog(object):
         self.textEdit_indicaciones.setFont(font)
         self.textEdit_indicaciones.setObjectName("textEdit_indicaciones")
         self.horizontalLayout_3.addWidget(self.textEdit_indicaciones)
-        self.btn_info_indicaciones = QtWidgets.QPushButton(Dialog)
-        self.btn_info_indicaciones.setMinimumSize(QtCore.QSize(30, 30))
-        self.btn_info_indicaciones.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_info_indicaciones.setStyleSheet("QPushButton{\n"
+        self.btn_info_indicacionesTarea = QtWidgets.QPushButton(Dialog)
+        self.btn_info_indicacionesTarea.setMinimumSize(QtCore.QSize(30, 30))
+        self.btn_info_indicacionesTarea.setMaximumSize(QtCore.QSize(30, 30))
+        self.btn_info_indicacionesTarea.setStyleSheet("QPushButton{\n"
 "    border-image: url(:/main/IMAGENES/tache_off.png);\n"
 "}\n"
 "\n"
@@ -254,9 +212,9 @@ class Ui_Dialog(object):
 "QPushButton:pressed{\n"
 "        border-image: url(:/main/IMAGENES/tache_off.png);\n"
 "}")
-        self.btn_info_indicaciones.setText("")
-        self.btn_info_indicaciones.setObjectName("btn_info_indicaciones")
-        self.horizontalLayout_3.addWidget(self.btn_info_indicaciones)
+        self.btn_info_indicacionesTarea.setText("")
+        self.btn_info_indicacionesTarea.setObjectName("btn_info_indicacionesTarea")
+        self.horizontalLayout_3.addWidget(self.btn_info_indicacionesTarea)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
         self.label_21 = QtWidgets.QLabel(Dialog)
         self.label_21.setText("")
@@ -267,18 +225,18 @@ class Ui_Dialog(object):
         self.label_4 = QtWidgets.QLabel(Dialog)
         self.label_4.setObjectName("label_4")
         self.horizontalLayout_6.addWidget(self.label_4)
-        self.btn_asignarTarea = QtWidgets.QCommandLinkButton(Dialog)
-        self.btn_asignarTarea.setMinimumSize(QtCore.QSize(170, 0))
-        self.btn_asignarTarea.setMaximumSize(QtCore.QSize(120, 16777215))
+        self.btn_crearBorrador = QtWidgets.QCommandLinkButton(Dialog)
+        self.btn_crearBorrador.setMinimumSize(QtCore.QSize(120, 0))
+        self.btn_crearBorrador.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(18)
-        self.btn_asignarTarea.setFont(font)
-        self.btn_asignarTarea.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.btn_crearBorrador.setFont(font)
+        self.btn_crearBorrador.setFocusPolicy(QtCore.Qt.NoFocus)
         icon = QtGui.QIcon.fromTheme("?")
-        self.btn_asignarTarea.setIcon(icon)
-        self.btn_asignarTarea.setObjectName("btn_asignarTarea")
-        self.horizontalLayout_6.addWidget(self.btn_asignarTarea)
+        self.btn_crearBorrador.setIcon(icon)
+        self.btn_crearBorrador.setObjectName("btn_crearBorrador")
+        self.horizontalLayout_6.addWidget(self.btn_crearBorrador)
         self.label_5 = QtWidgets.QLabel(Dialog)
         self.label_5.setText("")
         self.label_5.setObjectName("label_5")
@@ -298,9 +256,8 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.label_12.setText(_translate("Dialog", "Creacion tarea:"))
         self.label_3.setText(_translate("Dialog", "Nombre:"))
-        self.label_10.setText(_translate("Dialog", "URL solo lectura:"))
         self.label_20.setText(_translate("Dialog", "ID archivo"))
         self.label_9.setText(_translate("Dialog", "Indicaciones:"))
         self.label_4.setText(_translate("Dialog", "l"))
-        self.btn_asignarTarea.setText(_translate("Dialog", "Asignar tarea"))
+        self.btn_crearBorrador.setText(_translate("Dialog", "Generar borrador de tarea en classroom "))
 import img_rc

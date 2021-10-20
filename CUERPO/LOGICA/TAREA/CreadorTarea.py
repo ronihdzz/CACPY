@@ -1,9 +1,9 @@
 
-
 '''
 CreadorTarea.py :
-    Esta clase sirve para calificar las entregas que han realizado los alumnos del usuario
-    y que pertenecen a la tarea seleccionada..
+                    Contiene una sola  clase, la clase 'CreadorTareas', la cual a grosso
+                    modo sirve para asignar a los estudiantes tareas de programación en google
+                    classroom.
 '''
 
 __author__      = "David Roni Hernández Beltrán"
@@ -13,33 +13,45 @@ __email__ = "roni.hernandez.1999@gmail.com"
 ###########################################################################################################################################
 # librerias estandar
 ###########################################################################################################################################
-
 import sys
-
-
 ###########################################################################################################################################
 # Paquetes de terceros
 ###########################################################################################################################################
-
-from PyQt5 import QtWidgets,QtGui
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import pyqtSignal,QRegExp
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QRegExpValidator
-from functools import partial
-
+import webbrowser
 ###########################################################################################################################################
 # fuente local
 ###########################################################################################################################################
-
 from CUERPO.DISENO.TAREA.CreadorTarea_d import Ui_Dialog
 import recursos
 
 
 class CreadorTareas(QtWidgets.QDialog, Ui_Dialog,recursos.HuellaAplicacion):
+    '''
+    Esta clase sirve para crear un borrador de la tarea que desea asignar a los estudiantes
+    en google classroom.Es importante recordar que para que las tareas puedan ser calificadas
+    por el programa deberan ser asignadas por el programa, esa es una retricción que pone
+    la API de google classroom, por tal motivo existe esta clase.
+    Cabe mencionar que la razon por lo que  esta clase crea la tarea se crea como borrador es por
+    que si se publicara todos los estudiantes les llegaria la notificacion de la tarea, y si el  el
+    usuario  cometido un error, en la tarea que asigno, ya no podra cancelar las notificaciones
+    que le llegan a los estudiantes cuando un profesor crea una tarea, por tal motivo se crean las
+    tareas como borradores, para que el usuario vea la tarea en classroom antes de hacerla publica
+    con todos sus estuiantes.
+
+    Esta clase presenta un formulario que pide los datos necesario  para crear el borrador de tarea
+    en google classroom, tambien esta clase se encarga de validar que los datos ingresados
+    sean correctos antes de crear el borrador y finalmente una vez creado el borrador de la tarea en
+    classroom, esta clase proseguira a abrir en el navegador web del usuario la clase de classroom en donde
+    se encuentra el borrador de la tarea de programación  para que el usuario  pueda revisar si la tarea
+    creada es correcta y asignarsela a sus alumnos cuando lo desee.
+    '''
+
+
     # las siguientes constantes almacenan los nombres de las imagenes que cambiaran en función
     # del comportamiento de cada boton...
-
-
     IMAGEN_MAL = '''QPushButton{border-image:url(:/main/IMAGENES/tache_off.png);}
                   QPushButton:hover{ border-image:url(:/main/IMAGENES/tache_on.png);}
                   QPushButton:pressed{border-image:url(:/main/IMAGENES/tache_off.png);}'''
@@ -47,34 +59,16 @@ class CreadorTareas(QtWidgets.QDialog, Ui_Dialog,recursos.HuellaAplicacion):
                   QPushButton:hover{ border-image:url(:/main/IMAGENES/paloma_on.png);}
                   QPushButton:pressed{border-image:url(:/main/IMAGENES/paloma_off.png);}'''
 
-    TUPLA_RESOLUCION_DUDAS = (
-
-        "Restricciones: cada campo tiene sus propias restricciones "
-        "para poder verlas debes dar click en el  boton que tiene forma " 
-        "de tache o  paloma, este boton se encuentra a lado derecho de "
-        "cada campo.",
-
-        "Recuerda que el nombre de la tarea: solo puede ser una palabra, "
-        "solo puede estar conformado de letras minusculas y numeros y no debe " 
-        "tener espacios en blanco",
-
-        "Aqui debes inscrustar el link que se te adjunta cuando se desea "
-        "compartir un google colab, cabe  mencionar que no importa que tipo " 
-        "de permisos tenga el google colab, solo debes adjuntar el link.",
-
-        "Aqui debes inscrutar el id del google colab, es importante mencionar "
-        "que el id se encuentra dentro del link que incrustate en el apartado "
-        "anterior.",
-
-        "Por lo menos debes escribir una instruccion breve acerca de lo que lo " 
-        "que trata la tarea que deseas adjuntar."
-    )
-
-    senalUsuarioSoloCerroVentana=pyqtSignal(bool)
-    senalUsuarioCreoTarea=pyqtSignal(tuple)
 
 
     def __init__(self,administradorProgramasClassRoom):
+        '''
+        - administradorProgramasClassroom (objeto de la clase: AdministradorProgramasClassRoom): dicho
+        objeto permite calificar tareas de los estudiantes  del classroom seleccionado por el usuario, este
+        objeto tambien permite obtener informacion de una manera mas sencilla acerca de las tareas del classroom
+        y topic seleccionadas por el usuario
+        '''
+
 
         Ui_Dialog.__init__(self)
         QtWidgets.QDialog.__init__(self)
@@ -82,159 +76,219 @@ class CreadorTareas(QtWidgets.QDialog, Ui_Dialog,recursos.HuellaAplicacion):
         recursos.HuellaAplicacion.__init__(self)
 
 
-        self.agruparVariablesInstancia()
-        self.conectarObjetos_conMetodos()
         self.restringirLasEntradas()
 
         self.administradorProgramasClassRoom=administradorProgramasClassRoom
-        self.USUARIO_SE_REGISTRO=False
+        self.SE_CREO_BORRADOR_TAREA_EXITOSAMENTE=False
 
-#############################################################################################################################################
-#        A C C I O N E S    F R E  C U E N  T E S :
-#############################################################################################################################################
+        # vinculandos los botones de informativos con el respetivo metodo que mostrara
+        # la informacion de lo que se debe poner en cada apartado al que corresponde
+        # cada boton
+        self.btn_infoGeneralCreacionTarea.clicked.connect(lambda : self.msg_informar(0) )
+        self.btn_info_nombreTarea.clicked.connect( lambda : self.msg_informar(1) )
+        self.btn_info_idColabDeTarea.clicked.connect(lambda : self.msg_informar(2))
+        self.btn_info_indicacionesTarea.clicked.connect( lambda : self.msg_informar(3) )
 
-
-    def validarEntradas(self, id_le):
-        '''
-        Lo que hara el siguiente metodo es validar los datos que el usuario ingresa
-        cuando esta escribiendo, si los datos son correctos lo indicaremos con un
-        booleano
-        '''
-
-
-        # ¿Lo que se modifico almenos tiene un dato?  ¿o.o?
-        if self.dict_datosPediremos[id_le][0].text() != "":
-            self.dict_datosPediremos[id_le][1] = True
-
-        else:
-            self.dict_datosPediremos[id_le][1] = False
-
-
-        if self.dict_datosPediremos[id_le][1]:
-            self.dict_btnEstadoAviso[id_le].setStyleSheet(self.IMAGEN_BIEN)
-        else:
-            self.dict_btnEstadoAviso[id_le].setStyleSheet(self.IMAGEN_MAL)
-
-
-#############################################################################################################################################
-#         A G R U P A C I O  N  E S     D  E    L O S    A T R I B U T O S    Y   C O N E X I O  N  E S    :
-#############################################################################################################################################
-    def agruparVariablesInstancia(self):
-        # La siguiente tupla almacena los mensajes de las restricciones de cada
-        # campo:
-
-
-        # El siguiente diccionario almacena los punteros de los objetos botones
-        # que se encuentran a lado de cada seccion,esos botones son los
-        # tienen imagen de tache o palomo. La finalidad del diccionario
-        # es conectar todos los botones de una manera mas sencilla:
-        self.dict_btnEstadoAviso = {
-            0: self.btn_infoDudas,
-            1: self.btn_info_nombre,
-            2: self.btn_info_urlSoloLectura,
-            3: self.btn_info_id_archivo,
-            4: self.btn_info_indicaciones
-        }
-
-        # El siguiente diccionario almacena los line edit en donde el usuario
-        # tiene que ingresar sus datos, y donde este puede tener una mal
-        # sintaxis, por tal motivo cada value es una lista de un objeto line edit
-        # y un booleano que indicara si es buena o mala su sintaxis
-        # otra cosa que aclara es que su keys coincide con la key del su boton estado
-        self.dict_datosPediremos = {1: [self.lineEdit_nombreTarea, False],
-                                    2: [self.plainText_urlSoloLectura, False],
-                                    3: [self.lineEdit_idArchivo, False],
-                                    4: [self.textEdit_indicaciones, False]
-                                    }
-
-
-    def conectarObjetos_conMetodos(self):
-        # Si detecta algun cambio en el texto veremos si ya es el correcto...
-        for x in tuple(self.dict_datosPediremos.keys()):
-            self.dict_datosPediremos[x][0].textChanged.connect(partial(self.validarEntradas, x))
-
-        # en funcion del boton estado que se presione mostraremos su respectivo mensaje...
-        for x in tuple(self.dict_btnEstadoAviso.keys()):
-            self.dict_btnEstadoAviso[x].clicked.connect(partial(self.msg_informar, x))
-
-        self.btn_asignarTarea.clicked.connect(self.terminarRegistro)
+        self.btn_crearBorrador.clicked.connect(self.crearBorradorDeTareaEnClassroom)
 
 
     def restringirLasEntradas(self):
+        '''
+        Este metodo pondra las respectivas validaciones de cada seccion del
+        formulario
+        '''
 
         # validacion del nombre de la tarea...
-        validator = QRegExpValidator(QRegExp("[0-9a-zA-Z_-]{1,30}"))  # maximo solo 20 caracteres
+        # maximo solo 30 caracteres, sin espacios en blanco y caracteres
+        # especiales validos unicamente el guion bajo y guion medio
+        validator = QRegExpValidator(QRegExp("[0-9a-zA-Z_-]{1,30}"))
         self.lineEdit_nombreTarea.setValidator(validator)
 
+    def crearBorradorDeTareaEnClassroom(self):
+        '''
+        Primero comprobara si todos los datos ingresados por el usuario son correctos, en caso de ser correctos
+        proseguira en preguntarle al usuario si en realidad esta seguro de crear el borrador de la tarea con dichos
+        datos, si el usuario confirma positivamente entonces proseguira a crear el borrador de la tarea en classroom
+        con los datos proporcionados por el usuario.
 
-        self.textEdit_indicaciones.text=self.textEdit_indicaciones.toPlainText
-        self.plainText_urlSoloLectura.text=self.plainText_urlSoloLectura.toPlainText
+        Si a la hora de comprobara si todos los datos ingresados por el usuario son correctos, detecto algun error
+        entonces se lo mostrara al usuario.
+        '''
 
- 
+        mensajeTodosErroresDetectados = self.buscarErrorEn_TodosLosDatosIngresadosPorUsuario()
+
+        # ¿se detecto por lo menos un error?
+        if mensajeTodosErroresDetectados != None:
+            encabezadoMensaje = "Para crear el borrador de la tarea en google classroom, todos los datos ingresados " \
+                                "deben ser correctos, sin embargo al procesar los datos ingresados se presentaron los " \
+                                "siguientes errores:"
+            finMensaje = "Por favor corrige todos los errores. "
+            mensajeTodosErroresDetectados = encabezadoMensaje + mensajeTodosErroresDetectados + finMensaje
+            # mostrando los errores detectados
+            self.ventanaEmergenteDe_error(mensajeTodosErroresDetectados)
+
+        # el usuario no cometio ningun error con los datos que ingreso
+        else:
+            usuarioDecididoDeHacerBorradorDeTarea = self.msg_confirmacionDatosBorradorDeTarea()
+
+            if usuarioDecididoDeHacerBorradorDeTarea:
+                # obteniedo el titulo de la tarea que escribio el usuario
+                nombreTarea = self.lineEdit_nombreTarea.text()
+
+                idColabTarea = self.plainText_idColab.toPlainText()
+
+                # obteniedo las descripcciones de la tarea que se escribio el usuario
+                descripccionTarea = self.textEdit_indicaciones.toPlainText()
+
+                self.administradorProgramasClassRoom.crearTarea(
+                    titulo=nombreTarea,
+                    descripccion=descripccionTarea,
+                    colab_id=idColabTarea,
+                )
+                linkAccesoClaseClassroom = self.administradorProgramasClassRoom.get_LinkAccesoClaseClassroom()
+                self.msg_exitoAlCrearBorradorDeTarea()
+
+                # abriendo la clase de classroom que contiene la tarea que se creo como borrador
+                webbrowser.open(linkAccesoClaseClassroom)
+                self.SE_CREO_BORRADOR_TAREA_EXITOSAMENTE = True
+                self.close()
+
+    def buscarErrorEn_TodosLosDatosIngresadosPorUsuario(self):
+        '''
+        El siguiente metodo se encarga de revisar si los datos ingresados por el usuario para poder
+        crear el borrador de la tarea son correctos, la validacion que hace por cada campo es la
+        siguiente:
+            * En el nombre de la tarea: Revisa que el nombre de la tarea que ingreso el usuario
+            exista en las tareas de la clase de NbGrader seleccionada en el apartado de configuraciones
+            * En el ID del colab: Revisa que el ID que ingreso el usuario corresponda al de un ID de
+            un archivo jupyter o colab, pues esos son los formatos de los archivos que el usuario
+            resolvera como tareas.
+            * En las indicaciones: Revisa que por lo menos haya puesto alguna indicacion.
+
+        Si se detecta que todos los datos que ingreso el usuario son correctos,retornara un None
+        Si detecta almenos un error, retornara un mensaje que explica cual error fue el detectado
+
+        En la seccion que haya detectado un error le asignara un imagen de tache al boton de informacion
+        de dicha seccion y en la seccion que no haya detectado un error le asignara un imagen de paloma
+        al boton de informacion respectivo de dicha seccion
+
+        Returns:
+            None -.  Si se detecta que todos los datos que ingreso el usuario son correctos
+            str  -.  Si detecta almenos un error, retornara un mensaje que explica cual error
+                    u errores fueron detectados
+        '''
+
+        dictErrores={
+            'nombreTarea': None,
+            'idColab':None,
+            'descripccionTarea':None
+        }
+
+        # obteniedo el titulo de la tarea que escribio el usuario
+        nombreTarea = self.lineEdit_nombreTarea.text()
+
+        idColabTarea=self.plainText_idColab.toPlainText()
+
+        # obteniedo las descripcciones de la tarea que se escribio el usuario
+        descripccionTarea = self.textEdit_indicaciones.toPlainText()
+
+
+
+        # VALIDANDO LA DESCRIPCCION DE LA TAREA
+        # ¿puso algo en la descripccion de la tarea el usuario?
+        if descripccionTarea=="":
+            mensajeError="(ERROR EN LA DESCRIPCCION DE LA TAREA INGRESADA) <<No se puso ninguna descripccion," \
+                         "y el apartado de descripccion de la tarea no debe quedar vacio>>"
+            dictErrores['descripccionTarea']=mensajeError
+            self.btn_info_indicacionesTarea.setStyleSheet(self.IMAGEN_MAL)
+        else:
+            self.btn_info_indicacionesTarea.setStyleSheet(self.IMAGEN_BIEN)
+
+
+        # VALIDANDO EL NOMBRE DE LA TAREA QUE SE ADJUNTO
+        nombreTareaEsCorrecto = self.administradorProgramasClassRoom.existeEsaTarea_cursoNbGrader(nombreTarea=nombreTarea)
+        if nombreTareaEsCorrecto is False:
+            mensajeError="(ERROR EN EL NOMBRE DE LA TAREA INGRESADO) <<No se encontro con el nombre de la tarea" \
+                         "que ingresaste, ninguna tarea existente en la clase de NbGrader que seleccionaste en el " \
+                         "apartado de: 'Mis configuraciones' y recuerda que el nombre de la tarea que ingreses debe " \
+                         "ser el mismo nombre que el nombre de una tarea una tarea existente en la clase de NbGrader " \
+                         "que seleccionaste en el apartado de: 'Mi configuraciones' "
+
+            dictErrores['nombreTarea']=mensajeError
+            self.btn_info_nombreTarea.setStyleSheet(self.IMAGEN_MAL)
+        else:
+            self.btn_info_nombreTarea.setStyleSheet(self.IMAGEN_BIEN)
+
+
+        # VALIDANDO EL ID DEL COLAB QUE SE ADJUNTO
+        erroresPresentadosEnID_colabTarea=self.administradorProgramasClassRoom.getErrorEn_idDelColabQueSeDiceSerQueEsUnIdDeUnArchivoValidoDeTarea(
+            idDelColab=idColabTarea
+        )
+
+        if erroresPresentadosEnID_colabTarea!=None:
+            mensajeError = "(ERROR EN EL ID QUE SE INGRESO DEL GOOGLE COLAB DE LA TAREA )<< Al procesar el ID que ingresaste en el apartado de ID " \
+                           "del colab, se detecto el siguiente error: "+erroresPresentadosEnID_colabTarea+">>"
+            dictErrores['idColab'] = mensajeError
+            self.btn_info_idColabDeTarea.setStyleSheet(self.IMAGEN_MAL)
+        else:
+            self.btn_info_idColabDeTarea.setStyleSheet(self.IMAGEN_BIEN)
+
+
+        # Agrupando todos los mensaje de error en una sola variable de tipo 'str'
+        mensajeTodosErroresDetectados=""
+        for errorDetectado in dictErrores.values():
+            if errorDetectado!=None:
+                mensajeTodosErroresDetectados+=errorDetectado+"\n"
+
+        if mensajeTodosErroresDetectados=="":
+            mensajeTodosErroresDetectados=None
+
+        return mensajeTodosErroresDetectados
 
 #############################################################################################################################################
 #      A C C I O N E S     F I N A L E S :
 #############################################################################################################################################
 
-    def terminarRegistro(self):
-            datosCorrectos = True
-
-            # Con que haya uno malo el resultado sera false...
-            print("\n" * 4)
-            for x in tuple(self.dict_datosPediremos.keys()):
-                datosCorrectos *= self.dict_datosPediremos[x][1]
-                print(f"{x} = {self.dict_datosPediremos[x][1]}")
-
-            if datosCorrectos:
-                resultado=self.msg_confirmacionDatosTarea()
-                if resultado == True:
-                    #################################################################
-                    # CREANDO TRABAJO
-                    ################################################################
-
-
-                    titulo=self.lineEdit_nombreTarea.text()
-                    descripccion=self.textEdit_indicaciones.toPlainText()
-                    idTarea,fechaCreacion=self.administradorProgramasClassRoom.crearTarea(
-                        titulo=titulo,
-                        descripccion=descripccion,
-                        colab_link=self.plainText_urlSoloLectura.toPlainText(),
-                        colab_id=self.lineEdit_idArchivo.text(),
-                    )
-
-                    tuplaDatosMandar = (idTarea,titulo,fechaCreacion)
-                    self.senalUsuarioCreoTarea.emit(tuplaDatosMandar)
-
-                    self.msg_exitoCrearTarea()
-                    self.USUARIO_SE_REGISTRO=True
-                    self.close()
-
-            else:
-                self.msg_errorCrearTarea()
-
     def borrarTodo(self):
+        '''
+        Se encargara de limpiar el contenido de los apartados del formulario para que el usuario
+        pueda usar este formario com un formulario nuevo.
+        '''
         self.lineEdit_nombreTarea.setText("")
-        self.lineEdit_idArchivo.setText("")
-        self.plainText_urlSoloLectura.setPlainText("")
+        self.plainText_idColab.setPlainText("")
         self.textEdit_indicaciones.setPlainText("")
+
+        self.btn_info_indicacionesTarea.setStyleSheet(self.IMAGEN_MAL)
+        self.btn_info_idColabDeTarea.setStyleSheet(self.IMAGEN_MAL)
+        self.btn_info_nombreTarea.setStyleSheet(self.IMAGEN_MAL)
 
 
     def closeEvent(self, event):
+        '''
+        Este metodo cerrara la ventana, sin embargo tendra un comportamiento diferente en funcion del
+        valor que tenga la variable bandera: 'self.SE_CREO_BORRADOR_TAREA_EXITOSAMENTE', es decir:
 
-        if self.USUARIO_SE_REGISTRO:
-            nombreTarea=self.lineEdit_nombreTarea.text()
-            urlSoloLectura=self.plainText_urlSoloLectura.toPlainText()
-            idArchivoDrive=self.lineEdit_idArchivo.text()
-            indicacionesTarea=self.textEdit_indicaciones.toPlainText()
+        Si 'self.SE_CREO_BORRADOR_TAREA_EXITOSAMENTE' tiene un valor igual a True:
+            - Significara que el usuario creo un borrador de la tarea con exito, y que por lo tanto
+            ya no es necesario que la ventana del formulario siga abierta asi que el metodo
+            simplemente cerrar dicha ventana
+
+        Si 'self.SE_CREO_BORRADOR_TAREA_EXITOSAMENTE' tiene un valor igual a False:
+            - Significa que el usuario quiere salir del formulario(esta ventana), por tal motivo
+            este metodo le preguntara al usuario si esta seguro de querer salir, ya que si
+            sale se perderan todos los datos de los ingresados
+        '''
+
+        if self.SE_CREO_BORRADOR_TAREA_EXITOSAMENTE:
             self.borrarTodo()
+            self.SE_CREO_BORRADOR_TAREA_EXITOSAMENTE=False
             event.accept()
 
         else:
-            
             resultado = self.msg_cerrarVentana()
             if resultado:
+                self.borrarTodo()
                 event.accept()
-                self.senalUsuarioSoloCerroVentana.emit(True)
             else:
                 event.ignore()  # No saldremos del evento
 
@@ -243,117 +297,118 @@ class CreadorTareas(QtWidgets.QDialog, Ui_Dialog,recursos.HuellaAplicacion):
 # MENSAJES
 ##################################################################################################################################################
 
-    def msg_confirmacionDatosTarea(self):
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+    def msg_confirmacionDatosBorradorDeTarea(self):
+        '''
+        Mostrara un cuadro de dialogo al usuario para preguntarle si
+        en realidad los datos que adjunto en el formulario son los
+        correctos para la creacion del borrador de tarea en classroom
 
-        mensaje = "¿Seguro que los datos proporcionados son los datos correctos?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        Returns:
+            - True (bool) : Si el usuario confirmo positivamente que si
+            - False (bool): Si el usuario dijo que NO
+        '''
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        mensaje = "Los datos que ingresaste para la creacion del borrador de tarea son correctos " \
+                  "ahora solo confirma lo siguiente: ¿estas seguro de que los datos que ingresaste " \
+                  "son los que querias ingresar? Si responde afirmativamente se proseguira a crear " \
+                  "con dichos datos el borrador de tarea en classroom "
+
+        resultado = self.ventanaEmergenteDe_pregunta(mensaje)
+
+        return resultado
 
 
     def msg_cerrarVentana(self):
         '''
-        Mostrara un cuadro de dialogo con el objetivo de: preguntarle el profesor
+        Mostrara un cuadro de dialogo con el objetivo de: preguntarle al usuario
         si en realidad desea cerrar la aplicacion
 
         Returns:
-            True : En caso de que el profesor presione el boton de 'Si'
-            False: En caso de que el profesor presione el boton de 'No'
+            - True (bool) : Si el usuario confirmo positivamente que si
+            - False (bool): Si el usuario dijo que NO
         '''
-        
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Question)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
-        mensaje = "¿Esta seguro que deseas salir de la aplicacion?"
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        mensaje = "¿Esta seguro que deseas salir de este formulario,recuerda que si " \
+                  "sales de este formulario los datos que adjuntaste se perderan ?"
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        btn_yes = ventanaDialogo.button(QMessageBox.Yes)
-        btn_yes.setText('Si')
-        btn_no = ventanaDialogo.button(QMessageBox.No)
-        btn_no.setText('No')
-        ventanaDialogo.exec_()
-        if ventanaDialogo.clickedButton() == btn_yes:
-            return True
-        return False
+        resultado=self.ventanaEmergenteDe_pregunta(mensaje)
 
-
+        return resultado
 
 
 
     def msg_informar(self,idDuda):
         '''
-        Lo que hace esta funcion es que en funcion del boton de estado que
-        se oprima se mostrara la restriccion de su apartado...
+        Cada seccion del formulario contiene un boton que puede contener una imagen
+        de tache o una imagen de paloma, si dicho boton es presionado se le mostrara
+        un cuadro de dialogo al usuario en donde vendra la explicacion de cual es el
+        dato que te debe adjuntar en dicho apartado del formulario, y lo que hara
+        este metodo es mostrar dicho mensaje respectivo.
+
+        Parámetros:
+            idDuda(int) : Representa el numero de boton que fue presionado y sirve
+                          para que el metodo sepa que mensaje de expicacion mostrar
         '''
 
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+        TUPLA_RESOLUCION_DUDAS = (
 
-        mensaje = self.TUPLA_RESOLUCION_DUDAS[idDuda]
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+            "Cada seccion del formulario contiene una breve explicacion de cual es el dato  que "
+            "debe ser ingresado asi como las  restricciones de dicho dato, para poder ver esa informacion "
+            "debes dar click en el  boton que tiene forma de tache o  paloma, este boton se encuentra a lado "
+            "derecho de cada  seccion del formulario.Es importante mencionar que cuando hayas ingresado todos "
+            "los datos de cada seccion del formulario deberas dar clic sobre el boton: <<Generar borrador de tarea "
+            "en classroom>> cuando hagas esto CACPY creara en classroom un borrador de tarea con los datos que "
+            "ingresaste en el formulario, despues CACPY abrira en tu navegador la clase de classroom que contiene "
+            "dicho borrador de tarea, con la finalidad de que puedas revisar que los datos de la tarea son correctos "
+            "y despues puedas quitar el estatus de borrador y asignar dicha tarea para que todos tus alumnos puedan verla "
+            "y resolverla",
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+            "Recuerda que el nombre de la tarea: solo puede ser una palabra,solo puede estar conformado de letras "
+            "minusculas,letras mayusculas,numeros,guiones bajos,guiones medios y no debe tener espacios en blanco.El nombre de la tarea "
+            "que ingreses  debe ser el mismo nombre que el de una tarea existente en la clase de NbGrader que seleccionaste "
+            "en el apartado de: 'Mi configuraciones' ",
+            
 
-    def msg_exitoCrearTarea(self):
-        
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Information)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
+            "Aqui debes inscrutar el id que le asigna google drive al  google colab o jupyter  de la tarea que le "
+            "asignaras a tus estudiantes",
+            
+            "Por lo menos debes escribir una instruccion breve acerca de lo que lo que trata la tarea que deseas adjuntar."
+        )
 
-        mensaje= "Felicidades, tu tarea ha sido registrada correctamente."
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        mensaje = TUPLA_RESOLUCION_DUDAS[idDuda]
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
-
+        self.ventanaEmergenteDe_informacion(mensaje)
 
 
-    def msg_errorCrearTarea(self):
-        ventanaDialogo = QMessageBox()
-        ventanaDialogo.setIcon(QMessageBox.Critical)
-        ventanaDialogo.setWindowIcon(QtGui.QIcon(self.ICONO_APLICACION))
-        ventanaDialogo.setWindowTitle(self.NOMBRE_APLICACION)
 
-        mensaje="El registro no se puede realizar porque:tienes "
-        mensaje+="errores en los datos requeridos. Por favor respeta las "
-        mensaje+="restricciones de  cada campo,si tienes dudas acerca de "
-        mensaje+="cuales son, da click en el boton que tiene forma de tache " 
-        mensaje+=" o paloma, el cual se encuentra al lado derecho de cada campo."
+    def msg_exitoAlCrearBorradorDeTarea(self):
+        '''
+        Ventana emergente informativa que se le mostrara al usuario cuando la tarea  haya sido
+        asignada correctamente en classroom,sin embargo este mensaje tambien le recuerda al usuario
+        que la tarea que  ya se encuentra en classroom esta en forma de borrador, y que si desea
+        que la vean sus estudiantes debe entrar a classroom y ponerla en forma de no borrador.
+        '''
 
-        mensaje = self.huellaAplicacion_ajustarMensajeEmergente(mensaje)
+        _,nombreClase_classroom=self.administradorProgramasClassRoom.get_datosCurso()
+        _,nombreTopic_classroom=self.administradorProgramasClassRoom.get_datosTopic()
 
-        ventanaDialogo.setText(mensaje)
-        ventanaDialogo.setStandardButtons(QMessageBox.Ok)
-        btn_ok = ventanaDialogo.button(QMessageBox.Ok)
-        btn_ok.setText('Entendido')
-        ventanaDialogo.exec_()
+        mensaje= f"Felicidades, tu tarea ha sido registrada correctamente en tu clase de classroom:<<" \
+                 f"{nombreClase_classroom}>> en el topic: <<{nombreTopic_classroom}>>" \
+                 ", sin embargo es importante que recuerdes que dicha tarea se encuentra " \
+                 "en estatus de borrador, esto significa que tus estudiantes aun no pueden ver que les " \
+                 "asignaste la tarea, si deseas que esta tarea la puedan ver tus alumnos con el objetivo " \
+                 "de que la puedan resolver, entonces deberas entrar al  classroom y topic en donde " \
+                 "ya se encuentra esta tarea y quitarle el estatus de borrador y asignarla.Otro punto importante que mencionar " \
+                 "es que  esta tarea no se visualizara en el tabla de tareas calificables, tu la deberas agregar si deseas calificar " \
+                 "las entregas que hagan tus alumnos de dicha tarea, sin embargo es " \
+                 "importante mencionar que solo la podras agregar si no se encuentra como borrador, ya que si se encuentra como borrador " \
+                 "el programa no la detectara  y por ende no podras agregarla a la tabla de tareas calificables.A continuacion se cerrara esta ventana " \
+                 "por que ya creaste el borrador de la tarea, despues de que se cierre la ventana se abrira en tu navegador web tu clase de classroom " \
+                 "que almacena la tarea que creaste como borrador, todo es con la finalidad de que puedas verificar que la tarea que creaste como borrador " \
+                 "es correcta o tambien para que puedas editarla " \
+                 "y finalmente puedas decidir si ya asignarla o eliminarla por que algo salio mal."
+
+        self.ventanaEmergenteDe_informacion(mensaje)
 
 
 
