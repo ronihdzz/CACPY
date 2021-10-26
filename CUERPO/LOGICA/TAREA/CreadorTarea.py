@@ -162,7 +162,7 @@ class CreadorTareas(QtWidgets.QDialog, Ui_Dialog,recursos.HuellaAplicacion):
             exista en las tareas de la clase de NbGrader seleccionada en el apartado de configuraciones
             * En el ID del colab: Revisa que el ID que ingreso el usuario corresponda al de un ID de
             un archivo jupyter o colab, pues esos son los formatos de los archivos que el usuario
-            resolvera como tareas.
+            debera asignar las tareas de programación a sus alumnos
             * En las indicaciones: Revisa que por lo menos haya puesto alguna indicacion.
 
         Si se detecta que todos los datos que ingreso el usuario son correctos,retornara un None

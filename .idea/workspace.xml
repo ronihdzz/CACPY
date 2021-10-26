@@ -3,22 +3,18 @@
   <component name="ChangeListManager">
     <list default="true" id="82b61526-a303-459d-8079-6e9425a39115" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/CONFIGURACION/ConfiguracionMain_d - copia.ui" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/AgregadorCourseWorks_d.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/AgregadorCourseWorks_d.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/AgregadorCourseWorks_d.ui" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/AgregadorCourseWorks_d.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CambiadorClases_d.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CambiadorClases_d.ui" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CreadorTarea_d.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CreadorTarea_d.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CreadorTarea_d.ui" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/DISENO/TAREA/CreadorTarea_d.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CACPY.py" beforeDir="false" afterPath="$PROJECT_DIR$/CACPY.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/CONFIGURACION/CofiguracionMain_d.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/AdministradorProgramasClassRoom.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/AdministradorProgramasClassRoom.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/BaseDatosLocal.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/BaseDatosLocal.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/CalificadorConfiguracion.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/CalificadorConfiguracion.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/ClassRoomControl.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/ClassRoomControl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/MAIN/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/FuncionesDrive.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/FuncionesDrive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/API/HiloCalificadorTarea.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/API/HiloCalificadorTarea.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/AgregadorCourseWork.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/AgregadorCourseWork.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/CalificadorTareas.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/CalificadorTareas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/CreadorTarea.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/CreadorTarea.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/TareaMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/CUERPO/LOGICA/TAREA/TareaMain.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recursos_readme/3_tareas/38_creandoTareaProgramacion.gif" beforeDir="false" afterPath="$PROJECT_DIR$/recursos_readme/3_tareas/38_creandoTareaProgramacion.gif" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,5 +81,16 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/CUERPO/LOGICA/CONFIGURACION/CambiadorClases.py</url>
+          <line>145</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

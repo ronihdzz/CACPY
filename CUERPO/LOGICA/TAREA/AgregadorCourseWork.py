@@ -148,7 +148,7 @@ class AgregadorCourseWorks(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion
             #       (id_tarea_2,nombre_tarea_2,descripccion_tarea_2,fechaCreacion_tarea_2) ,
             #       ....
             #   )
-            tuplaDatosCourseWorks = self.administradorProgramasClassRoom.get_dictTareasDejadas()
+            tuplaDatosCourseWorks = self.administradorProgramasClassRoom.get_tuplaTareasDejadas()
 
             # ¿se obtuvo almenos los datos de una tarea?
             if tuplaDatosCourseWorks!=() and len(tuplaDatosCourseWorks) != 0:
@@ -203,7 +203,7 @@ class AgregadorCourseWorks(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion
 
             # registrando en la base de datos local que la tarea que selecciono el usuario ya
             # forma parte de la tabla de tareas calificables
-            self.administradorProgramasClassRoom.seleccionarBaseLocal_coursework(courseWorkSelec_id)
+            self.administradorProgramasClassRoom.registrarCourseworkComoCalificable_baseDatosLocal(courseWorkSelec_id)
             self.close()
 
     def configurarTabla(self):

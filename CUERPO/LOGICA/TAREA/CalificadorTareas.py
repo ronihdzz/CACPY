@@ -225,7 +225,7 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
                 respuestaPositiva=self.msg_preguntarAcercaAccionCalificar(noTareasDeseanCalificar)
                 if respuestaPositiva:
                     self.ponerModoCalificando(True)
-                    self.administradorProgramasClassRoom.hiloCalificadorTarea.activarHiloParaCalificar()
+                    #self.administradorProgramasClassRoom.hiloCalificadorTarea.activarHiloParaCalificar()
                     # la siguiente funcion ejecuta el hilo que se encarga de obtener  la calificacion
                     # de las entregas de la tarea.
                     self.administradorProgramasClassRoom.calificarEstudiantes(
@@ -474,6 +474,10 @@ class CalificadorTareas(QtWidgets.QDialog,Ui_Dialog,recursos.HuellaAplicacion):
         # Habilitando el boton que permitira al usuario volver a calificar
         # mas entregas de la tarea de programacion que selecciono
         self.btn_calificar.setEnabled(True)
+
+        # Deshabilitando el boton de DETENER ya que ya se detuvo y ya no tiene caso
+        # que esta habilitado
+        self.btn_detener.setEnabled(False)
 
         # Si no ocurrio a calificar ningun errro al calificar las entregas de la tarea
         # o si no se detuvo la calificacion de las tareas.

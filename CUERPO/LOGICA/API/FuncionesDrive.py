@@ -1,3 +1,15 @@
+'''
+FuncionesDrive.py :
+        Contiene una sola  funcion cuyo nombre es: 'getIdCarpeta' la cual se encarga de ver
+        si existe una carpeta de google drive con un nombre en especifico, dentro de una
+        carpeta con un ID en especifico, en caso de comprobar su existencia, obtendra datos
+        de esta y los retornara, en caso contrario la creara y despues retornara los datos
+        debido
+'''
+
+
+__author__      = "David Roni Hernández Beltrán"
+__email__ = "roni.hernandez.1999@gmail.com"
 
 
 
@@ -13,11 +25,11 @@ def getId_carpeta(nombre,idCarpetaAlmacena,intermediarioAPI_drive):
         la retornara
 
     Parámetros:
-        nombre (str): Nombre de la carpeta de la cual se desea obtener su ID
-        idCarpetaAlmacena (str) : Id de la carpeta que almacena la carpeta
-        de la cual queremos obtener su ID
-        intermediarioApi_drive : El objeto que nos permitira hacer consultas
-        y recivir respuestas por parte de la API
+        - nombre (str): Nombre de la carpeta de la cual se desea obtener su ID
+          idCarpetaAlmacena (str) : Id de la carpeta que almacena la carpeta
+          de la cual queremos obtener su ID
+        - intermediarioApi_drive : El objeto que nos permitira hacer consultas
+          y recivir respuestas por parte de la API
 
     Returns:
         Retornara un diccionario con los siguientes datos en caso de NO existir ningun error:

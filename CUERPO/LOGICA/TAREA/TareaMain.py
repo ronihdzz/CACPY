@@ -353,7 +353,7 @@ class TareaMain(QWidget,Ui_Form,recursos.HuellaAplicacion):
         #       (id_tarea_2,nombre_tarea_2,descripccion_tarea_2,fechaCreacion_tarea_2) ,
         #       ....
         #   )
-        tuplaDatosCourseWorks= self.administradorProgramasClassRoom.get_courseWorksAgregados_baseDatosLocal()
+        tuplaDatosCourseWorks= self.administradorProgramasClassRoom.get_courseWorksCalificables_baseDatosLocal()
 
         tuplaDatosMostrar=[]
         self.listaIds_courseworks=[]
