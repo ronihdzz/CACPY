@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="82b61526-a303-459d-8079-6e9425a39115" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CACPY.py" beforeDir="false" afterPath="$PROJECT_DIR$/CACPY.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CUERPO/DISENO/CONFIGURACION/CofiguracionMain_d.py" beforeDir="false" />

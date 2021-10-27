@@ -1,15 +1,10 @@
-# Ignorando la carpeta pyqt5
 #  *.pyc                    ignora todos los archivo .pyc
 #  token.json               ignora el archivo 'token.json'
 #  credentials.json         ignora el archivo 'credentials.json'
-# *.db                      ignora todos los archivos con terminacion *.db
-# RECURSOS/NB_GRADER/course_1
-# RECURSOS/PROFESOR_EN_CURSO
 cacpy-env/
-RECURSOS/API
-RECURSOS/PROFESOR_EN_CURSO
+RECURSOS/
 *.pyc
 token.json
 credentials.json
-*.db
+baseDatos.db
 
