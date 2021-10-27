@@ -110,9 +110,9 @@ A continuación se muestra como poder instalar los paquetes antes mencionados:
 
         <pre><code>pip3 install nbgrader</code></pre>
 
-    * Instalando rfc339:
+    * Instalando rfc3339:
 
-        <pre><code>pip3 install rfc339</code></pre>
+        <pre><code>pip3 install rfc3339</code></pre>
 
     * Instalando iso8601:
         <pre><code>pip3 install iso8601</code></pre>
@@ -152,8 +152,8 @@ A continuación se muestra como poder instalar los paquetes antes mencionados:
 
     <pre><code>pip3 install nbgrader</code></pre>
 
-* Instalando rfc339:
-    <pre><code>pip3 install rfc339</code></pre>
+* Instalando rfc3339:
+    <pre><code>pip3 install rfc3339</code></pre>
 
 * Instalando iso8601:
     <pre><code>pip3 install iso8601</code></pre>
